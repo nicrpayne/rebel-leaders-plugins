@@ -71,9 +71,9 @@ export default function PluginShell({ children, title, category, className }: Pl
           </div>
 
           {/* Manufacturer's Badge (Nic Sprite) - Flanked by REBEL LEADERS */}
-          <div className="absolute bottom-6 left-6 z-0 hidden md:flex items-center gap-2 opacity-40">
-            {/* REBEL Text */}
-            <span className="font-pixel text-[10px] text-[#444] tracking-[0.2em] drop-shadow-[0_1px_1px_rgba(255,255,255,0.05)]">
+          <div className="absolute bottom-6 left-6 z-0 hidden md:flex items-center gap-0 opacity-40">
+            {/* REBEL Text - Tight spacing */}
+            <span className="font-pixel text-[10px] text-[#444] tracking-[0.2em] drop-shadow-[0_1px_1px_rgba(255,255,255,0.05)] -mr-2">
               REBEL
             </span>
 
@@ -86,8 +86,8 @@ export default function PluginShell({ children, title, category, className }: Pl
               />
             </div>
 
-            {/* LEADERS Text */}
-            <span className="font-pixel text-[10px] text-[#444] tracking-[0.2em] drop-shadow-[0_1px_1px_rgba(255,255,255,0.05)]">
+            {/* LEADERS Text - Tight spacing */}
+            <span className="font-pixel text-[10px] text-[#444] tracking-[0.2em] drop-shadow-[0_1px_1px_rgba(255,255,255,0.05)] -ml-2">
               LEADERS
             </span>
           </div>
