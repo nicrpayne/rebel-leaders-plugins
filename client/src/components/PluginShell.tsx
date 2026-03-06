@@ -1,50 +1,109 @@
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
+import { Link } from "wouter";
 
 interface PluginShellProps {
   children: ReactNode;
-  title: string;
-  category: "MAP" | "MIRROR" | "MOVE";
+  title?: string;
+  category?: string;
   className?: string;
 }
 
 export default function PluginShell({ children, title, category, className }: PluginShellProps) {
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 md:p-8">
+    <div className="min-h-screen bg-[#0a0a0a] text-foreground font-sans selection:bg-gold/30 flex flex-col items-center justify-center p-4 md:p-8">
+      {/* The Rack Unit Chassis */}
       <div className={cn(
-        "w-full max-w-4xl bg-forest-deep border-4 border-wood shadow-2xl relative overflow-hidden",
+        "relative w-full max-w-5xl bg-[#1a1a1a] rounded-lg overflow-hidden shadow-2xl",
+        // Chassis Bevel & Depth
+        "border-t border-white/10 border-b border-black/50 border-x border-white/5",
+        "shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_20px_50px_rgba(0,0,0,0.8)]",
         className
       )}>
-        {/* Header */}
-        <div className="bg-forest border-b-2 border-wood p-4 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-gold rounded-full animate-pulse" />
-            <h1 className="text-gold text-sm md:text-base tracking-widest font-pixel uppercase">
-              {title}
-            </h1>
-          </div>
-          <div className="px-2 py-1 bg-forest-light border border-gold/30 text-gold text-[10px] font-pixel uppercase tracking-wider">
-            {category}
-          </div>
-        </div>
+        
+        {/* Top Specular Highlight (Anodized Metal Look) */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent z-20 pointer-events-none" />
 
-        {/* Content */}
-        <div className="p-6 md:p-12 relative">
-          {/* Background Texture */}
-          <div className="absolute inset-0 opacity-5 pointer-events-none" 
-               style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/wood-pattern.png")' }} />
+        {/* Header Strip */}
+        <header className="relative bg-[#111] border-b border-black/50 px-6 py-4 flex justify-between items-center z-10 shadow-md">
+          {/* Subtle Texture */}
+          <div className="absolute inset-0 bg-[url('/metal-texture.png')] opacity-5 pointer-events-none mix-blend-overlay" />
           
-          {children}
+          <div className="flex items-center gap-4 relative z-10">
+            <Link href="/">
+              <div className="w-8 h-8 bg-[#222] rounded-full border border-[#333] flex items-center justify-center shadow-inner cursor-pointer hover:bg-[#2a2a2a] transition-colors group">
+                <div className="w-4 h-4 bg-gold/80 rounded-sm group-hover:bg-gold transition-colors shadow-[0_0_5px_rgba(197,160,89,0.3)]" />
+              </div>
+            </Link>
+            <div className="flex flex-col">
+              <h1 className="font-pixel text-gold text-sm tracking-[0.2em] drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                {title || "REBEL OS"}
+              </h1>
+              {category && (
+                <span className="text-[10px] font-pixel text-[#666] tracking-widest uppercase mt-0.5">
+                  TYPE: {category}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Status LEDs (Micro-detail) */}
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500/50 shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)] border border-black/50" />
+              <span className="text-[9px] font-pixel text-[#444] tracking-widest">PWR</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500/20 shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)] border border-black/50" />
+              <span className="text-[9px] font-pixel text-[#444] tracking-widest">CLIP</span>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content Area */}
+        <main className="relative z-10 bg-[#161616]">
+          {/* Inner Shadow for Depth */}
+          <div className="absolute inset-0 shadow-[inset_0_10px_30px_rgba(0,0,0,0.5)] pointer-events-none z-0" />
+          
+          {/* Content */}
+          <div className="relative z-10">
+            {children}
+          </div>
+        </main>
+
+        {/* Footer Strip */}
+        <footer className="relative bg-[#111] border-t border-white/5 px-6 py-3 flex justify-between items-center z-10">
+          <div className="flex items-center gap-4">
+            <span className="text-[9px] font-pixel text-[#444] tracking-widest">
+              MODE: STANDARD
+            </span>
+            <span className="text-[9px] font-pixel text-[#444] tracking-widest">
+              SIDECHAIN: <span className="text-red-900/50">OFF</span>
+            </span>
+          </div>
+          <div className="text-[9px] font-pixel text-[#333] tracking-widest">
+            V.1.0.4 // REBEL-LEADER.COM
+          </div>
+        </footer>
+
+        {/* Rack Screws (Embedded Feel) */}
+        <div className="absolute top-4 left-2 w-3 h-3 rounded-full bg-[#222] border border-[#111] shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_1px_2px_rgba(0,0,0,0.8)] flex items-center justify-center z-20">
+          <div className="w-1.5 h-[1px] bg-[#000] rotate-45 opacity-50" />
+          <div className="w-[1px] h-1.5 bg-[#000] rotate-45 opacity-50" />
+        </div>
+        <div className="absolute top-4 right-2 w-3 h-3 rounded-full bg-[#222] border border-[#111] shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_1px_2px_rgba(0,0,0,0.8)] flex items-center justify-center z-20">
+          <div className="w-1.5 h-[1px] bg-[#000] -rotate-12 opacity-50" />
+          <div className="w-[1px] h-1.5 bg-[#000] -rotate-12 opacity-50" />
+        </div>
+        <div className="absolute bottom-4 left-2 w-3 h-3 rounded-full bg-[#222] border border-[#111] shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_1px_2px_rgba(0,0,0,0.8)] flex items-center justify-center z-20">
+          <div className="w-1.5 h-[1px] bg-[#000] rotate-90 opacity-50" />
+          <div className="w-[1px] h-1.5 bg-[#000] rotate-90 opacity-50" />
+        </div>
+        <div className="absolute bottom-4 right-2 w-3 h-3 rounded-full bg-[#222] border border-[#111] shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_1px_2px_rgba(0,0,0,0.8)] flex items-center justify-center z-20">
+          <div className="w-1.5 h-[1px] bg-[#000] rotate-0 opacity-50" />
+          <div className="w-[1px] h-1.5 bg-[#000] rotate-0 opacity-50" />
         </div>
 
-        {/* Footer */}
-        <div className="bg-forest-deep border-t-2 border-wood p-3 flex justify-between items-center text-[10px] text-muted-foreground font-pixel">
-          <div>REBEL OS v1.0</div>
-          <div className="flex gap-4">
-            <span className="opacity-50">SIDECHAIN: OFF</span>
-            <span className="text-gold">SIGNAL: ACTIVE</span>
-          </div>
-        </div>
       </div>
     </div>
   );

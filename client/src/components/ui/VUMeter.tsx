@@ -11,7 +11,7 @@ export default function VUMeter({ value, label, className }: VUMeterProps) {
   const rotation = -45 + (value / 100) * 90;
 
   return (
-    <div className={cn("relative w-32 h-20 bg-[#1a1a1a] rounded-t-lg border-2 border-[#333] overflow-hidden shadow-inner", className)}>
+    <div className={cn("relative w-32 h-20 bg-[#1a1a1a] rounded-t-lg border-2 border-[#333] overflow-hidden shadow-[inset_0_0_10px_rgba(0,0,0,0.8)]", className)}>
       {/* Glass Reflection */}
       <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none z-20" />
       
@@ -39,17 +39,17 @@ export default function VUMeter({ value, label, className }: VUMeterProps) {
         </svg>
       </div>
 
-      {/* Needle */}
+      {/* Needle (Animated) */}
       <div 
-        className="absolute bottom-2 left-1/2 w-1 h-16 bg-red-500 origin-bottom transition-transform duration-300 ease-out z-10 shadow-md"
+        className="absolute bottom-2 left-1/2 w-0.5 h-16 bg-red-500 origin-bottom transition-transform duration-300 ease-out z-10 shadow-[0_0_5px_rgba(239,68,68,0.5)]"
         style={{ transform: `translateX(-50%) rotate(${rotation}deg)` }}
       >
-        <div className="w-2 h-2 bg-black rounded-full absolute bottom-0 left-1/2 -translate-x-1/2" />
+        <div className="w-2 h-2 bg-black rounded-full absolute bottom-0 left-1/2 -translate-x-1/2 border border-[#333]" />
       </div>
 
       {/* Label */}
       {label && (
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 text-[8px] font-pixel text-gold/50 tracking-widest uppercase z-20">
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 text-[8px] font-pixel text-gold/50 tracking-widest uppercase z-20 drop-shadow-sm">
           {label}
         </div>
       )}
