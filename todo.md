@@ -17,3 +17,7 @@
 - [ ] Rewrite "Fridge Rights" question with full context
 - [ ] Add "First Move" prescription logic to `scoring.ts`
 - [ ] Update PDF generator to include "First Move" section
+
+## Fixes
+- [ ] Fix missing Nic sprite badge on plugin chassis
+- [ ] Ensure correct z-index and path for the sprite image

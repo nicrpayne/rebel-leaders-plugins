@@ -71,11 +71,11 @@ export default function PluginShell({ children, title, category, className }: Pl
           </div>
 
           {/* Manufacturer's Badge (Nic Sprite) */}
-          <div className="absolute bottom-4 left-4 opacity-30 mix-blend-overlay pointer-events-none grayscale contrast-150">
+          <div className="absolute bottom-4 left-4 opacity-40 mix-blend-overlay pointer-events-none grayscale contrast-125 z-0">
             <img 
-              src="https://cdn.manus.im/1772826439_nic_idol_background_removed.png" 
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/nic-badge_395aa958.png" 
               alt="Rebel Leaders Badge" 
-              className="w-12 h-12 object-contain drop-shadow-[0_1px_0_rgba(255,255,255,0.1)]"
+              className="w-16 h-auto object-contain drop-shadow-[0_1px_0_rgba(255,255,255,0.1)] pixelated"
             />
           </div>
         </main>
