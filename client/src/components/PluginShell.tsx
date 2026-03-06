@@ -24,8 +24,8 @@ export default function PluginShell({ children, title, category, className }: Pl
         {/* Top Specular Highlight (Anodized Metal Look) */}
         <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent z-20 pointer-events-none" />
 
-        {/* Header Strip */}
-        <header className="relative bg-[#111] border-b border-black/50 px-6 py-4 flex justify-between items-center z-10 shadow-md">
+        {/* Header Strip - Strict Left Rail Alignment */}
+        <header className="relative bg-[#111] border-b border-black/50 px-8 py-4 flex justify-between items-center z-10 shadow-md">
           {/* Subtle Texture */}
           <div className="absolute inset-0 bg-[url('/metal-texture.png')] opacity-5 pointer-events-none mix-blend-overlay" />
           
@@ -60,8 +60,8 @@ export default function PluginShell({ children, title, category, className }: Pl
           </div>
         </header>
 
-        {/* Main Content Area */}
-        <main className="relative z-10 bg-[#161616]">
+        {/* Main Content Area - Strict Grid */}
+        <main className="relative z-10 bg-[#161616] px-8 py-8">
           {/* Inner Shadow for Depth */}
           <div className="absolute inset-0 shadow-[inset_0_10px_30px_rgba(0,0,0,0.5)] pointer-events-none z-0" />
           
@@ -70,8 +70,8 @@ export default function PluginShell({ children, title, category, className }: Pl
             {children}
           </div>
 
-          {/* Manufacturer's Badge (Nic Sprite) - Flanked by REBEL LEADERS */}
-          <div className="absolute bottom-6 left-6 z-0 hidden md:flex items-center gap-0 opacity-40">
+          {/* Manufacturer's Badge (Nic Sprite) - Consistent Inset */}
+          <div className="absolute bottom-8 left-8 z-0 hidden md:flex items-center gap-0 opacity-40">
             {/* REBEL Text - Very tight spacing */}
             <span className="font-pixel text-[10px] text-[#444] tracking-[0.2em] drop-shadow-[0_1px_1px_rgba(255,255,255,0.05)] -mr-6 relative z-10">
               REBEL
@@ -93,8 +93,8 @@ export default function PluginShell({ children, title, category, className }: Pl
           </div>
         </main>
 
-        {/* Footer Strip */}
-        <footer className="relative bg-[#111] border-t border-white/5 px-6 py-3 flex justify-between items-center z-10">
+        {/* Footer Strip - Strict Left Rail Alignment */}
+        <footer className="relative bg-[#111] border-t border-white/5 px-8 py-3 flex justify-between items-center z-10">
           <div className="flex items-center gap-4">
             <span className="text-[9px] font-pixel text-[#444] tracking-widest">
               MODE: STANDARD
