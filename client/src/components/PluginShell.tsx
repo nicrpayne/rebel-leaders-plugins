@@ -72,8 +72,8 @@ export default function PluginShell({ children, title, category, className }: Pl
 
           {/* Manufacturer's Badge (Nic Sprite) - Standalone Icon */}
           <div className="absolute bottom-6 left-6 z-0 hidden md:block">
-            {/* The Sprite - Black Silhouette & Resized */}
-            <div className="relative w-12 h-12 flex items-center justify-center">
+            {/* The Sprite - Black Silhouette & Resized (Doubled from w-12 h-12 to w-24 h-24) */}
+            <div className="relative w-24 h-24 flex items-center justify-center">
               <img 
                 src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/nic-badge_395aa958.png" 
                 alt="Rebel Leaders Badge" 
