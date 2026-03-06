@@ -43,10 +43,10 @@ export default function VUMeter({ value, label, className }: VUMeterProps) {
           <path d="M 40 100 A 60 60 0 0 1 160 100" fill="none" stroke="#444" strokeWidth="1" strokeDasharray="2 2" />
         </svg>
 
-        {/* Embossed Brand Plate (Bottom Center) */}
+        {/* Embossed Brand Plate (Bottom Center) - REMOVED BRANDING */}
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-[#151515] px-3 py-1 rounded-sm border border-[#222] shadow-[inset_0_1px_2px_rgba(0,0,0,0.8),0_1px_0_rgba(255,255,255,0.05)]">
-          <span className="text-[8px] font-pixel text-[#555] tracking-widest uppercase drop-shadow-[0_1px_0_rgba(255,255,255,0.05)]">
-            REBEL LEADERS
+          <span className="text-[8px] font-pixel text-[#333] tracking-widest uppercase drop-shadow-[0_1px_0_rgba(255,255,255,0.05)]">
+            SIGNAL
           </span>
         </div>
 

@@ -70,16 +70,26 @@ export default function PluginShell({ children, title, category, className }: Pl
             {children}
           </div>
 
-          {/* Manufacturer's Badge (Nic Sprite) - Standalone Icon */}
-          <div className="absolute bottom-6 left-6 z-0 hidden md:block">
+          {/* Manufacturer's Badge (Nic Sprite) - Flanked by REBEL LEADERS */}
+          <div className="absolute bottom-6 left-6 z-0 hidden md:flex items-center gap-2 opacity-40">
+            {/* REBEL Text */}
+            <span className="font-pixel text-[10px] text-[#444] tracking-[0.2em] drop-shadow-[0_1px_1px_rgba(255,255,255,0.05)]">
+              REBEL
+            </span>
+
             {/* The Sprite - Black Silhouette & Resized (Doubled from w-12 h-12 to w-24 h-24) */}
-            <div className="relative w-24 h-24 flex items-center justify-center">
+            <div className="relative w-24 h-24 flex items-center justify-center -my-8">
               <img 
                 src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/nic-badge_395aa958.png" 
                 alt="Rebel Leaders Badge" 
-                className="w-full h-full object-contain pixelated filter brightness-0 opacity-30 drop-shadow-[0_1px_1px_rgba(255,255,255,0.05)]"
+                className="w-full h-full object-contain pixelated filter brightness-0 opacity-80 drop-shadow-[0_1px_1px_rgba(255,255,255,0.05)]"
               />
             </div>
+
+            {/* LEADERS Text */}
+            <span className="font-pixel text-[10px] text-[#444] tracking-[0.2em] drop-shadow-[0_1px_1px_rgba(255,255,255,0.05)]">
+              LEADERS
+            </span>
           </div>
         </main>
 
