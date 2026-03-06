@@ -70,17 +70,14 @@ export default function PluginShell({ children, title, category, className }: Pl
             {children}
           </div>
 
-          {/* Manufacturer's Badge (Nic Sprite) - Anchored to Recessed Panel */}
+          {/* Manufacturer's Badge (Nic Sprite) - Standalone Icon */}
           <div className="absolute bottom-6 left-6 z-0 hidden md:block">
-            {/* Recessed Panel Background */}
-            <div className="absolute inset-0 bg-black/60 rounded-sm shadow-[inset_0_1px_3px_rgba(0,0,0,0.8)] border border-white/5 transform scale-110 translate-y-2" />
-            
             {/* The Sprite - Black Silhouette & Resized */}
             <div className="relative w-12 h-12 flex items-center justify-center">
               <img 
                 src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/nic-badge_395aa958.png" 
                 alt="Rebel Leaders Badge" 
-                className="w-full h-full object-contain pixelated filter brightness-0 opacity-40 drop-shadow-[0_1px_1px_rgba(255,255,255,0.1)]"
+                className="w-full h-full object-contain pixelated filter brightness-0 opacity-30 drop-shadow-[0_1px_1px_rgba(255,255,255,0.05)]"
               />
             </div>
           </div>
