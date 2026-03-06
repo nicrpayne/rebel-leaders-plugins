@@ -17,11 +17,11 @@ export default function LCDScreen({ text, subtext, className }: LCDScreenProps) 
 
       {/* Content */}
       <div className="relative z-20 flex flex-col items-center justify-center h-full text-center space-y-4">
-        <h2 className="font-pixel text-green-400 text-base md:text-lg leading-relaxed tracking-wide drop-shadow-[0_0_2px_rgba(74,222,128,0.8)]">
+        <h2 className="font-pixel text-green-400/90 text-sm md:text-base leading-relaxed tracking-wide drop-shadow-[0_0_4px_rgba(74,222,128,0.6)] blur-[0.3px]">
           {text}
         </h2>
         {subtext && (
-          <p className="font-pixel text-green-600/80 text-[10px] uppercase tracking-widest drop-shadow-[0_0_1px_rgba(74,222,128,0.5)]">
+          <p className="font-pixel text-green-600/80 text-[10px] uppercase tracking-widest drop-shadow-[0_0_2px_rgba(74,222,128,0.4)] blur-[0.2px]">
             {subtext}
           </p>
         )}

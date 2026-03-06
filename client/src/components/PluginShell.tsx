@@ -69,6 +69,15 @@ export default function PluginShell({ children, title, category, className }: Pl
           <div className="relative z-10">
             {children}
           </div>
+
+          {/* Manufacturer's Badge (Nic Sprite) */}
+          <div className="absolute bottom-4 left-4 opacity-30 mix-blend-overlay pointer-events-none grayscale contrast-150">
+            <img 
+              src="https://cdn.manus.im/1772826439_nic_idol_background_removed.png" 
+              alt="Rebel Leaders Badge" 
+              className="w-12 h-12 object-contain drop-shadow-[0_1px_0_rgba(255,255,255,0.1)]"
+            />
+          </div>
         </main>
 
         {/* Footer Strip */}
