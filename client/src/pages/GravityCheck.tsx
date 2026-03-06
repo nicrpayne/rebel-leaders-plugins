@@ -2,9 +2,12 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import PluginShell from "@/components/PluginShell";
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { calculateScore } from "@/lib/scoring";
+import RotaryKnob from "@/components/ui/RotaryKnob";
+import VUMeter from "@/components/ui/VUMeter";
+import ToggleSwitch from "@/components/ui/ToggleSwitch";
+import LCDScreen from "@/components/ui/LCDScreen";
 
 // Question Types
 type QuestionType = "SLIDER" | "SCENARIO";
@@ -13,6 +16,7 @@ interface Question {
   id: number;
   type: QuestionType;
   text: string;
+  subtext?: string;
   category: "IDENTITY" | "RELATIONSHIP" | "VISION" | "CULTURE";
   options?: { label: string; value: number }[]; // For scenario questions
 }
@@ -46,7 +50,8 @@ const QUESTIONS: Question[] = [
   {
     id: 4,
     type: "SLIDER",
-    text: "We have 'fridge rights' with each other—we can be unpolished and real.",
+    text: "We have 'fridge rights' with each other.",
+    subtext: "I could walk into their kitchen, open the fridge, and make a sandwich and they wouldn't raise an eyebrow.",
     category: "RELATIONSHIP"
   },
   {
@@ -123,13 +128,21 @@ export default function GravityCheck() {
   const currentQuestion = QUESTIONS[currentStep];
   const isLastQuestion = currentStep === QUESTIONS.length - 1;
 
-  const handleAnswer = (value: number) => {
-    setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }));
+  // Default knob value to 3 (midpoint) if not answered yet
+  const currentKnobValue = answers[currentQuestion.id] || 3;
+
+  const handleAnswer = (value: number | "A" | "B") => {
+    if (typeof value === "string") {
+      // Handle toggle switch logic
+      const val = value === "A" ? currentQuestion.options![0].value : currentQuestion.options![1].value;
+      setAnswers(prev => ({ ...prev, [currentQuestion.id]: val }));
+    } else {
+      setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }));
+    }
   };
 
   const handleNext = () => {
     if (isLastQuestion) {
-      // Calculate results using the real scoring engine
       const result = calculateScore(answers);
       localStorage.setItem("gravity_check_results", JSON.stringify(result));
       setLocation("/results");
@@ -142,77 +155,104 @@ export default function GravityCheck() {
 
   return (
     <PluginShell title="GRAVITY CHECK" category="MIRROR">
-      <div className="max-w-2xl mx-auto space-y-12">
-        {/* Progress Bar */}
-        <div className="w-full bg-forest-deep h-2 border border-wood rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-gold transition-all duration-500 ease-out"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-
-        {/* Question Area */}
-        <div className="min-h-[300px] flex flex-col justify-center space-y-8">
-          <div className="space-y-2 text-center">
-            <span className="text-gold/50 font-pixel text-xs tracking-widest">
-              {currentQuestion.category} SIGNAL CHECK
-            </span>
-            <h2 className="text-2xl md:text-4xl font-serif text-gold-light leading-tight">
-              {currentQuestion.text}
-            </h2>
+      <div className="max-w-4xl mx-auto">
+        {/* The Rack Unit Faceplate */}
+        <div className="relative bg-[#1a1a1a] border-t-2 border-b-2 border-[#333] shadow-2xl rounded-lg overflow-hidden">
+          {/* Rack Ears */}
+          <div className="absolute left-0 top-0 bottom-0 w-8 bg-[#111] border-r border-[#333] flex flex-col justify-between py-4 items-center">
+            <div className="w-4 h-4 rounded-full bg-[#222] border border-[#444] shadow-inner" />
+            <div className="w-4 h-4 rounded-full bg-[#222] border border-[#444] shadow-inner" />
+          </div>
+          <div className="absolute right-0 top-0 bottom-0 w-8 bg-[#111] border-l border-[#333] flex flex-col justify-between py-4 items-center">
+            <div className="w-4 h-4 rounded-full bg-[#222] border border-[#444] shadow-inner" />
+            <div className="w-4 h-4 rounded-full bg-[#222] border border-[#444] shadow-inner" />
           </div>
 
-          {/* Interaction Area */}
-          <div className="pt-8 px-4 md:px-12">
-            {currentQuestion.type === "SLIDER" ? (
-              <div className="space-y-6">
-                <Slider
-                  defaultValue={[3]}
-                  max={5}
-                  min={1}
-                  step={1}
-                  onValueChange={(vals) => handleAnswer(vals[0])}
-                  className="py-4"
+          {/* Main Interface Area */}
+          <div className="mx-8 p-8 md:p-12 space-y-8 bg-[url('/metal-texture.png')] bg-repeat">
+            
+            {/* Top Section: Signal Category & Progress */}
+            <div className="flex justify-between items-center border-b border-[#333] pb-4 mb-8">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                <span className="text-xs font-pixel text-gold/70 tracking-widest uppercase">
+                  SIGNAL INPUT: {currentQuestion.category}
+                </span>
+              </div>
+              <div className="w-32 h-2 bg-[#111] rounded-full overflow-hidden border border-[#333]">
+                <div 
+                  className="h-full bg-gold transition-all duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
                 />
-                <div className="flex justify-between text-xs font-pixel text-muted-foreground uppercase tracking-wider">
-                  <span>Strongly Disagree</span>
-                  <span>Strongly Agree</span>
-                </div>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {currentQuestion.options?.map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => handleAnswer(opt.value)}
-                    className={cn(
-                      "p-6 border-2 border-wood bg-forest-deep/50 hover:bg-forest hover:border-gold transition-all text-left group",
-                      answers[currentQuestion.id] === opt.value && "border-gold bg-forest"
-                    )}
-                  >
-                    <div className={cn(
-                      "w-4 h-4 border border-gold rounded-full mb-4 group-hover:bg-gold/20",
-                      answers[currentQuestion.id] === opt.value && "bg-gold"
-                    )} />
-                    <span className="font-serif text-lg text-gold-light">
-                      {opt.label}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+            </div>
 
-        {/* Navigation */}
-        <div className="flex justify-end pt-8 border-t border-wood/30">
-          <Button 
-            onClick={handleNext}
-            disabled={!answers[currentQuestion.id]}
-            className="bg-gold hover:bg-gold-light text-forest-deep font-pixel text-xs px-8 py-6 tracking-widest"
-          >
-            {isLastQuestion ? "CALCULATE ORBIT" : "NEXT SIGNAL >"}
-          </Button>
+            {/* Middle Section: The Hardware Controls */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              
+              {/* Left Control (VU Meter or Switch A) */}
+              <div className="lg:col-span-3 flex justify-center order-2 lg:order-1">
+                {currentQuestion.type === "SLIDER" ? (
+                  <VUMeter 
+                    value={(currentKnobValue / 5) * 100} 
+                    label="SIGNAL STRENGTH" 
+                  />
+                ) : (
+                  <div className="text-center space-y-2">
+                    <div className={cn(
+                      "w-4 h-4 rounded-full mx-auto transition-colors duration-300",
+                      answers[currentQuestion.id] === currentQuestion.options![0].value ? "bg-gold shadow-[0_0_10px_#c5a059]" : "bg-[#222]"
+                    )} />
+                    <span className="text-[10px] font-pixel text-gold/50 tracking-widest">CHANNEL A</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Center Screen (LCD) */}
+              <div className="lg:col-span-6 order-1 lg:order-2">
+                <LCDScreen 
+                  text={currentQuestion.text} 
+                  subtext={currentQuestion.subtext}
+                  className="h-48 shadow-[0_0_20px_rgba(0,0,0,0.5)]"
+                />
+              </div>
+
+              {/* Right Control (Knob or Switch B) */}
+              <div className="lg:col-span-3 flex justify-center order-3">
+                {currentQuestion.type === "SLIDER" ? (
+                  <RotaryKnob
+                    value={currentKnobValue}
+                    min={1}
+                    max={5}
+                    step={0.1} // Smooth dragging
+                    onChange={(val) => handleAnswer(val)}
+                    label="GAIN"
+                  />
+                ) : (
+                  <ToggleSwitch
+                    value={
+                      answers[currentQuestion.id] === currentQuestion.options![0].value ? "A" :
+                      answers[currentQuestion.id] === currentQuestion.options![1].value ? "B" : null
+                    }
+                    onChange={(val) => handleAnswer(val)}
+                    labelA={currentQuestion.options![0].label}
+                    labelB={currentQuestion.options![1].label}
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* Bottom Section: Navigation */}
+            <div className="flex justify-end pt-8 border-t border-[#333] mt-8">
+              <Button 
+                onClick={handleNext}
+                disabled={!answers[currentQuestion.id]}
+                className="bg-[#222] hover:bg-[#333] text-gold border border-[#444] font-pixel text-xs px-8 py-6 tracking-widest shadow-lg active:translate-y-1 transition-all"
+              >
+                {isLastQuestion ? "CALCULATE ORBIT" : "NEXT SIGNAL >"}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </PluginShell>

@@ -69,18 +69,31 @@ export async function generateDebriefPDF(results: ScoringResult) {
   // Leak Section
   y += 60;
   doc.setFillColor(26, 46, 26); // #1a2e1a (Forest)
-  doc.rect(20, y, 170, 40, "F");
+  doc.rect(20, y, 170, 30, "F");
   doc.setDrawColor(197, 160, 89);
-  doc.rect(20, y, 170, 40);
+  doc.rect(20, y, 170, 30);
 
   doc.setTextColor(127, 29, 29); // #7f1d1d (Destructive Red)
-  doc.text(`PRIMARY LEAK: ${results.leak}`, 30, y + 12);
+  doc.text(`PRIMARY LEAK: ${results.leak}`, 30, y + 10);
   
   doc.setTextColor(230, 200, 133);
   doc.setFont("times", "normal");
   doc.setFontSize(12);
   const splitLeak = doc.splitTextToSize(results.leakDescription, 150);
-  doc.text(splitLeak, 30, y + 22);
+  doc.text(splitLeak, 30, y + 20);
+
+  // First Move Section (New)
+  y += 40;
+  doc.setFillColor(197, 160, 89); // Gold Background
+  doc.rect(20, y, 170, 30, "F");
+  
+  doc.setTextColor(10, 18, 10); // Dark Text
+  doc.setFont("courier", "bold");
+  doc.text(`PRESCRIPTION: ${results.firstMove}`, 30, y + 10);
+  
+  doc.setFont("times", "normal");
+  const splitMove = doc.splitTextToSize(results.firstMoveDescription, 150);
+  doc.text(splitMove, 30, y + 20);
 
   // Footer
   doc.setFont("courier", "normal");
