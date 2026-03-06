@@ -7,52 +7,85 @@ interface VUMeterProps {
 }
 
 export default function VUMeter({ value, label, className }: VUMeterProps) {
-  // Map 0-100 to -45deg to +45deg
-  const rotation = -45 + (value / 100) * 90;
+  // Map 0-100 to -50deg to +50deg (Clamped Range)
+  const rotation = -50 + (value / 100) * 100;
 
   return (
-    <div className={cn("relative w-32 h-20 bg-[#1a1a1a] rounded-t-lg border-2 border-[#333] overflow-hidden shadow-[inset_0_0_10px_rgba(0,0,0,0.8)]", className)}>
-      {/* Glass Reflection */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none z-20" />
+    <div className={cn("relative w-48 h-32 bg-[#111] rounded-lg border-4 border-[#222] shadow-[0_10px_20px_rgba(0,0,0,0.8)] overflow-hidden", className)}>
       
-      {/* Background Scale */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full flex items-end justify-center pb-2">
-        <svg viewBox="0 0 100 60" className="w-full h-full">
-          {/* Arc */}
-          <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#333" strokeWidth="2" />
-          
-          {/* Ticks */}
+      {/* 1. CHASSIS / BACKPLATE (Dark Metal) */}
+      <div className="absolute inset-0 bg-[#1a1a1a] shadow-[inset_0_0_20px_rgba(0,0,0,1)]" />
+      
+      {/* Inner Bevel (Depth Cue) */}
+      <div className="absolute inset-0 border-t border-black/50 border-b border-white/10 pointer-events-none" />
+
+      {/* 2. DIAL FACE (Markings & Branding) */}
+      <div className="absolute inset-0 flex items-end justify-center pb-4">
+        <svg viewBox="0 0 200 120" className="w-full h-full overflow-visible">
+          {/* Tick Marks (Radial Lines, NOT Needles) */}
           {[...Array(11)].map((_, i) => {
-            const rot = -45 + (i * 9);
+            const rot = -50 + (i * 10);
             const isRed = i > 7;
             return (
               <line
                 key={i}
-                x1="50" y1="50" x2="50" y2="15"
+                x1="100" y1="100" x2="100" y2="85"
                 stroke={isRed ? "#ef4444" : "#c5a059"}
                 strokeWidth={i % 5 === 0 ? 2 : 1}
-                transform={`rotate(${rot} 50 50)`}
+                transform={`rotate(${rot} 100 100)`}
                 className="opacity-80"
               />
             );
           })}
+          
+          {/* Arc Line */}
+          <path d="M 25 100 A 75 75 0 0 1 175 100" fill="none" stroke="#333" strokeWidth="1" strokeDasharray="2 2" />
         </svg>
-      </div>
 
-      {/* Needle (Animated) */}
-      <div 
-        className="absolute bottom-2 left-1/2 w-0.5 h-16 bg-red-500 origin-bottom transition-transform duration-300 ease-out z-10 shadow-[0_0_5px_rgba(239,68,68,0.5)]"
-        style={{ transform: `translateX(-50%) rotate(${rotation}deg)` }}
-      >
-        <div className="w-2 h-2 bg-black rounded-full absolute bottom-0 left-1/2 -translate-x-1/2 border border-[#333]" />
-      </div>
-
-      {/* Label */}
-      {label && (
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 text-[8px] font-pixel text-gold/50 tracking-widest uppercase z-20 drop-shadow-sm">
-          {label}
+        {/* Embossed Brand Plate (Bottom Center) */}
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-[#151515] px-3 py-1 rounded-sm border border-[#222] shadow-[inset_0_1px_2px_rgba(0,0,0,0.8),0_1px_0_rgba(255,255,255,0.05)]">
+          <span className="text-[8px] font-pixel text-[#444] tracking-widest uppercase drop-shadow-[0_1px_0_rgba(255,255,255,0.05)]">
+            REBEL LEADERS
+          </span>
         </div>
-      )}
+
+        {/* Serial Number (Corner Detail) */}
+        <div className="absolute bottom-2 right-2 text-[6px] font-pixel text-[#333] tracking-widest">
+          RL-OS v1.0
+        </div>
+        
+        {/* Label (Moved out of the way) */}
+        {label && (
+          <div className="absolute bottom-2 left-2 text-[6px] font-pixel text-[#555] tracking-widest uppercase">
+            {label}
+          </div>
+        )}
+      </div>
+
+      {/* 3. NEEDLE (Single, Red, Shadowed) */}
+      <div 
+        className="absolute bottom-[-10%] left-1/2 w-0.5 h-[85%] bg-[#ef4444] origin-bottom transition-transform duration-500 ease-out z-10"
+        style={{ 
+          transform: `translateX(-50%) rotate(${rotation}deg)`,
+          filter: "drop-shadow(2px 2px 2px rgba(0,0,0,0.5))" // Shadow lifts it off the dial
+        }}
+      >
+        {/* Needle Hub (Pivot Point) */}
+        <div className="w-4 h-4 bg-[#111] rounded-full absolute bottom-0 left-1/2 -translate-x-1/2 border-2 border-[#333] shadow-lg" />
+      </div>
+
+      {/* 4. GLASS OVERLAY (Reflection & Vignette) */}
+      <div className="absolute inset-0 pointer-events-none z-20">
+        {/* Diagonal Reflection */}
+        <div className="absolute top-0 left-0 w-full h-[40%] bg-gradient-to-b from-white/5 to-transparent transform -skew-x-12 origin-top-left" />
+        
+        {/* Vignette (Dark Corners) */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_50%,rgba(0,0,0,0.6)_100%)]" />
+        
+        {/* Inner Shadow (Bevel Depth) */}
+        <div className="absolute inset-0 shadow-[inset_0_0_10px_rgba(0,0,0,0.8)]" />
+      </div>
+
     </div>
   );
 }
