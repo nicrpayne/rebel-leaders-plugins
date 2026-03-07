@@ -72,16 +72,21 @@ export default function LoadBay({
         <div className="absolute top-[40%] left-[21%] w-[46%] h-[18%] z-30">
           
           {/* Internal Slot Darkness/Shadow - NO BORDER */}
-          {/* Force bg-black to ensure no white background shows through */}
-          <div className="absolute inset-0 bg-black shadow-[inset_0_0_30px_rgba(0,0,0,1)] rounded-sm z-0" />
+          {/* REMOVED bg-black to prevent white box artifact if it's not rendering correctly. 
+              Instead, we rely on the cartridge to fill the space. 
+              If the deck has a hole, we need something dark behind it. 
+              Let's try z-10 for the hole background to put it BEHIND the deck. */}
+          
+          {/* Dark Void Background - Pushed to z-10 (behind deck face) */}
+          <div className="absolute inset-0 bg-[#050a05] shadow-[inset_0_0_30px_rgba(0,0,0,1)] rounded-sm -z-10" />
 
           {/* Loaded Cartridge Spine */}
           {displayEntry && (
             <div 
               key={displayEntry.id} 
               className={cn(
-                // INCREASED SIZE: Height 130%, wider left/right to ensure overlap
-                "absolute left-[-3%] right-[-3%] top-[-15%] bottom-[-15%] h-[130%] shadow-2xl z-40 transform-gpu flex items-center justify-center",
+                // MASSIVE SIZE INCREASE: Height 150%, Width 105% to ensure it covers EVERYTHING
+                "absolute left-[-2.5%] right-[-2.5%] top-[-25%] bottom-[-25%] h-[150%] shadow-2xl z-50 transform-gpu flex items-center justify-center",
                 // Mechanical Animation: Translate Y only, no scaling
                 animState === "inserting" && "animate-mechanical-insert",
                 animState === "loaded" && "translate-y-0", // Static final state
