@@ -7,6 +7,8 @@ interface PluginShellProps {
   category?: string;
   className?: string;
   footerControls?: ReactNode;
+  status?: string;
+  statusColor?: string;
 }
 
 export default function PluginShell({ 
@@ -14,7 +16,9 @@ export default function PluginShell({
   title = "GRAVITY CHECK", 
   category = "MIRROR",
   className,
-  footerControls
+  footerControls,
+  status = "OFF",
+  statusColor = "text-red-900"
 }: PluginShellProps) {
   return (
     <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4 md:p-8 font-sans selection:bg-green-900 selection:text-green-50">
@@ -133,7 +137,7 @@ export default function PluginShell({
             <div className="hidden md:block w-[1px] h-3 bg-[#222]" />
             <div className="hidden md:flex items-center gap-2">
               <span className="text-[9px] font-pixel text-[#444] tracking-widest uppercase">SIDECHAIN:</span>
-              <span className="text-[9px] font-pixel text-red-900 tracking-widest uppercase">OFF</span>
+              <span className={cn("text-[9px] font-pixel tracking-widest uppercase", statusColor)}>{status}</span>
             </div>
           </div>
 

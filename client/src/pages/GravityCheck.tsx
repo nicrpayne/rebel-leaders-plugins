@@ -127,7 +127,13 @@ export default function GravityCheck() {
   );
 
   return (
-    <PluginShell title="GRAVITY CHECK" category="MIRROR" footerControls={footerControls}>
+    <PluginShell 
+      title="GRAVITY CHECK" 
+      category="MIRROR" 
+      footerControls={footerControls}
+      status={isLastQuestion ? "SIGNAL LOCKED" : "SEARCHING..."}
+      statusColor={isLastQuestion ? "text-green-500" : "text-gold animate-pulse"}
+    >
       <div className="flex flex-col gap-6 md:gap-8 w-full max-w-4xl mx-auto">
         
         {/* Top Control Bar - Consolidated Row with Matched Baselines */}
