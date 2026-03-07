@@ -33,12 +33,12 @@ const PLUGINS = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#050a05] text-[#e6c885] font-serif selection:bg-[#c5a059] selection:text-[#050a05] relative overflow-hidden">
+    <div className="min-h-screen bg-[#050a05] text-[#e6c885] font-serif selection:bg-[#c5a059] selection:text-[#050a05] relative overflow-x-hidden">
       {/* Background Texture Overlay */}
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/dark-leather.png')] opacity-20 pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/dark-leather.png')] opacity-20 pointer-events-none fixed" />
       
-      {/* Top Bar */}
-      <div className="h-20 border-b border-[#8a6d3b]/30 flex items-center px-8 justify-between bg-[#0f1f0f]/90 backdrop-blur-sm relative z-10">
+      {/* Top Bar (Recreated for Preview Context) */}
+      <div className="h-20 flex items-center px-8 justify-between bg-[#0f1f0f]/90 backdrop-blur-sm relative z-50 border-b border-[#8a6d3b]/10">
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-3">
             <img src="/home/ubuntu/upload/RebelLogo.png" alt="Rebel Leaders" className="h-8 w-auto opacity-80" />
@@ -59,102 +59,87 @@ export default function Home() {
         </button>
       </div>
 
-      <div className="flex h-[calc(100vh-5rem)] relative z-10">
-        {/* Sidebar Filter */}
-        <div className="w-72 border-r border-[#8a6d3b]/30 bg-[#0f1f0f]/80 p-8 hidden md:flex flex-col gap-10 backdrop-blur-sm">
-          <div>
-            <h3 className="font-pixel text-[10px] text-[#8a6d3b] mb-6 uppercase tracking-widest flex items-center gap-2">
-              <span className="w-2 h-2 bg-[#8a6d3b] inline-block" />
-              Categories
-            </h3>
-            <div className="space-y-1">
-              {["ALL", "MIRROR", "MAP", "MOVE", "SIGNAL"].map((cat) => (
-                <div 
-                  key={cat}
-                  className={cn(
-                    "font-serif text-lg py-2 px-4 cursor-pointer transition-all border-l-2",
-                    cat === "ALL" 
-                      ? "border-[#c5a059] text-[#c5a059] bg-[#c5a059]/5" 
-                      : "border-transparent text-[#e6c885]/60 hover:text-[#e6c885] hover:border-[#8a6d3b]/50"
-                  )}
-                >
-                  {cat}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h3 className="font-pixel text-[10px] text-[#8a6d3b] mb-6 uppercase tracking-widest flex items-center gap-2">
-              <span className="w-2 h-2 bg-[#8a6d3b] inline-block" />
-              Status
-            </h3>
-            <div className="space-y-1">
-              {["INSTALLED", "AVAILABLE", "UPDATES"].map((stat) => (
-                <div key={stat} className="font-serif text-lg text-[#e6c885]/60 hover:text-[#e6c885] cursor-pointer py-2 px-4 border-l-2 border-transparent hover:border-[#8a6d3b]/50 transition-all">
-                  {stat}
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          {/* Rebel HUD */}
-          <div className="mt-auto border border-[#8a6d3b]/50 bg-[#050a05]/80 p-4 relative">
-            {/* Corner flourishes */}
-            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#c5a059]" />
-            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[#c5a059]" />
-            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[#c5a059]" />
-            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#c5a059]" />
-            
-            <div className="flex justify-between items-center mb-2">
-              <span className="font-pixel text-[10px] text-[#c5a059]">REBEL HUD</span>
-              <span className="font-pixel text-[10px] text-[#8a6d3b]">▼</span>
-            </div>
-            
-            <div className="space-y-3 mt-4">
-              <div>
-                <div className="flex justify-between text-[10px] font-pixel text-[#8a6d3b] mb-1">
-                  <span>XP</span>
-                  <span>50%</span>
-                </div>
-                <div className="h-1.5 bg-[#1a2e1a] w-full border border-[#8a6d3b]/30">
-                  <div className="h-full bg-[#c5a059] w-1/2" />
-                </div>
-              </div>
-              
-              <div className="flex justify-between text-[10px] font-pixel text-[#8a6d3b]">
-                <span>PAGES 6/9</span>
-                <span>SECRETS 0/5</span>
-              </div>
-              
-              <div className="flex justify-between text-[10px] font-pixel text-[#8a6d3b]">
-                <span>TIME IN REBELLION</span>
-                <span>13m</span>
-              </div>
-            </div>
-          </div>
+      {/* Hero Section */}
+      <div className="relative pt-24 pb-16 text-center z-10">
+        <div className="container mx-auto px-4">
+          <div className="font-pixel text-[#8a6d3b] text-[10px] tracking-[0.2em] uppercase mb-4">Rebel OS // Plugins</div>
+          <h1 className="font-serif text-5xl md:text-7xl text-[#e6c885] mb-6 italic">The Armory</h1>
+          <p className="font-serif text-xl md:text-2xl text-[#e6c885]/70 max-w-2xl mx-auto leading-relaxed">
+            Tools for the resistance. Diagnostics, protocols, and maps to navigate the organizational wilderness.
+          </p>
         </div>
+      </div>
 
-        {/* Main Grid */}
-        <div className="flex-1 p-8 overflow-y-auto relative">
-          <div className="max-w-6xl mx-auto">
-            <h1 className="font-serif text-4xl md:text-5xl text-[#e6c885] mb-2 italic">The Armory</h1>
-            <p className="font-serif text-xl text-[#e6c885]/60 mb-12 max-w-2xl">
-              Tools for the resistance. Diagnostics, protocols, and maps to navigate the organizational wilderness.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* Gold Separator Line */}
+      <div className="relative z-10 mb-12">
+        <div className="h-px bg-gradient-to-r from-transparent via-[#8a6d3b] to-transparent w-full opacity-50" />
+        <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#050a05] px-4">
+          <div className="w-2 h-2 border border-[#c5a059] rotate-45" />
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="container mx-auto px-4 pb-24 relative z-10">
+        <div className="flex flex-col md:flex-row gap-12">
+          
+          {/* Sidebar Filter - Now below the fold */}
+          <div className="w-full md:w-64 flex-shrink-0">
+            <div className="sticky top-24 space-y-10">
+              <div>
+                <h3 className="font-pixel text-[10px] text-[#8a6d3b] mb-6 uppercase tracking-widest flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-[#8a6d3b] inline-block" />
+                  Categories
+                </h3>
+                <div className="space-y-1 border-l border-[#8a6d3b]/20 pl-4">
+                  {["ALL", "MIRROR", "MAP", "MOVE", "SIGNAL"].map((cat) => (
+                    <div 
+                      key={cat}
+                      className={cn(
+                        "font-serif text-lg py-1 cursor-pointer transition-all relative",
+                        cat === "ALL" 
+                          ? "text-[#c5a059] font-bold" 
+                          : "text-[#e6c885]/50 hover:text-[#e6c885]"
+                      )}
+                    >
+                      {cat === "ALL" && (
+                        <span className="absolute -left-[17px] top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-[#c5a059] rounded-full" />
+                      )}
+                      {cat}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-pixel text-[10px] text-[#8a6d3b] mb-6 uppercase tracking-widest flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-[#8a6d3b] inline-block" />
+                  Status
+                </h3>
+                <div className="space-y-1 border-l border-[#8a6d3b]/20 pl-4">
+                  {["INSTALLED", "AVAILABLE", "UPDATES"].map((stat) => (
+                    <div key={stat} className="font-serif text-lg text-[#e6c885]/50 hover:text-[#e6c885] cursor-pointer py-1 transition-all">
+                      {stat}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Plugin Grid */}
+          <div className="flex-1">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
               {PLUGINS.map((plugin) => (
                 <Link key={plugin.id} href={plugin.link}>
                   <div className={cn(
-                    "group relative bg-[#0f1f0f] border border-[#8a6d3b]/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_0_30px_-10px_rgba(197,160,89,0.3)] hover:border-[#c5a059]/60 flex flex-col h-full",
+                    "group relative bg-[#0f1f0f] border border-[#8a6d3b]/20 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_0_30px_-10px_rgba(197,160,89,0.2)] hover:border-[#c5a059]/50 flex flex-col h-full",
                     plugin.status !== "ACTIVE" && "opacity-70 grayscale-[0.5]"
                   )}>
-                    {/* Corner flourishes for cards */}
-                    <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-[#8a6d3b] group-hover:border-[#c5a059] transition-colors" />
-                    <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-[#8a6d3b] group-hover:border-[#c5a059] transition-colors" />
-                    <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-[#8a6d3b] group-hover:border-[#c5a059] transition-colors" />
-                    <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-[#8a6d3b] group-hover:border-[#c5a059] transition-colors" />
+                    {/* Corner flourishes */}
+                    <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#8a6d3b]/50 group-hover:border-[#c5a059] transition-colors" />
+                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[#8a6d3b]/50 group-hover:border-[#c5a059] transition-colors" />
+                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[#8a6d3b]/50 group-hover:border-[#c5a059] transition-colors" />
+                    <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#8a6d3b]/50 group-hover:border-[#c5a059] transition-colors" />
 
                     {/* Cover Image */}
                     <div className="aspect-[16/9] bg-[#050a05] relative overflow-hidden m-1 border border-[#8a6d3b]/10">
@@ -162,7 +147,7 @@ export default function Home() {
                         <img 
                           src={plugin.image} 
                           alt={plugin.title}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100 sepia-[0.3] group-hover:sepia-0"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100 sepia-[0.4] group-hover:sepia-0"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-[#8a6d3b] font-pixel text-4xl">
@@ -170,8 +155,8 @@ export default function Home() {
                         </div>
                       )}
                       
-                      {/* Overlay Gradient - Warm */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0f1f0f] via-[#c5a059]/10 to-transparent opacity-80 mix-blend-overlay" />
+                      {/* Overlay Gradient */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0f1f0f] via-[#c5a059]/5 to-transparent opacity-90 mix-blend-overlay" />
                       
                       {/* Status Badge */}
                       <div className="absolute top-3 right-3 z-10">
@@ -193,7 +178,7 @@ export default function Home() {
                           <h3 className="font-serif text-[#e6c885] text-2xl italic group-hover:text-[#c5a059] transition-colors">
                             {plugin.title}
                           </h3>
-                          <div className="text-[10px] font-pixel text-[#8a6d3b] mt-1 tracking-widest uppercase">
+                          <div className="text-[10px] font-pixel text-[#8a6d3b] mt-1 tracking-widest uppercase opacity-70">
                             {plugin.category} // V.1.0.4
                           </div>
                         </div>
@@ -214,6 +199,44 @@ export default function Home() {
                   </div>
                 </Link>
               ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Fixed HUD - Bottom Right */}
+      <div className="fixed bottom-6 right-6 z-50 hidden md:block">
+        <div className="border border-[#8a6d3b]/50 bg-[#050a05]/90 p-3 w-64 backdrop-blur-md shadow-2xl">
+          {/* Corner flourishes */}
+          <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-[#c5a059]" />
+          <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-[#c5a059]" />
+          <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-[#c5a059]" />
+          <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-[#c5a059]" />
+          
+          <div className="flex justify-between items-center mb-2 border-b border-[#8a6d3b]/20 pb-1">
+            <span className="font-pixel text-[8px] text-[#c5a059] tracking-widest">REBEL HUD</span>
+            <span className="font-pixel text-[8px] text-[#8a6d3b]">▼</span>
+          </div>
+          
+          <div className="space-y-2">
+            <div>
+              <div className="flex justify-between text-[8px] font-pixel text-[#8a6d3b] mb-1">
+                <span>XP</span>
+                <span>50%</span>
+              </div>
+              <div className="h-1 bg-[#1a2e1a] w-full border border-[#8a6d3b]/30">
+                <div className="h-full bg-[#c5a059] w-1/2" />
+              </div>
+            </div>
+            
+            <div className="flex justify-between text-[8px] font-pixel text-[#8a6d3b]">
+              <span>PAGES 6/9</span>
+              <span>SECRETS 0/5</span>
+            </div>
+            
+            <div className="flex justify-between text-[8px] font-pixel text-[#8a6d3b]">
+              <span>TIME IN REBELLION</span>
+              <span>13m</span>
             </div>
           </div>
         </div>
