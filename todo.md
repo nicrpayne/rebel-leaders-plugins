@@ -15,5 +15,6 @@
 - [x] Aggressively tighten slot dimensions (left: 21%, w: 47%)
 - [x] Reduce width to 46% for perfect symmetry
 - [x] Reduce height to 18% and adjust top to 40%
-- [ ] Remove redundant mobile fallback buttons
+- [x] Remove redundant mobile fallback buttons
+- [ ] Remove hover overlays from deck buttons
 - [ ] Verify visual integrity

@@ -117,8 +117,8 @@ export default function LoadBay({
             onClick={onRead}
             disabled={!loadedEntry}
             className={cn(
-              "w-1/2 h-full opacity-0 hover:opacity-20 bg-amber-500 transition-all cursor-pointer rounded-sm active:scale-95 active:brightness-125",
-              !loadedEntry && "cursor-not-allowed opacity-0"
+              "w-1/2 h-full opacity-0 transition-all cursor-pointer rounded-sm active:scale-95 active:brightness-125",
+              !loadedEntry && "cursor-not-allowed"
             )}
             title="READ PROTOCOL"
           />
@@ -128,8 +128,8 @@ export default function LoadBay({
             onClick={onEject}
             disabled={!loadedEntry}
             className={cn(
-              "w-1/2 h-full opacity-0 hover:opacity-20 bg-red-500 transition-all cursor-pointer rounded-sm active:scale-95 active:brightness-125",
-              !loadedEntry && "cursor-not-allowed opacity-0"
+              "w-1/2 h-full opacity-0 transition-all cursor-pointer rounded-sm active:scale-95 active:brightness-125",
+              !loadedEntry && "cursor-not-allowed"
             )}
             title="EJECT CARTRIDGE"
           />
