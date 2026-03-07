@@ -4,15 +4,43 @@ import { Button } from "@/components/ui/button";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from "recharts";
 import { ScoringResult } from "@/lib/scoring";
 import { generateDebriefPDF } from "@/lib/pdf";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+
+// Audio Context for sound effects
+const audioCtx = typeof window !== 'undefined' ? new (window.AudioContext || (window as any).webkitAudioContext)() : null;
+
+const playDataSound = () => {
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  
+  // Data transmission sound (rapid beeps)
+  const now = audioCtx.currentTime;
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(800, now);
+  osc.frequency.setValueAtTime(1200, now + 0.1);
+  osc.frequency.setValueAtTime(800, now + 0.2);
+  
+  gain.gain.setValueAtTime(0.1, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+  
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(now + 0.3);
+};
 
 export default function Results() {
+  const [, setLocation] = useLocation();
   const [results, setResults] = useState<ScoringResult | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isTransmitting, setIsTransmitting] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("gravity_check_results");
+    // Check both keys for compatibility
+    const stored = localStorage.getItem("gravityCheckResults") || localStorage.getItem("gravity_check_results");
     if (stored) {
       setResults(JSON.parse(stored));
     }
@@ -47,8 +75,18 @@ export default function Results() {
     }
   };
 
+  const handleSideChain = () => {
+    setIsTransmitting(true);
+    playDataSound();
+    
+    // Simulate transmission delay
+    setTimeout(() => {
+      setLocation("/codex?signal=received");
+    }, 1500);
+  };
+
   if (!results) return (
-    <PluginShell title="ORBIT ANALYSIS" category="MIRROR">
+    <PluginShell title="ORBIT ANALYSIS" category="MIRROR" footerControls={null}>
       <div className="flex items-center justify-center h-96">
         <div className="text-gold font-pixel animate-pulse">CALCULATING ORBIT...</div>
       </div>
@@ -63,8 +101,8 @@ export default function Results() {
   ];
 
   return (
-    <PluginShell title="ORBIT ANALYSIS" category="MIRROR">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+    <PluginShell title="ORBIT ANALYSIS" category="MIRROR" footerControls={null}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 pb-20">
         {/* Visual Centerpiece: Radar Chart */}
         <div className="flex flex-col items-center justify-center space-y-8">
           <div className="w-full aspect-square max-w-[400px] relative border border-wood/30 bg-forest-deep/50 rounded-full p-8">
@@ -125,26 +163,75 @@ export default function Results() {
             </p>
           </div>
 
-          <div className="pt-8 space-y-4">
-            <Button 
-              onClick={handleDownload}
-              disabled={isGenerating}
-              className="w-full bg-gold hover:bg-gold-light text-forest-deep font-pixel py-6 tracking-widest"
-            >
-              {isGenerating ? "GENERATING..." : "DOWNLOAD DEBRIEF PDF"}
-            </Button>
+          {/* --- SIDE-CHAIN ACTION --- */}
+          <div className="pt-8 space-y-6 border-t border-wood/30">
+            <div className="w-full space-y-4">
+              <button
+                onClick={handleSideChain}
+                disabled={isTransmitting}
+                className={cn(
+                  "w-full group relative overflow-hidden bg-[#1a1a1a] border border-gold/30 hover:border-gold hover:bg-[#222] transition-all duration-300 py-6 px-8",
+                  isTransmitting && "border-green-500 bg-green-900/20"
+                )}
+              >
+                {/* Progress Bar Background */}
+                <div 
+                  className={cn(
+                    "absolute inset-0 bg-green-500/10 transform -translate-x-full transition-transform duration-[1500ms] ease-linear",
+                    isTransmitting && "translate-x-0"
+                  )} 
+                />
+
+                <div className="relative z-10 flex items-center justify-between">
+                  <div className="flex flex-col items-start text-left">
+                    <span className={cn(
+                      "font-pixel text-[10px] tracking-[0.2em] uppercase mb-1 transition-colors",
+                      isTransmitting ? "text-green-400" : "text-[#666] group-hover:text-gold/70"
+                    )}>
+                      {isTransmitting ? "TRANSMITTING..." : "RECOMMENDED ACTION"}
+                    </span>
+                    <span className={cn(
+                      "font-display text-xl tracking-wide transition-colors",
+                      isTransmitting ? "text-green-400" : "text-gold group-hover:text-white"
+                    )}>
+                      {isTransmitting ? "SIDE-CHAINING TO CODEX" : "INITIATE SIDE-CHAIN PROTOCOL"}
+                    </span>
+                  </div>
+                  
+                  {/* Icon */}
+                  <div className={cn(
+                    "w-8 h-8 border border-current flex items-center justify-center transition-all duration-300 rounded-sm",
+                    isTransmitting ? "text-green-400 rotate-90 border-green-500" : "text-[#444] group-hover:text-gold group-hover:border-gold"
+                  )}>
+                    <span className="font-pixel text-lg leading-none">→</span>
+                  </div>
+                </div>
+              </button>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
+              <Button 
+                onClick={handleDownload}
+                disabled={isGenerating}
+                variant="outline"
+                className="border-wood text-gold hover:bg-forest font-pixel py-6 text-[10px] tracking-widest"
+              >
+                {isGenerating ? "GENERATING..." : "DOWNLOAD PDF"}
+              </Button>
               <Button 
                 onClick={handleShare}
                 variant="outline" 
-                className="border-wood text-gold hover:bg-forest font-pixel py-6 text-xs"
+                className="border-wood text-gold hover:bg-forest font-pixel py-6 text-[10px] tracking-widest"
               >
                 SHARE SIGNAL
               </Button>
+            </div>
+            
+            <div className="text-center pt-4">
               <Link href="/">
-                <Button variant="outline" className="w-full border-wood text-gold hover:bg-forest font-pixel py-6 text-xs">
+                <span className="text-[9px] font-pixel text-[#444] hover:text-[#666] cursor-pointer border-b border-transparent hover:border-[#444] transition-colors">
                   RETURN TO ARMORY
-                </Button>
+                </span>
               </Link>
             </div>
           </div>

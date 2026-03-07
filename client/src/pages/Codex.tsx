@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { cn } from "@/lib/utils";
-import { MOCK_CODEX_ENTRIES, CodexEntry } from "@/lib/codex-schema";
+import { CodexEntry } from "@/lib/codex-schema";
+import { CODEX_ENTRIES } from "@/lib/codex-data";
 import PluginShell from "@/components/PluginShell";
 
 export default function Codex() {
@@ -10,20 +11,37 @@ export default function Codex() {
   const [selectedEntry, setSelectedEntry] = useState<CodexEntry | null>(null);
   const [recommendedEntries, setRecommendedEntries] = useState<CodexEntry[]>([]);
   const [hasGravityResults, setHasGravityResults] = useState(false);
+  const [isReceivingSignal, setIsReceivingSignal] = useState(false);
 
   // Load Gravity Check Results & Filter Recommendations
   useEffect(() => {
+    // Check for signal transmission
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("signal") === "received") {
+      setIsReceivingSignal(true);
+      // Play signal sound
+      const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"); // Placeholder SFX
+      audio.volume = 0.2;
+      audio.play().catch(() => {});
+      
+      // Clear URL
+      window.history.replaceState({}, "", "/codex");
+      
+      // End animation after delay
+      setTimeout(() => setIsReceivingSignal(false), 2500);
+    }
+
     const savedResults = localStorage.getItem("gravityCheckResults");
     if (savedResults) {
       setHasGravityResults(true);
       // TODO: Implement real filtering logic based on savedResults (bottleneck/leak_type)
       // For now, just show the first 2 as "Recommended"
-      setRecommendedEntries(MOCK_CODEX_ENTRIES.slice(0, 2));
+      setRecommendedEntries(CODEX_ENTRIES.slice(0, 2));
     }
   }, []);
 
   // Filter Logic
-  const filteredEntries = MOCK_CODEX_ENTRIES.filter(entry => {
+  const filteredEntries = CODEX_ENTRIES.filter(entry => {
     const matchesSearch = entry.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           entry.script.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = activeCategory === "ALL" || entry.category === activeCategory;
@@ -34,6 +52,19 @@ export default function Codex() {
     <PluginShell title="THE CODEX" category="MOVE" footerControls={null}>
       <div className="flex flex-col h-full max-w-6xl mx-auto w-full gap-8">
         
+        {/* --- SIGNAL ACQUISITION OVERLAY --- */}
+        {isReceivingSignal && (
+          <div className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center font-pixel text-green-500">
+            <div className="text-4xl mb-4 animate-pulse">RECEIVING TRANSMISSION...</div>
+            <div className="w-64 h-2 bg-green-900 rounded-full overflow-hidden">
+              <div className="h-full bg-green-500 animate-[width_2s_ease-in-out_forwards]" style={{ width: "0%" }} />
+            </div>
+            <div className="mt-4 text-xs tracking-widest opacity-70">
+              DECRYPTING SIGNAL DATA // 100%
+            </div>
+          </div>
+        )}
+
         {/* --- TOP BAR: SEARCH & FILTER --- */}
         <div className="flex flex-col md:flex-row gap-4 items-center justify-between border-b border-white/10 pb-6">
           {/* Search Input */}
