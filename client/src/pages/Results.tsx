@@ -171,13 +171,13 @@ export default function Results() {
                 disabled={isTransmitting}
                 className={cn(
                   "w-full group relative overflow-hidden bg-[#1a1a1a] border border-gold/30 hover:border-gold hover:bg-[#222] transition-all duration-300 py-6 px-8",
-                  isTransmitting && "border-green-500 bg-green-900/20"
+                  isTransmitting && "border-amber-500 bg-amber-900/20"
                 )}
               >
                 {/* Progress Bar Background */}
                 <div 
                   className={cn(
-                    "absolute inset-0 bg-green-500/10 transform -translate-x-full transition-transform duration-[1500ms] ease-linear",
+                    "absolute inset-0 bg-amber-500/10 transform -translate-x-full transition-transform duration-[1500ms] ease-linear",
                     isTransmitting && "translate-x-0"
                   )} 
                 />
@@ -186,13 +186,13 @@ export default function Results() {
                   <div className="flex flex-col items-start text-left">
                     <span className={cn(
                       "font-pixel text-[10px] tracking-[0.2em] uppercase mb-1 transition-colors",
-                      isTransmitting ? "text-green-400" : "text-[#666] group-hover:text-gold/70"
+                      isTransmitting ? "text-amber-400" : "text-[#666] group-hover:text-gold/70"
                     )}>
                       {isTransmitting ? "TRANSMITTING..." : "RECOMMENDED ACTION"}
                     </span>
                     <span className={cn(
                       "font-display text-xl tracking-wide transition-colors",
-                      isTransmitting ? "text-green-400" : "text-gold group-hover:text-white"
+                      isTransmitting ? "text-amber-400" : "text-gold group-hover:text-white"
                     )}>
                       {isTransmitting ? "SIDE-CHAINING TO CODEX" : "INITIATE SIDE-CHAIN PROTOCOL"}
                     </span>
@@ -201,7 +201,7 @@ export default function Results() {
                   {/* Icon */}
                   <div className={cn(
                     "w-8 h-8 border border-current flex items-center justify-center transition-all duration-300 rounded-sm",
-                    isTransmitting ? "text-green-400 rotate-90 border-green-500" : "text-[#444] group-hover:text-gold group-hover:border-gold"
+                    isTransmitting ? "text-amber-400 rotate-90 border-amber-500" : "text-[#444] group-hover:text-gold group-hover:border-gold"
                   )}>
                     <span className="font-pixel text-lg leading-none">→</span>
                   </div>

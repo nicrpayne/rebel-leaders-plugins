@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { cn } from "@/lib/utils";
 import { CodexEntry } from "@/lib/codex-schema";
 import { CODEX_ENTRIES } from "@/lib/codex-data";
-import PluginShell from "@/components/PluginShell";
+import CodexShell from "@/components/CodexShell";
 
 export default function Codex() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,52 +49,69 @@ export default function Codex() {
   });
 
   return (
-    <PluginShell title="THE CODEX" category="MOVE" footerControls={null}>
-      <div className="flex flex-col h-full max-w-6xl mx-auto w-full gap-8">
+    <CodexShell 
+      title="THE CODEX" 
+      category="ARCHIVE" 
+      status={isReceivingSignal ? "RECEIVING..." : "ONLINE"}
+      statusColor={isReceivingSignal ? "text-amber-500 animate-pulse" : "text-amber-900"}
+      activeCategory={activeCategory}
+      onCategoryChange={setActiveCategory}
+      footerControls={
+        <div className="flex items-center gap-4">
+           <div className="flex flex-col items-end">
+              <span className="text-[8px] font-pixel text-amber-900/60 tracking-widest">BUFFER</span>
+              <div className="w-16 h-1 bg-amber-900/20 rounded-full overflow-hidden">
+                 <div className="h-full bg-amber-700/50 w-[40%]" />
+              </div>
+           </div>
+        </div>
+      }
+    >
+      <div className="flex flex-col h-full w-full gap-6 overflow-y-auto pr-2 pb-20 scrollbar-thin scrollbar-thumb-amber-900/20 scrollbar-track-transparent">
         
         {/* --- SIGNAL ACQUISITION OVERLAY --- */}
         {isReceivingSignal && (
-          <div className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center font-pixel text-green-500">
-            <div className="text-4xl mb-4 animate-pulse">RECEIVING TRANSMISSION...</div>
-            <div className="w-64 h-2 bg-green-900 rounded-full overflow-hidden">
-              <div className="h-full bg-green-500 animate-[width_2s_ease-in-out_forwards]" style={{ width: "0%" }} />
+          <div className="absolute inset-0 z-50 bg-black/90 flex flex-col items-center justify-center font-pixel text-amber-500 backdrop-blur-sm">
+            <div className="text-4xl mb-4 animate-pulse tracking-[0.2em]">INCOMING DATA STREAM</div>
+            <div className="w-64 h-2 bg-amber-900/30 rounded-full overflow-hidden border border-amber-900/50">
+              <div className="h-full bg-amber-500 animate-[width_2s_ease-in-out_forwards] shadow-[0_0_10px_rgba(245,158,11,0.8)]" style={{ width: "0%" }} />
             </div>
-            <div className="mt-4 text-xs tracking-widest opacity-70">
-              DECRYPTING SIGNAL DATA // 100%
+            <div className="mt-4 text-xs tracking-widest opacity-70 font-mono">
+              DECRYPTING PROTOCOLS // 100%
             </div>
           </div>
         )}
 
         {/* --- TOP BAR: SEARCH & FILTER --- */}
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between border-b border-white/10 pb-6">
-          {/* Search Input */}
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between border-b border-amber-900/20 pb-6 sticky top-0 bg-[#080808]/95 backdrop-blur z-30 pt-2">
+          {/* Search Input - "Data Query" */}
           <div className="relative w-full md:w-96 group">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-gold/50 font-pixel text-[10px]">&gt;</span>
+              <span className="text-amber-500/50 font-pixel text-[10px]">&gt;</span>
             </div>
             <input 
               type="text" 
-              placeholder="SEARCH PROTOCOLS..." 
+              placeholder="QUERY PROTOCOLS..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#0a0a0a] border border-[#333] text-gold font-pixel text-xs py-3 pl-8 pr-4 focus:outline-none focus:border-gold/50 focus:shadow-[0_0_15px_rgba(197,160,89,0.1)] transition-all placeholder:text-[#444]"
+              className="w-full bg-[#050505] border border-amber-900/30 text-amber-500 font-mono text-xs py-2 pl-8 pr-4 focus:outline-none focus:border-amber-500/50 focus:shadow-[0_0_15px_rgba(245,158,11,0.1)] transition-all placeholder:text-amber-900/40 rounded-sm"
             />
             <div className="absolute right-2 top-1/2 -translate-y-1/2">
-              <div className="w-1.5 h-1.5 bg-gold/20 animate-pulse rounded-full" />
+              <div className="w-1.5 h-1.5 bg-amber-500/20 animate-pulse rounded-full" />
             </div>
           </div>
 
-          {/* Category Tabs */}
+          {/* Category Tabs - "Sector Select" */}
           <div className="flex gap-1 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide">
             {["ALL", "CONFLICT", "VISION", "ALIGNMENT", "CULTURE"].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={cn(
-                  "px-3 py-1.5 text-[9px] font-pixel tracking-widest border transition-all whitespace-nowrap",
+                  "px-3 py-1.5 text-[9px] font-pixel tracking-widest border transition-all whitespace-nowrap rounded-sm",
                   activeCategory === cat 
-                    ? "bg-gold text-[#050a05] border-gold shadow-[0_0_10px_rgba(197,160,89,0.3)]" 
-                    : "bg-transparent text-[#666] border-transparent hover:text-gold hover:border-gold/30"
+                    ? "bg-amber-500/10 text-amber-500 border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.1)]" 
+                    : "bg-transparent text-amber-900/60 border-transparent hover:text-amber-400 hover:border-amber-900/30"
                 )}
               >
                 {cat}
@@ -105,109 +122,98 @@ export default function Codex() {
 
         {/* --- RECOMMENDATION ENGINE (SIDE-CHAIN PAYOFF) --- */}
         {hasGravityResults && recommendedEntries.length > 0 && !searchQuery && activeCategory === "ALL" && (
-          <div className="mb-4">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-2 h-2 bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
-              <h3 className="font-pixel text-[10px] text-green-500 tracking-[0.2em] uppercase">
-                Recommended for your signal
+          <div className="mb-4 bg-amber-900/5 border border-amber-900/20 p-4 rounded-sm relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-2 opacity-20">
+                <div className="w-16 h-16 border-2 border-amber-500 rounded-full flex items-center justify-center">
+                    <div className="w-12 h-12 border border-amber-500 rounded-full" />
+                </div>
+            </div>
+            
+            <div className="flex items-center gap-2 mb-4 relative z-10">
+              <div className="w-2 h-2 bg-amber-500 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
+              <h3 className="font-pixel text-[10px] text-amber-500 tracking-[0.2em] uppercase">
+                Priority Transmission
               </h3>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
               {recommendedEntries.map(entry => (
                 <div 
                   key={entry.id}
                   onClick={() => setSelectedEntry(entry)}
-                  className="group relative bg-[#0f1f0f] border border-green-900/30 p-6 cursor-pointer hover:border-green-500/50 hover:bg-[#132613] transition-all duration-300"
+                  className="group relative bg-[#0a0a0a] border border-amber-500/30 p-4 cursor-pointer hover:border-amber-500 hover:bg-[#111] transition-all duration-300 flex gap-4 items-center"
                 >
-                  {/* "Match" Badge */}
-                  <div className="absolute top-0 right-0 bg-green-900/20 border-b border-l border-green-500/30 px-2 py-1">
-                    <span className="text-[8px] font-pixel text-green-400">98% MATCH</span>
+                  {/* Tape Reel Icon */}
+                  <div className="w-12 h-12 bg-[#151515] rounded-full border border-[#333] flex items-center justify-center group-hover:border-amber-500/50 group-hover:animate-[spin_4s_linear_infinite]">
+                     <div className="w-4 h-4 bg-[#222] rounded-full border border-[#444] flex items-center justify-center">
+                        <div className="w-1 h-1 bg-amber-900/50 rounded-full" />
+                     </div>
+                     <div className="absolute w-10 h-10 border border-dashed border-[#333] rounded-full" />
                   </div>
 
-                  <h4 className="font-serif text-xl text-[#e6c885] italic mb-2 group-hover:text-white transition-colors">
-                    {entry.title}
-                  </h4>
-                  <p className="font-display text-sm text-[#888] line-clamp-2 mb-4 group-hover:text-[#aaa]">
-                    {entry.use_when}
-                  </p>
-                  
-                  <div className="flex items-center gap-4 text-[9px] font-pixel text-[#555]">
-                    <span className="flex items-center gap-1">
-                      <span className="w-1 h-1 bg-[#444] rounded-full" />
-                      {entry.time_commitment}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <span className="w-1 h-1 bg-[#444] rounded-full" />
-                      LVL {entry.difficulty}
-                    </span>
+                  <div className="flex-1">
+                      <h4 className="font-mono text-sm text-amber-100 group-hover:text-amber-400 transition-colors mb-1">
+                        {entry.title}
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[8px] font-pixel text-amber-900/80 bg-amber-900/10 px-1">MATCH 98%</span>
+                        <span className="text-[8px] font-pixel text-[#444]">{entry.category}</span>
+                      </div>
                   </div>
+                  
+                  <div className="text-amber-500/50 group-hover:text-amber-500">→</div>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* --- MAIN LIBRARY GRID --- */}
-        {!hasGravityResults && !searchQuery && (
-          <div className="bg-[#1a1a1a] border border-[#333] p-6 text-center mb-8">
-            <h3 className="font-pixel text-xs text-gold mb-2">CALIBRATION REQUIRED</h3>
-            <p className="font-serif text-[#888] text-sm mb-4 max-w-md mx-auto">
-              Run the Gravity Check diagnostic to unlock personalized protocol recommendations based on your team's specific friction points.
-            </p>
-            <Link href="/gravity-check">
-              <button className="bg-[#333] hover:bg-gold hover:text-black text-[#888] px-4 py-2 font-pixel text-[9px] transition-colors border border-[#444]">
-                INITIATE DIAGNOSTIC
-              </button>
-            </Link>
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
+        {/* --- MAIN LIBRARY GRID - "DATA CARTRIDGES" --- */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredEntries.map((entry) => (
             <div 
               key={entry.id}
               onClick={() => setSelectedEntry(entry)}
-              className="group relative bg-[#0a0a0a] border border-[#222] p-5 cursor-pointer hover:border-gold/40 hover:-translate-y-1 transition-all duration-300 shadow-[0_4px_0_0_rgba(0,0,0,0.3)] hover:shadow-[0_8px_20px_-5px_rgba(197,160,89,0.1)]"
+              className="group relative bg-[#0a0a0a] border border-[#222] p-0 cursor-pointer hover:border-amber-500/40 hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
             >
-              {/* Corner Accents */}
-              <div className="absolute top-0 left-0 w-1 h-1 bg-[#333] group-hover:bg-gold transition-colors" />
-              <div className="absolute top-0 right-0 w-1 h-1 bg-[#333] group-hover:bg-gold transition-colors" />
-              <div className="absolute bottom-0 left-0 w-1 h-1 bg-[#333] group-hover:bg-gold transition-colors" />
-              <div className="absolute bottom-0 right-0 w-1 h-1 bg-[#333] group-hover:bg-gold transition-colors" />
-
-              <div className="flex justify-between items-start mb-3">
-                <span className="text-[8px] font-pixel text-[#444] uppercase tracking-widest group-hover:text-gold/70 transition-colors">
-                  {entry.category}
-                </span>
-                <span className="text-[8px] font-pixel text-[#333] border border-[#222] px-1.5 py-0.5 rounded group-hover:border-gold/20 group-hover:text-gold/50">
-                  {entry.id.split('_')[1]}
-                </span>
+              {/* Cartridge Label Top */}
+              <div className="h-8 bg-[#111] border-b border-[#222] flex items-center justify-between px-3 group-hover:bg-amber-900/10 transition-colors">
+                 <span className="text-[8px] font-pixel text-[#555] group-hover:text-amber-500/70">{entry.id}</span>
+                 <div className="flex gap-0.5">
+                    <div className="w-1 h-1 bg-[#333] rounded-full" />
+                    <div className="w-1 h-1 bg-[#333] rounded-full" />
+                    <div className="w-1 h-1 bg-[#333] rounded-full" />
+                 </div>
               </div>
 
-              <h4 className="font-serif text-lg text-[#ccc] group-hover:text-gold transition-colors mb-2 leading-tight">
-                {entry.title}
-              </h4>
-              
-              <p className="text-xs text-[#666] font-display leading-relaxed line-clamp-3 mb-4 group-hover:text-[#888]">
-                {entry.use_when}
-              </p>
+              {/* Cartridge Body */}
+              <div className="p-4 relative">
+                  {/* Decorative Lines */}
+                  <div className="absolute top-0 bottom-0 left-2 w-[1px] bg-[#151515]" />
+                  <div className="absolute top-0 bottom-0 right-2 w-[1px] bg-[#151515]" />
 
-              <div className="mt-auto pt-3 border-t border-[#1a1a1a] flex justify-between items-center">
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <div 
-                      key={i} 
-                      className={cn(
-                        "w-1 h-2 rounded-[1px]", 
-                        i < entry.difficulty ? "bg-[#333] group-hover:bg-gold/40" : "bg-[#111]"
-                      )} 
-                    />
-                  ))}
-                </div>
-                <span className="text-[9px] font-pixel text-[#444] group-hover:text-gold transition-colors">
-                  ACCESS →
-                </span>
+                  <div className="pl-4 pr-2">
+                    <h4 className="font-mono text-sm text-[#ccc] group-hover:text-amber-400 transition-colors mb-2 line-clamp-1">
+                        {entry.title}
+                    </h4>
+                    <p className="text-[10px] text-[#666] font-mono leading-relaxed line-clamp-2 mb-3 group-hover:text-[#888]">
+                        {entry.use_when}
+                    </p>
+                    
+                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#1a1a1a] border-dashed">
+                        <span className="text-[8px] font-pixel text-[#444] uppercase">{entry.category}</span>
+                        <div className="w-2 h-2 bg-[#111] border border-[#333] group-hover:bg-amber-500 group-hover:border-amber-500 transition-colors shadow-[0_0_5px_rgba(0,0,0,0)] group-hover:shadow-[0_0_8px_rgba(245,158,11,0.8)]" />
+                    </div>
+                  </div>
+              </div>
+              
+              {/* Cartridge Bottom Grip */}
+              <div className="h-2 bg-[#0e0e0e] border-t border-[#1a1a1a] flex justify-center gap-1 items-center">
+                 <div className="w-[1px] h-full bg-[#222]" />
+                 <div className="w-[1px] h-full bg-[#222]" />
+                 <div className="w-[1px] h-full bg-[#222]" />
+                 <div className="w-[1px] h-full bg-[#222]" />
+                 <div className="w-[1px] h-full bg-[#222]" />
               </div>
             </div>
           ))}
@@ -224,103 +230,65 @@ export default function Codex() {
             onClick={() => setSelectedEntry(null)}
           />
           
-          {/* Panel */}
-          <div className="relative w-full max-w-2xl bg-[#080808] border-l border-gold/20 h-full shadow-[-20px_0_50px_rgba(0,0,0,0.8)] flex flex-col animate-in slide-in-from-right duration-300">
+          {/* Panel - "The Reader" */}
+          <div className="relative w-full max-w-2xl bg-[#080808] border-l border-amber-500/20 h-full shadow-[-20px_0_50px_rgba(0,0,0,0.8)] flex flex-col animate-in slide-in-from-right duration-300">
             
-            {/* Header */}
-            <div className="p-8 border-b border-[#222] flex justify-between items-start bg-[#0c0c0c]">
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-[9px] font-pixel text-gold bg-gold/10 px-2 py-1 border border-gold/20">
+            {/* Header - Punch Card Style */}
+            <div className="p-8 border-b border-[#222] flex justify-between items-start bg-[#0c0c0c] relative overflow-hidden">
+              {/* Punch Card Holes */}
+              <div className="absolute top-2 left-0 right-0 flex justify-between px-4 opacity-20">
+                 {[...Array(20)].map((_, i) => (
+                    <div key={i} className="w-1 h-2 bg-amber-900 rounded-sm" />
+                 ))}
+              </div>
+
+              <div className="relative z-10 mt-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-[9px] font-pixel text-amber-500 bg-amber-900/20 px-2 py-1 border border-amber-500/20">
                     {selectedEntry.category}
                   </span>
                   <span className="text-[9px] font-pixel text-[#555]">
                     {selectedEntry.time_commitment}
                   </span>
                 </div>
-                <h2 className="font-serif text-3xl md:text-4xl text-[#e6c885] italic">
+                <h2 className="font-serif text-3xl md:text-4xl text-amber-100 mb-2 italic">
                   {selectedEntry.title}
                 </h2>
+                <div className="text-[10px] font-mono text-amber-900/60 tracking-widest">PROTOCOL_ID: {selectedEntry.id}</div>
               </div>
               <button 
                 onClick={() => setSelectedEntry(null)}
-                className="text-[#444] hover:text-gold transition-colors p-2"
+                className="text-[#444] hover:text-amber-500 transition-colors p-2 mt-4"
               >
                 ✕
               </button>
             </div>
 
-            {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
+            {/* Content Scroll */}
+            <div className="flex-1 overflow-y-auto p-8 font-serif text-lg leading-relaxed text-[#aaa] scrollbar-thin scrollbar-thumb-amber-900/20 scrollbar-track-[#050505]">
               
-              {/* Use When */}
-              <div className="bg-[#111] border-l-2 border-gold/30 p-4">
-                <h4 className="font-pixel text-[9px] text-[#666] uppercase mb-2">DIAGNOSTIC TRIGGER</h4>
-                <p className="font-display text-[#ccc] text-sm italic">
-                  "{selectedEntry.use_when}"
-                </p>
+              <div className="mb-8 p-6 bg-[#0a0a0a] border border-[#222] border-l-2 border-l-amber-500/30 shadow-inner">
+                <h3 className="font-pixel text-[10px] text-amber-500 mb-3 uppercase tracking-widest">Objective</h3>
+                <p className="text-[#ccc] font-sans text-sm leading-relaxed">{selectedEntry.use_when}</p>
               </div>
 
-              {/* The Script */}
-              <div>
-                <h3 className="font-pixel text-xs text-gold mb-4 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-gold rounded-full" />
-                  THE SCRIPT
-                </h3>
-                <div className="bg-[#151515] border border-[#222] p-6 rounded-sm relative">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold/20 to-transparent opacity-50" />
-                  <p className="font-serif text-xl text-[#e6c885] leading-relaxed whitespace-pre-wrap">
+              <div className="prose prose-invert prose-amber max-w-none">
+                <div className="whitespace-pre-wrap text-[#ccc]">
                     {selectedEntry.script}
-                  </p>
                 </div>
               </div>
 
-              {/* The Protocol */}
-              <div>
-                <h3 className="font-pixel text-xs text-[#888] mb-4 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-[#444] rounded-full" />
-                  EXECUTION PROTOCOL
-                </h3>
-                <div className="space-y-4">
-                  {selectedEntry.protocol.map((step, i) => (
-                    <div key={i} className="flex gap-4">
-                      <div className="flex-shrink-0 w-6 h-6 border border-[#333] flex items-center justify-center text-[10px] font-pixel text-[#555]">
-                        {i + 1}
-                      </div>
-                      <p className="font-display text-[#aaa] text-sm pt-0.5">
-                        {step}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+              {/* Footer Action */}
+              <div className="mt-12 pt-8 border-t border-[#222] flex justify-between items-center">
+                 <div className="text-[10px] font-pixel text-[#444]">END OF FILE</div>
+                 <button className="bg-amber-900/20 hover:bg-amber-500 hover:text-black text-amber-500 border border-amber-500/30 px-6 py-3 font-pixel text-xs transition-all uppercase tracking-widest">
+                    Download Protocol
+                 </button>
               </div>
-
-              {/* Why It Works (Collapsible) */}
-              {selectedEntry.why_it_works && (
-                <div className="border-t border-[#222] pt-6 mt-8">
-                  <h4 className="font-pixel text-[9px] text-[#444] uppercase mb-2">SOURCE CODE // WHY IT WORKS</h4>
-                  <p className="font-display text-[#666] text-xs leading-relaxed">
-                    {selectedEntry.why_it_works}
-                  </p>
-                </div>
-              )}
-
             </div>
-
-            {/* Footer Actions */}
-            <div className="p-6 border-t border-[#222] bg-[#0c0c0c] flex justify-between items-center">
-              <button className="text-[10px] font-pixel text-[#555] hover:text-[#888] flex items-center gap-2">
-                <span className="text-lg">♡</span> SAVE TO FAVORITES
-              </button>
-              <button className="bg-gold text-black px-6 py-2 font-pixel text-[10px] hover:bg-[#e6c885] shadow-[0_0_15px_rgba(197,160,89,0.2)]">
-                MARK AS COMPLETE
-              </button>
-            </div>
-
           </div>
         </div>
       )}
-
-    </PluginShell>
+    </CodexShell>
   );
 }

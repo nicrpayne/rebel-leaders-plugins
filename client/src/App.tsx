@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import GravityCheck from "./pages/GravityCheck";
 import Results from "./pages/Results";
 
+
 function Router() {
   return (
     <Switch>
