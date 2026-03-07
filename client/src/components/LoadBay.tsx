@@ -72,14 +72,16 @@ export default function LoadBay({
         <div className="absolute top-[40%] left-[21%] w-[46%] h-[18%] z-30">
           
           {/* Internal Slot Darkness/Shadow - NO BORDER */}
-          <div className="absolute inset-0 bg-black/90 shadow-[inset_0_0_30px_rgba(0,0,0,1)] rounded-sm z-0" />
+          {/* Force bg-black to ensure no white background shows through */}
+          <div className="absolute inset-0 bg-black shadow-[inset_0_0_30px_rgba(0,0,0,1)] rounded-sm z-0" />
 
           {/* Loaded Cartridge Spine */}
           {displayEntry && (
             <div 
               key={displayEntry.id} 
               className={cn(
-                "absolute left-[-2%] right-[-2%] bottom-[-5%] h-[110%] shadow-2xl z-40 transform-gpu",
+                // INCREASED SIZE: Height 130%, wider left/right to ensure overlap
+                "absolute left-[-3%] right-[-3%] top-[-15%] bottom-[-15%] h-[130%] shadow-2xl z-40 transform-gpu flex items-center justify-center",
                 // Mechanical Animation: Translate Y only, no scaling
                 animState === "inserting" && "animate-mechanical-insert",
                 animState === "loaded" && "translate-y-0", // Static final state
@@ -90,11 +92,11 @@ export default function LoadBay({
               <img 
                 src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine-FRQgHyfCgopKrtm3CwhgBC.webp"
                 alt="Cartridge Spine"
-                className="absolute inset-0 w-full h-full object-fill rounded-sm brightness-90"
+                className="absolute inset-0 w-full h-full object-fill rounded-sm brightness-90 shadow-lg"
               />
               
               {/* Crisp Text Overlay on Spine */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50">
                 <div className="w-[80%] flex flex-col items-center justify-center text-center">
                   <h3 className="font-serif text-[#2a1d10] text-[10px] md:text-xs font-black uppercase leading-tight tracking-widest drop-shadow-[0_1px_0_rgba(255,255,255,0.3)] mix-blend-multiply opacity-90">
                     {displayEntry.title}
