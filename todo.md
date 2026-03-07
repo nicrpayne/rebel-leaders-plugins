@@ -1,34 +1,20 @@
-# The Codex Redesign: Protocol Loader
+# The Codex Redesign: 8-Track Deck
 
-## Phase 1: Interaction Design: Auto-Load Sequence & Signal Handoff
-- [x] Implement Gravity Check -> Codex handoff logic (Results.tsx)
-- [x] Create "Signal Received" overlay in Codex.tsx
-- [x] Implement Auto-Load animation sequence
-- [x] Wire up "READ" button pulse state
+## Phase 1: Asset Generation: Create 8-Track Deck & Spine Assets
+- [ ] Generate "Straight-On" 8-Track Deck Face (silver/woodgrain/black metal)
+- [ ] Generate "Cartridge Spine" asset (label view)
+- [ ] Generate "Deck Slot" interior asset
 
-## Phase 2: Visual Refinement: Load Bay & Cartridge Rack Polish
-- [x] Integrate generated assets for Load Bay slot frame
-- [x] Refine cartridge rack grid layout (2 columns)
-- [x] Add "Signal Lock" indicator to loaded cartridge
-- [x] Implement scanline animation for empty state
+## Phase 2: Component Development: Implement Straight-On Load Bay
+- [ ] Update `LoadBay.tsx` to use new deck face asset
+- [ ] Implement "Spine View" for loaded cartridge
+- [ ] Adjust layout to be centered and "in your face"
 
-## Phase 3: Feature Implementation: Copy Script & Checklist Mode
-- [x] Add "COPY SCRIPT" button to Reader Drawer
-- [x] Implement interactive checklist in Run Mode
-- [x] Refine Reader Drawer UI with tabs and frame asset
+## Phase 3: Interaction Design: Linear Insert/Eject Animation
+- [ ] Create linear "shove" animation (Z-axis or Y-axis translation)
+- [ ] Sync audio with new animation timing
+- [ ] Ensure "Eject" pops the cartridge out towards the user
 
-## Phase 4: Integration & Polish: Final Animation & Sound Tuning
-- [x] Tune animation timing for Auto-Load sequence
-- [x] Verify sound effects trigger correctly
-- [x] Ensure mobile responsiveness for all new elements
-
-## Phase 5: Final Review & Delivery (Current)
-- [x] **Fix Audio:** Implement `CodexAudio` engine (Web Audio API) to replace unreliable MP3s.
-- [x] **Fix Animation:** Adjust `LoadBay` animation logic to ensure visibility (remove `overflow-hidden` if necessary, check z-index).
-- [x] **Fix Visuals:** Verify `LoadBay` slot frame blend mode and positioning.
-- [x] **Enhance Feedback:** Add "Active" glow to selected cartridge in rack.
-- [ ] **Fix Load Bay Visibility:** Add internal amber light to illuminate loaded cartridge.
-- [ ] **Fix Audio Context:** Force audio context resume on first user interaction.
-- [ ] **Exaggerate Animation:** Slow down insert animation and add bounce effect.
-- [ ] **Verify Auto-Load:** Ensure recommended protocol loads automatically on arrival.
-- [ ] **Final QA:** Test Click -> Load -> Read flow end-to-end.
+## Phase 4: Integration & Polish: Final Review
+- [ ] Verify mobile responsiveness of new deck
+- [ ] Final QA of the "Plugin Feel"
