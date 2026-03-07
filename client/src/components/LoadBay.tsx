@@ -80,11 +80,11 @@ export default function LoadBay({
             <div 
               key={displayEntry.id} 
               className={cn(
-                // Adjusted size for transparent asset:
-                // Height 110% (slightly taller than slot to overlap bezel)
-                // Width 100% (fits slot width)
+                // MASSIVE SCALE UP:
+                // Height 180% (overlaps top/bottom significantly)
+                // Width 100% (fills slot width)
                 // Removed background color and box-shadow on container to let PNG transparency work
-                "absolute left-0 right-0 top-[-5%] bottom-[-5%] h-[110%] z-50 transform-gpu flex items-center justify-center",
+                "absolute left-0 right-0 top-[-40%] bottom-[-40%] h-[180%] z-50 transform-gpu flex items-center justify-center",
                 // Mechanical Animation: Translate Y only, no scaling
                 animState === "inserting" && "animate-mechanical-insert",
                 animState === "loaded" && "translate-y-0", // Static final state
@@ -95,7 +95,7 @@ export default function LoadBay({
               <img 
                 src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine_transparent_95539dfa.png"
                 alt="Cartridge Spine"
-                className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_10px_12px_rgba(0,0,0,0.45)]" // Use drop-shadow filter instead of box-shadow
+                className="absolute inset-0 w-full h-full object-fill drop-shadow-[0_10px_12px_rgba(0,0,0,0.45)]" // Use object-fill to force stretch if needed, or object-cover
               />
               
               {/* Crisp Text Overlay on Spine */}
