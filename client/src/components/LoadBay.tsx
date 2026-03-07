@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { CodexEntry } from "@/lib/codex-schema";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface LoadBayProps {
   loadedEntry: CodexEntry | null;
@@ -22,38 +22,49 @@ export default function LoadBay({
   // New animation phases: idle -> preInsert -> inserting -> loaded -> ejecting
   const [animPhase, setAnimPhase] = useState<"idle" | "preInsert" | "inserting" | "loaded" | "ejecting">("idle");
   const [displayEntry, setDisplayEntry] = useState<CodexEntry | null>(null);
+  
+  // Keep track of the previous loadedEntry ID to detect changes
+  const prevLoadedIdRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
-    if (loadedEntry && loadedEntry.id !== displayEntry?.id) {
-      // New entry loaded: Start insert sequence
-      // 1. Mount in pre-insert state (hidden below slot)
+    const currentId = loadedEntry?.id;
+    const prevId = prevLoadedIdRef.current;
+
+    // Case 1: New entry loaded (from empty or from another entry)
+    if (loadedEntry && currentId !== prevId) {
+      // If we already have a display entry (hot swap), eject first? 
+      // For now, let's just instant-swap or animate in.
+      // To keep it simple and robust: Always start the insert sequence for the new entry.
+      
       setDisplayEntry(loadedEntry);
       setAnimPhase("preInsert");
 
-      // 2. Trigger animation on next frame to avoid pop-in
+      // Trigger animation on next frame
       requestAnimationFrame(() => {
-        // Double rAF ensures browser paints the preInsert state first
         requestAnimationFrame(() => {
           setAnimPhase("inserting");
         });
       });
 
-      // 3. Complete animation
-      const timer = setTimeout(() => setAnimPhase("loaded"), 320); // 320ms match CSS
+      // Complete animation
+      const timer = setTimeout(() => setAnimPhase("loaded"), 320);
+      
+      prevLoadedIdRef.current = currentId;
       return () => clearTimeout(timer);
-
-    } else if (!loadedEntry && displayEntry) {
-      // Entry removed: Start eject sequence
+    } 
+    // Case 2: Entry removed (eject)
+    else if (!loadedEntry && prevId) {
       setAnimPhase("ejecting");
       
-      // Wait for animation to finish before unmounting
       const timer = setTimeout(() => {
         setAnimPhase("idle");
         setDisplayEntry(null);
-      }, 260); // 260ms match CSS
+      }, 260);
+      
+      prevLoadedIdRef.current = undefined;
       return () => clearTimeout(timer);
     }
-  }, [loadedEntry, displayEntry]);
+  }, [loadedEntry]);
 
   return (
     <div className={cn(
