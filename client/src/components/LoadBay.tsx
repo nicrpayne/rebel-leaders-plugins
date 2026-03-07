@@ -79,9 +79,10 @@ export default function LoadBay({
         />
 
         {/* --- SLOT AREA --- */}
-        {/* REFINED GEOMETRY: Narrowed to 48% (from 52%) and increased height to 20% (from 18%) */}
-        {/* Left adjusted to 20% to center the narrower slot */}
-        <div className="absolute top-[39%] left-[20%] w-[48%] h-[20%] z-30 overflow-hidden rounded-sm">
+        {/* MAXIMIZED GEOMETRY: Width 49%, Height 23% */}
+        {/* Left adjusted to 19.5% to center the 49% width */}
+        {/* Top adjusted to 38% to center the 23% height */}
+        <div className="absolute top-[38%] left-[19.5%] w-[49%] h-[23%] z-30 overflow-hidden rounded-sm">
           
           {/* Loaded Cartridge Spine */}
           {displayEntry && (
