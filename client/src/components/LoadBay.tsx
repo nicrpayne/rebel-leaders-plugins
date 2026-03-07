@@ -107,18 +107,21 @@ export default function LoadBay({
                 className="absolute inset-0 w-full h-full object-fill drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] scale-[1.02]" 
               />
               
-              {/* --- TEXT OVERLAY (No Beige Box) --- */}
-              {/* Text sits directly on the cartridge label with shadow for readability */}
+              {/* --- TEXT OVERLAY (Enhanced Legibility) --- */}
+              {/* Uses backdrop-blur and heavy text-shadow to obscure background text without a visible box */}
               <div 
-                className="absolute w-[65%] h-[55%] flex flex-col items-center justify-center text-center"
+                className="absolute w-[70%] h-[60%] flex flex-col items-center justify-center text-center"
                 style={{
                   transform: 'rotate(-0.5deg)',
                 }}
               >
-                <h3 className="font-serif text-[#2a1d10] text-[10px] md:text-[11px] font-black uppercase leading-tight tracking-widest mix-blend-multiply opacity-90 px-1 drop-shadow-[0_1px_0_rgba(255,255,255,0.4)]">
+                {/* Subtle blur patch behind text to soften the background "PROTOCOL" */}
+                <div className="absolute inset-0 bg-[#e6dcc3]/40 blur-sm rounded-full mix-blend-hard-light -z-10" />
+                
+                <h3 className="font-serif text-[#1a120a] text-[11px] md:text-[12px] font-black uppercase leading-tight tracking-widest px-2 drop-shadow-[0_0_3px_rgba(230,220,195,1)] drop-shadow-[0_1px_0_rgba(255,255,255,0.6)]">
                   {displayEntry.title}
                 </h3>
-                <span className="font-mono text-[6px] text-[#2a1d10]/60 mt-0.5 tracking-tighter drop-shadow-[0_1px_0_rgba(255,255,255,0.4)]">
+                <span className="font-mono text-[7px] text-[#2a1d10]/80 mt-0.5 tracking-tighter font-bold drop-shadow-[0_0_2px_rgba(230,220,195,1)]">
                   {displayEntry.id}
                 </span>
               </div>
