@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import CodexControls from "./CodexControls";
+import LoadBay from "./LoadBay";
+import { CodexEntry } from "@/lib/codex-schema";
 
 interface CodexShellProps {
   children: ReactNode;
@@ -12,6 +13,11 @@ interface CodexShellProps {
   statusColor?: string;
   activeCategory: string;
   onCategoryChange: (category: string) => void;
+  loadedEntry: CodexEntry | null;
+  onEject: () => void;
+  onRead: () => void;
+  onRun: () => void;
+  isReaderOpen: boolean;
 }
 
 export default function CodexShell({ 
@@ -23,7 +29,12 @@ export default function CodexShell({
   status = "STANDBY",
   statusColor = "text-amber-900",
   activeCategory,
-  onCategoryChange
+  onCategoryChange,
+  loadedEntry,
+  onEject,
+  onRead,
+  onRun,
+  isReaderOpen
 }: CodexShellProps) {
   return (
     <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4 md:p-8 font-sans selection:bg-amber-900 selection:text-amber-50">
@@ -89,16 +100,18 @@ export default function CodexShell({
           <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(245,158,11,0.05)_50%,transparent_100%)] opacity-50 pointer-events-none" />
         </div>
 
+        {/* --- LOAD BAY (The "Deck") --- */}
+        <LoadBay 
+          loadedEntry={loadedEntry}
+          onEject={onEject}
+          onRead={onRead}
+          onRun={onRun}
+          isReaderOpen={isReaderOpen}
+        />
+
         {/* Main Content Area - The "Vault" */}
         <div className="p-0 bg-[#050505] relative min-h-[600px] z-10 flex flex-col md:flex-row">
-          {/* Left Sidebar - Control Rack */}
-          <div className="w-full md:w-64 bg-[#0a0a0a] border-r border-[#222] p-6 flex flex-col gap-8 relative z-20 shadow-[5px_0_20px_rgba(0,0,0,0.5)]">
-             <CodexControls 
-               activeCategory={activeCategory} 
-               onCategoryChange={onCategoryChange} 
-             />
-          </div>
-
+          
           {/* Right Content - The "Data Grid" */}
           <div className="flex-1 relative bg-[#080808] p-6 md:p-10 overflow-hidden">
              {/* Background Grid */}

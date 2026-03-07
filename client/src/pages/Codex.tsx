@@ -4,11 +4,14 @@ import { cn } from "@/lib/utils";
 import { CodexEntry } from "@/lib/codex-schema";
 import { CODEX_ENTRIES } from "@/lib/codex-data";
 import CodexShell from "@/components/CodexShell";
+import ReaderDrawer from "@/components/ReaderDrawer";
 
 export default function Codex() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("ALL");
-  const [selectedEntry, setSelectedEntry] = useState<CodexEntry | null>(null);
+  const [loadedEntry, setLoadedEntry] = useState<CodexEntry | null>(null);
+  const [isReaderOpen, setIsReaderOpen] = useState(false);
+  const [readerMode, setReaderMode] = useState<"READ" | "RUN">("READ");
   const [recommendedEntries, setRecommendedEntries] = useState<CodexEntry[]>([]);
   const [hasGravityResults, setHasGravityResults] = useState(false);
   const [isReceivingSignal, setIsReceivingSignal] = useState(false);
@@ -48,6 +51,45 @@ export default function Codex() {
     return matchesSearch && matchesCategory;
   });
 
+  // Sound Effects
+  const playSound = (type: "load" | "eject" | "click") => {
+    const sounds = {
+      load: "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3", 
+      eject: "https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3", 
+      click: "https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"
+    };
+    const audio = new Audio(sounds[type]);
+    audio.volume = 0.3;
+    audio.play().catch(() => {});
+  };
+
+  // Interaction Handlers
+  const handleLoad = (entry: CodexEntry) => {
+    setLoadedEntry(entry);
+    playSound("load");
+  };
+
+  const handleEject = () => {
+    setLoadedEntry(null);
+    setIsReaderOpen(false);
+    playSound("eject");
+  };
+
+  const handleRead = () => {
+    if (loadedEntry) {
+      setReaderMode("READ");
+      setIsReaderOpen(true);
+      playSound("click");
+    }
+  };
+
+  const handleRun = () => {
+    if (loadedEntry) {
+      setReaderMode("RUN");
+      setIsReaderOpen(true);
+    }
+  };
+
   return (
     <CodexShell 
       title="THE CODEX" 
@@ -56,6 +98,11 @@ export default function Codex() {
       statusColor={isReceivingSignal ? "text-amber-500 animate-pulse" : "text-amber-900"}
       activeCategory={activeCategory}
       onCategoryChange={setActiveCategory}
+      loadedEntry={loadedEntry}
+      onEject={handleEject}
+      onRead={handleRead}
+      onRun={handleRun}
+      isReaderOpen={isReaderOpen}
       footerControls={
         <div className="flex items-center gap-4">
            <div className="flex flex-col items-end">
@@ -140,8 +187,13 @@ export default function Codex() {
               {recommendedEntries.map(entry => (
                 <div 
                   key={entry.id}
-                  onClick={() => setSelectedEntry(entry)}
-                  className="group relative bg-[#0a0a0a] border border-amber-500/30 p-4 cursor-pointer hover:border-amber-500 hover:bg-[#111] transition-all duration-300 flex gap-4 items-center"
+                  onClick={() => handleLoad(entry)}
+                  className={cn(
+                    "group relative bg-[#0a0a0a] border p-4 cursor-pointer transition-all duration-300 flex gap-4 items-center",
+                    loadedEntry?.id === entry.id 
+                      ? "border-amber-500 bg-amber-900/20 shadow-[0_0_15px_rgba(245,158,11,0.2)]" 
+                      : "border-amber-500/30 hover:border-amber-500 hover:bg-[#111]"
+                  )}
                 >
                   {/* Tape Reel Icon */}
                   <div className="w-12 h-12 bg-[#151515] rounded-full border border-[#333] flex items-center justify-center group-hover:border-amber-500/50 group-hover:animate-[spin_4s_linear_infinite]">
@@ -161,7 +213,9 @@ export default function Codex() {
                       </div>
                   </div>
                   
-                  <div className="text-amber-500/50 group-hover:text-amber-500">→</div>
+                  <div className="text-amber-500/50 group-hover:text-amber-500">
+                    {loadedEntry?.id === entry.id ? "LOADED" : "LOAD"}
+                  </div>
                 </div>
               ))}
             </div>
@@ -169,16 +223,29 @@ export default function Codex() {
         )}
 
         {/* --- MAIN LIBRARY GRID - "DATA CARTRIDGES" --- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredEntries.map((entry) => (
             <div 
               key={entry.id}
-              onClick={() => setSelectedEntry(entry)}
-              className="group relative bg-[#0a0a0a] border border-[#222] p-0 cursor-pointer hover:border-amber-500/40 hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
+              onClick={() => handleLoad(entry)}
+              className={cn(
+                "group relative bg-[#0a0a0a] border p-0 cursor-pointer transition-all duration-200 overflow-hidden",
+                loadedEntry?.id === entry.id 
+                  ? "border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.2)] translate-y-0.5" 
+                  : "border-[#222] hover:border-amber-500/40 hover:-translate-y-0.5"
+              )}
             >
               {/* Cartridge Label Top */}
-              <div className="h-8 bg-[#111] border-b border-[#222] flex items-center justify-between px-3 group-hover:bg-amber-900/10 transition-colors">
-                 <span className="text-[8px] font-pixel text-[#555] group-hover:text-amber-500/70">{entry.id}</span>
+              <div className={cn(
+                "h-8 border-b flex items-center justify-between px-3 transition-colors",
+                loadedEntry?.id === entry.id 
+                  ? "bg-amber-900/20 border-amber-500/50" 
+                  : "bg-[#111] border-[#222] group-hover:bg-amber-900/10"
+              )}>
+                 <span className={cn(
+                   "text-[8px] font-pixel transition-colors",
+                   loadedEntry?.id === entry.id ? "text-amber-500" : "text-[#555] group-hover:text-amber-500/70"
+                 )}>{entry.id}</span>
                  <div className="flex gap-0.5">
                     <div className="w-1 h-1 bg-[#333] rounded-full" />
                     <div className="w-1 h-1 bg-[#333] rounded-full" />
@@ -193,7 +260,10 @@ export default function Codex() {
                   <div className="absolute top-0 bottom-0 right-2 w-[1px] bg-[#151515]" />
 
                   <div className="pl-4 pr-2">
-                    <h4 className="font-mono text-sm text-[#ccc] group-hover:text-amber-400 transition-colors mb-2 line-clamp-1">
+                    <h4 className={cn(
+                      "font-mono text-sm transition-colors mb-2 line-clamp-1",
+                      loadedEntry?.id === entry.id ? "text-amber-400" : "text-[#ccc] group-hover:text-amber-400"
+                    )}>
                         {entry.title}
                     </h4>
                     <p className="text-[10px] text-[#666] font-mono leading-relaxed line-clamp-2 mb-3 group-hover:text-[#888]">
@@ -202,7 +272,12 @@ export default function Codex() {
                     
                     <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#1a1a1a] border-dashed">
                         <span className="text-[8px] font-pixel text-[#444] uppercase">{entry.category}</span>
-                        <div className="w-2 h-2 bg-[#111] border border-[#333] group-hover:bg-amber-500 group-hover:border-amber-500 transition-colors shadow-[0_0_5px_rgba(0,0,0,0)] group-hover:shadow-[0_0_8px_rgba(245,158,11,0.8)]" />
+                        <div className={cn(
+                          "w-2 h-2 border transition-colors shadow-[0_0_5px_rgba(0,0,0,0)]",
+                          loadedEntry?.id === entry.id 
+                            ? "bg-amber-500 border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]" 
+                            : "bg-[#111] border-[#333] group-hover:bg-amber-500 group-hover:border-amber-500 group-hover:shadow-[0_0_8px_rgba(245,158,11,0.8)]"
+                        )} />
                     </div>
                   </div>
               </div>
@@ -221,73 +296,14 @@ export default function Codex() {
 
       </div>
 
-      {/* --- READER MODAL (Slide-Over) --- */}
-      {selectedEntry && (
-        <div className="fixed inset-0 z-[100] flex justify-end">
-          {/* Backdrop */}
-          <div 
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-            onClick={() => setSelectedEntry(null)}
-          />
-          
-          {/* Panel - "The Reader" */}
-          <div className="relative w-full max-w-2xl bg-[#080808] border-l border-amber-500/20 h-full shadow-[-20px_0_50px_rgba(0,0,0,0.8)] flex flex-col animate-in slide-in-from-right duration-300">
-            
-            {/* Header - Punch Card Style */}
-            <div className="p-8 border-b border-[#222] flex justify-between items-start bg-[#0c0c0c] relative overflow-hidden">
-              {/* Punch Card Holes */}
-              <div className="absolute top-2 left-0 right-0 flex justify-between px-4 opacity-20">
-                 {[...Array(20)].map((_, i) => (
-                    <div key={i} className="w-1 h-2 bg-amber-900 rounded-sm" />
-                 ))}
-              </div>
-
-              <div className="relative z-10 mt-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-[9px] font-pixel text-amber-500 bg-amber-900/20 px-2 py-1 border border-amber-500/20">
-                    {selectedEntry.category}
-                  </span>
-                  <span className="text-[9px] font-pixel text-[#555]">
-                    {selectedEntry.time_commitment}
-                  </span>
-                </div>
-                <h2 className="font-serif text-3xl md:text-4xl text-amber-100 mb-2 italic">
-                  {selectedEntry.title}
-                </h2>
-                <div className="text-[10px] font-mono text-amber-900/60 tracking-widest">PROTOCOL_ID: {selectedEntry.id}</div>
-              </div>
-              <button 
-                onClick={() => setSelectedEntry(null)}
-                className="text-[#444] hover:text-amber-500 transition-colors p-2 mt-4"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Content Scroll */}
-            <div className="flex-1 overflow-y-auto p-8 font-serif text-lg leading-relaxed text-[#aaa] scrollbar-thin scrollbar-thumb-amber-900/20 scrollbar-track-[#050505]">
-              
-              <div className="mb-8 p-6 bg-[#0a0a0a] border border-[#222] border-l-2 border-l-amber-500/30 shadow-inner">
-                <h3 className="font-pixel text-[10px] text-amber-500 mb-3 uppercase tracking-widest">Objective</h3>
-                <p className="text-[#ccc] font-sans text-sm leading-relaxed">{selectedEntry.use_when}</p>
-              </div>
-
-              <div className="prose prose-invert prose-amber max-w-none">
-                <div className="whitespace-pre-wrap text-[#ccc]">
-                    {selectedEntry.script}
-                </div>
-              </div>
-
-              {/* Footer Action */}
-              <div className="mt-12 pt-8 border-t border-[#222] flex justify-between items-center">
-                 <div className="text-[10px] font-pixel text-[#444]">END OF FILE</div>
-                 <button className="bg-amber-900/20 hover:bg-amber-500 hover:text-black text-amber-500 border border-amber-500/30 px-6 py-3 font-pixel text-xs transition-all uppercase tracking-widest">
-                    Download Protocol
-                 </button>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* --- READER DRAWER (Slide-Over) --- */}
+      {loadedEntry && (
+        <ReaderDrawer 
+          entry={loadedEntry}
+          isOpen={isReaderOpen}
+          initialMode={readerMode}
+          onClose={() => setIsReaderOpen(false)}
+        />
       )}
     </CodexShell>
   );

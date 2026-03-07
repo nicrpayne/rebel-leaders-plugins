@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import GravityCheck from "./pages/GravityCheck";
 import Results from "./pages/Results";
+import Codex from "./pages/Codex";
 
 
 function Router() {
@@ -15,6 +16,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/gravity-check" component={GravityCheck} />
       <Route path="/results" component={Results} />
+      <Route path="/codex" component={Codex} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -1,23 +1,25 @@
-# The Codex Redesign: Amber Data Bank
+# The Codex Refactor: Protocol Loader Instrument
 
-## Phase 1: Design & Prototyping (Completed)
-- [x] Create `CodexShell.tsx`: A new plugin container with rack-mount aesthetics (screws, handles, vents).
-- [x] Define Color Palette: Amber/Gold monochrome on deep black/charcoal background.
-- [x] Design "Data Cartridge" Component: Replace standard cards with physical-looking media (tapes/cartridges).
+## Phase 1: Component Development (Completed)
+- [x] Create `LoadBay.tsx`: A persistent top strip with "Load Slot" and Transport Controls (READ, RUN, EJECT).
+- [x] Update `CodexShell.tsx`: Remove the sidebar, integrate `LoadBay` at the top, and simplify the layout.
+- [x] Redesign `CodexEntry` (Cartridge): Make them uniform height, physical-looking cartridges with grip texture.
+- [x] Implement 2-Column Grid: Replace masonry layout with a strict 2-column rack grid (1 column on mobile).
 
-## Phase 2: Component Development (Completed)
-- [x] Implement `CodexControls.tsx`: Vertical sliders for filtering (instead of knobs).
-- [x] Implement Toggle Switches: For category selection (Identity, Relationship, Vision, Culture).
-- [x] Build "The Reader" View: A slide-out or pop-up interface for reading protocol details (punch card/scroll style).
+## Phase 2: Interaction Design (Completed)
+- [x] Implement "Load" Logic: Clicking a cartridge updates the `LoadBay` state instead of opening a modal.
+- [x] Add Insert Animation: Visual feedback when a cartridge is loaded into the bay.
+- [x] Update Empty State: `LoadBay` shows "INSERT PROTOCOL" when empty.
 
 ## Phase 3: Feature Implementation (Completed)
-- [x] Connect Filters: Wire up sliders/switches to the existing `codex-data.ts`.
-- [x] Integrate "Signal Received" State: Ensure the "Recommended" section looks like a "Decrypted Transmission".
+- [x] Create `ReaderDrawer.tsx`: A right-side slide-out drawer (not a modal) for reading content.
+- [x] Implement Tabs: SCRIPT | PROTOCOL | WHY.
+- [x] Implement Run Mode: Convert protocol steps into an interactive checklist.
 
 ## Phase 4: Integration & Polish (Completed)
-- [x] Verify Side-Chain Transition: Gravity Check -> Results -> Codex (Amber Theme).
-- [x] Add Sound Effects (Optional/Placeholder): Click sounds for switches, slide sounds for faders.
-- [x] Final QA: Check responsiveness and "feel".
+- [x] Mobile Responsiveness: Ensure Load Bay is accessible and Drawer works as a full-screen sheet.
+- [x] Sound Design: Add "Tape Load", "Eject", and "Switch Click" sounds.
+- [x] Final QA: Verify the "Load -> Read -> Run" flow.
 
 ## Phase 5: Final Review & Delivery (Current)
 - [ ] Save Final Checkpoint.
