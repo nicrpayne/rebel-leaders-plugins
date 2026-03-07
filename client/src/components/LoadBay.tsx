@@ -62,7 +62,7 @@ export default function LoadBay({
             We position the cartridge relative to this "maw". 
             Based on the image description, slot is central. 
             We'll use absolute positioning to align with the image's slot. */}
-        <div className="absolute top-[35%] left-[15%] w-[45%] h-[30%] z-10 flex items-center justify-center perspective-[1000px]">
+        <div className="absolute top-[35%] left-[15%] w-[45%] h-[30%] z-30 flex items-center justify-center perspective-[1000px]">
           
           {/* Internal Slot Darkness/Shadow */}
           <div className="absolute inset-0 bg-black/80 shadow-[inset_0_0_20px_rgba(0,0,0,1)]" />
@@ -74,9 +74,9 @@ export default function LoadBay({
               className={cn(
                 "relative w-[95%] h-[85%] transition-all duration-300 ease-linear shadow-xl",
                 // Linear "Shove" Animation (Z-axis or Scale)
-                animState === "inserting" && "translate-y-[100%] scale-95 opacity-0",
+                animState === "inserting" && "translate-y-[20%] scale-110 opacity-0",
                 animState === "loaded" && "translate-y-0 scale-100 opacity-100",
-                animState === "ejecting" && "translate-y-[100%] scale-95 opacity-0"
+                animState === "ejecting" && "translate-y-[20%] scale-110 opacity-0"
               )}
             >
               {/* Spine Image */}
@@ -111,7 +111,7 @@ export default function LoadBay({
             onClick={onRead}
             disabled={!loadedEntry}
             className={cn(
-              "w-1/2 h-full opacity-0 hover:opacity-20 bg-amber-500 transition-opacity cursor-pointer rounded-sm",
+              "w-1/2 h-full opacity-50 hover:opacity-80 bg-amber-500/30 border-2 border-red-500 transition-opacity cursor-pointer rounded-sm",
               !loadedEntry && "cursor-not-allowed"
             )}
             title="READ PROTOCOL"
@@ -122,7 +122,7 @@ export default function LoadBay({
             onClick={onEject}
             disabled={!loadedEntry}
             className={cn(
-              "w-1/2 h-full opacity-0 hover:opacity-20 bg-red-500 transition-opacity cursor-pointer rounded-sm",
+              "w-1/2 h-full opacity-50 hover:opacity-80 bg-red-500/30 border-2 border-red-500 transition-opacity cursor-pointer rounded-sm",
               !loadedEntry && "cursor-not-allowed"
             )}
             title="EJECT CARTRIDGE"
@@ -132,7 +132,7 @@ export default function LoadBay({
         {/* --- STATUS LIGHTS OVERLAY --- */}
         {/* Amber glow over the indicator lights area when loaded */}
         <div className={cn(
-          "absolute top-[15%] right-[10%] w-[25%] h-[10%] bg-amber-500/50 blur-md transition-opacity duration-300 mix-blend-screen pointer-events-none",
+          "absolute top-[15%] right-[10%] w-[25%] h-[10%] z-40 bg-amber-500/50 blur-md transition-opacity duration-300 mix-blend-screen pointer-events-none",
           loadedEntry ? "opacity-100 animate-pulse" : "opacity-0"
         )} />
 
