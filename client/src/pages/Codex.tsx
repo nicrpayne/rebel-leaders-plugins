@@ -26,9 +26,9 @@ export default function Codex() {
     if (signal === "received") {
       setIsReceivingSignal(true);
       // Play signal sound
-      const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"); // Placeholder SFX
-      audio.volume = 0.2;
-      audio.play().catch(() => {});
+      import("@/lib/CodexAudio").then(({ codexAudio }) => {
+        codexAudio.playLoad(); // Use load sound for signal
+      });
       
       // Auto-Load Logic
       if (bottleneck) {
@@ -77,14 +77,14 @@ export default function Codex() {
 
   // Sound Effects
   const playSound = (type: "load" | "eject" | "click") => {
-    const sounds = {
-      load: "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3", 
-      eject: "https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3", 
-      click: "https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"
-    };
-    const audio = new Audio(sounds[type]);
-    audio.volume = 0.3;
-    audio.play().catch(() => {});
+    // Use synthesized audio engine for reliability
+    import("@/lib/CodexAudio").then(({ codexAudio }) => {
+      switch (type) {
+        case "load": codexAudio.playLoad(); break;
+        case "eject": codexAudio.playEject(); break;
+        case "click": codexAudio.playClick(); break;
+      }
+    });
   };
 
   // Interaction Handlers

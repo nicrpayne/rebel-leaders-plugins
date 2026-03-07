@@ -48,17 +48,17 @@ export default function LoadBay({
     )}>
       
       {/* --- LEFT: LOAD SLOT --- */}
-      <div className="w-full md:w-2/3 relative flex justify-center md:justify-start">
+      <div className="w-full md:w-2/3 relative flex justify-center md:justify-start overflow-visible">
         {/* Slot Frame Container */}
-        <div className="relative w-full max-w-[600px] aspect-[1400/320] min-h-[80px]">
+        <div className="relative w-full max-w-[600px] aspect-[1400/320] min-h-[80px] overflow-visible">
           {/* Background Cavity */}
-          <div className="absolute inset-[5%] bg-[#050505] shadow-inner rounded-sm" />
+          <div className="absolute inset-[5%] bg-[#050505] shadow-inner rounded-sm overflow-hidden" />
 
           {/* Slot Frame Image */}
           <img 
             src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_slot_frame-K5Sx8tjtQTyAwbsbBxfJ9J.webp"
             alt="Load Bay Slot"
-            className="absolute inset-0 w-full h-full object-contain z-20 pointer-events-none mix-blend-multiply brightness-125 contrast-125"
+            className="absolute inset-0 w-full h-full object-contain z-40 pointer-events-none mix-blend-multiply brightness-125 contrast-125"
           />
           
           {/* Empty State Text */}
@@ -81,10 +81,10 @@ export default function LoadBay({
             <div 
               key={displayEntry.id} 
               className={cn(
-                "absolute inset-[8%] z-10 flex items-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
-                animState === "inserting" && "translate-x-[120%] opacity-0 scale-95",
+                "absolute inset-[8%] z-20 flex items-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                animState === "inserting" && "translate-x-[100%] opacity-0 scale-95",
                 animState === "loaded" && "translate-x-0 opacity-100 scale-100",
-                animState === "ejecting" && "translate-x-[120%] opacity-0 scale-95"
+                animState === "ejecting" && "translate-x-[100%] opacity-0 scale-95"
               )}
             >
               {/* Signal Lock Indicator */}
@@ -147,15 +147,18 @@ export default function LoadBay({
           onClick={onRead}
           disabled={!loadedEntry}
           className={cn(
-            "h-12 px-6 font-pixel text-[10px] tracking-widest border transition-all flex items-center justify-center gap-2 min-w-[100px]",
+            "h-12 px-6 font-pixel text-[10px] tracking-widest border transition-all flex items-center justify-center gap-2 min-w-[100px] relative overflow-hidden group",
             !loadedEntry 
               ? "bg-[#111] text-[#333] border-[#222] cursor-not-allowed"
               : isReaderOpen
                 ? "bg-amber-500 text-black border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)]"
-                : "bg-[#1a1a1a] text-amber-500 border-amber-500/30 hover:border-amber-500 hover:bg-[#222] animate-pulse shadow-[0_0_10px_rgba(245,158,11,0.3)]"
+                : "bg-[#1a1a1a] text-amber-500 border-amber-500/50 hover:border-amber-500 hover:bg-[#222] animate-pulse shadow-[0_0_15px_rgba(245,158,11,0.2)]"
           )}
         >
-          <span className="w-2 h-2 bg-current rounded-full" />
+          {loadedEntry && !isReaderOpen && (
+             <div className="absolute inset-0 bg-amber-500/10 animate-[pulse_1s_ease-in-out_infinite]" />
+          )}
+          <span className={cn("w-2 h-2 rounded-full transition-colors", isReaderOpen ? "bg-black" : "bg-amber-500")} />
           READ
         </button>
 
