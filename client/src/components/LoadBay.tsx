@@ -69,7 +69,7 @@ export default function LoadBay({
         {/* Re-aligned for the new wider image. 
             Slot is roughly centered horizontally, slightly lower than vertical center.
             Based on 21:9 image, slot is roughly 50% width, centered. */}
-        <div className="absolute top-[39%] left-[21%] w-[46%] h-[20%] z-30 overflow-hidden">
+        <div className="absolute top-[40%] left-[21%] w-[46%] h-[18%] z-30 overflow-hidden">
           
           {/* Internal Slot Darkness/Shadow - NO BORDER */}
           <div className="absolute inset-0 bg-black/90 shadow-[inset_0_0_30px_rgba(0,0,0,1)] rounded-sm z-0" />
