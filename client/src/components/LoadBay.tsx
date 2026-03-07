@@ -27,8 +27,8 @@ export default function LoadBay({
       // New entry loaded: Start insert animation
       setAnimState("inserting");
       setDisplayEntry(loadedEntry);
-      // Simple timeout for animation
-      const timer = setTimeout(() => setAnimState("loaded"), 50); // Start animation almost immediately
+      // Animation duration matches CSS (0.4s)
+      const timer = setTimeout(() => setAnimState("loaded"), 400);
       return () => clearTimeout(timer);
     } else if (!loadedEntry && displayEntry) {
       // Entry removed: Start eject animation
@@ -36,7 +36,7 @@ export default function LoadBay({
       const timer = setTimeout(() => {
         setAnimState("idle");
         setDisplayEntry(null);
-      }, 300);
+      }, 400);
       return () => clearTimeout(timer);
     }
   }, [loadedEntry, displayEntry]);
@@ -71,12 +71,11 @@ export default function LoadBay({
             <div 
               key={displayEntry.id} 
               className={cn(
-                "relative w-[96%] h-[88%] transition-all duration-300 ease-out shadow-xl origin-bottom z-10",
-                // Simplified 2D Slide Animation
-                // Inserting: Starts small and low (outside), moves to normal size and position
-                animState === "inserting" && "translate-y-[110%] scale-95 opacity-0",
-                animState === "loaded" && "translate-y-0 scale-100 opacity-100",
-                animState === "ejecting" && "translate-y-[110%] scale-95 opacity-0"
+                "relative w-[96%] h-[88%] shadow-xl origin-bottom z-10",
+                // Use CSS Keyframe Animations for guaranteed movement
+                animState === "inserting" && "animate-slide-up",
+                animState === "loaded" && "translate-y-0 scale-100 opacity-100", // Static final state
+                animState === "ejecting" && "animate-slide-down"
               )}
             >
               {/* Spine Image */}
