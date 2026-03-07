@@ -79,10 +79,10 @@ export default function LoadBay({
         />
 
         {/* --- SLOT AREA --- */}
-        {/* MAXIMIZED GEOMETRY: Width 49%, Height 23% */}
+        {/* MAXIMIZED GEOMETRY: Width 49%, Height 26% */}
         {/* Left adjusted to 19.5% to center the 49% width */}
-        {/* Top adjusted to 38% to center the 23% height */}
-        <div className="absolute top-[38%] left-[19.5%] w-[49%] h-[23%] z-30 overflow-hidden rounded-sm">
+        {/* Top adjusted to 36.5% to center the 26% height */}
+        <div className="absolute top-[36.5%] left-[19.5%] w-[49%] h-[26%] z-30 overflow-hidden rounded-sm">
           
           {/* Loaded Cartridge Spine */}
           {displayEntry && (
