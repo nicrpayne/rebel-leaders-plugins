@@ -72,11 +72,6 @@ export default function LoadBay({
         <div className="absolute top-[40%] left-[21%] w-[46%] h-[18%] z-30">
           
           {/* Internal Slot Darkness/Shadow - NO BORDER */}
-          {/* REMOVED bg-black to prevent white box artifact if it's not rendering correctly. 
-              Instead, we rely on the cartridge to fill the space. 
-              If the deck has a hole, we need something dark behind it. 
-              Let's try z-10 for the hole background to put it BEHIND the deck. */}
-          
           {/* Dark Void Background - Pushed to z-10 (behind deck face) */}
           <div className="absolute inset-0 bg-[#050a05] shadow-[inset_0_0_30px_rgba(0,0,0,1)] rounded-sm -z-10" />
 
@@ -85,19 +80,22 @@ export default function LoadBay({
             <div 
               key={displayEntry.id} 
               className={cn(
-                // MASSIVE SIZE INCREASE: Height 150%, Width 105% to ensure it covers EVERYTHING
-                "absolute left-[-2.5%] right-[-2.5%] top-[-25%] bottom-[-25%] h-[150%] shadow-2xl z-50 transform-gpu flex items-center justify-center",
+                // Adjusted size for transparent asset:
+                // Height 110% (slightly taller than slot to overlap bezel)
+                // Width 100% (fits slot width)
+                // Removed background color and box-shadow on container to let PNG transparency work
+                "absolute left-0 right-0 top-[-5%] bottom-[-5%] h-[110%] z-50 transform-gpu flex items-center justify-center",
                 // Mechanical Animation: Translate Y only, no scaling
                 animState === "inserting" && "animate-mechanical-insert",
                 animState === "loaded" && "translate-y-0", // Static final state
                 animState === "ejecting" && "animate-mechanical-eject"
               )}
             >
-              {/* Spine Image */}
+              {/* Spine Image - TRANSPARENT PNG */}
               <img 
-                src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine-FRQgHyfCgopKrtm3CwhgBC.webp"
+                src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine_transparent_95539dfa.png"
                 alt="Cartridge Spine"
-                className="absolute inset-0 w-full h-full object-fill rounded-sm brightness-90 shadow-lg"
+                className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_10px_12px_rgba(0,0,0,0.45)]" // Use drop-shadow filter instead of box-shadow
               />
               
               {/* Crisp Text Overlay on Spine */}
