@@ -79,9 +79,8 @@ export default function LoadBay({
         />
 
         {/* --- SLOT AREA --- */}
-        {/* z-30 (ABOVE deck face) but using clip-path to mask the cartridge so it looks 'inside' */}
-        {/* Removed the black background to reveal the original deck slot image */}
-        <div className="absolute top-[40%] left-[21%] w-[46%] h-[18%] z-30 overflow-hidden rounded-sm">
+        {/* EXPANDED GEOMETRY: Widened to 52% and adjusted position to match the visual hole exactly */}
+        <div className="absolute top-[40%] left-[18%] w-[52%] h-[18%] z-30 overflow-hidden rounded-sm">
           
           {/* Loaded Cartridge Spine */}
           {displayEntry && (
@@ -99,11 +98,11 @@ export default function LoadBay({
                 animPhase === "loaded" && "opacity-100 scale-100"
               )}
             >
-              {/* Spine Image */}
+              {/* Spine Image - FORCED STRETCH to fill the expanded slot */}
               <img 
                 src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine_transparent_95539dfa.png"
                 alt="Cartridge Spine"
-                className="absolute inset-0 w-full h-full object-fill drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
+                className="absolute inset-0 w-full h-full object-fill drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] scale-[1.02]" 
               />
               
               {/* --- TEXT OVERLAY (No Beige Box) --- */}
