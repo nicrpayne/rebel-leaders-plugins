@@ -12,5 +12,6 @@
 
 ## Phase 3: Visual Polish (Current)
 - [x] Fix slot background spillover (tighten width/height)
-- [ ] Aggressively tighten slot dimensions (left: 21%, w: 47%)
+- [x] Aggressively tighten slot dimensions (left: 21%, w: 47%)
+- [ ] Reduce width to 46% for perfect symmetry
 - [ ] Verify visual integrity
