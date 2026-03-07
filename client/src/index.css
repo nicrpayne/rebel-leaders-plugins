@@ -55,10 +55,10 @@
 }
 
 :root {
-  /* Rebel Leaders Palette */
-  --forest-deep: #0a120a;
-  --forest: #1a2e1a;
-  --forest-light: #2d4a2d;
+  /* Rebel Leaders Palette - Ancient Rebellion */
+  --forest-deep: #050a05;
+  --forest: #0f1f0f;
+  --forest-light: #1a2e1a;
   
   --gold-dark: #8a6d3b;
   --gold: #c5a059;
@@ -92,7 +92,7 @@
   --destructive: #7f1d1d;
   --destructive-foreground: #fef2f2;
   
-  --border: var(--wood);
+  --border: var(--gold-dark);
   --input: var(--wood);
   --ring: var(--gold);
   
@@ -123,7 +123,7 @@
   --accent-foreground: var(--gold-light);
   --destructive: #7f1d1d;
   --destructive-foreground: #fef2f2;
-  --border: var(--wood);
+  --border: var(--gold-dark);
   --input: var(--wood);
   --ring: var(--gold);
 }
@@ -135,18 +135,18 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     background-image: 
-      linear-gradient(rgba(10, 18, 10, 0.95), rgba(10, 18, 10, 0.95)),
+      linear-gradient(rgba(5, 10, 5, 0.95), rgba(5, 10, 5, 0.95)),
       url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop");
     background-size: cover;
     background-attachment: fixed;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-pixel text-gold uppercase tracking-widest;
+    @apply font-serif text-gold tracking-wide;
   }
   
   p {
-    @apply font-serif text-lg leading-relaxed;
+    @apply font-serif text-lg leading-relaxed text-gold-light/80;
   }
 }
 
@@ -182,19 +182,19 @@
   
   ::-webkit-scrollbar-track {
     background: var(--forest-deep);
-    border-left: 1px solid var(--wood);
+    border-left: 1px solid var(--gold-dark);
   }
   
   ::-webkit-scrollbar-thumb {
-    background: var(--wood);
-    border: 1px solid var(--gold-dark);
+    background: var(--gold-dark);
+    border: 1px solid var(--gold);
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--wood-light);
+    background: var(--gold);
   }
 
-  /* Scanline Effect */
+  /* Scanline Effect - Subtler for this aesthetic */
   .scanlines {
     position: fixed;
     top: 0;
@@ -205,12 +205,37 @@
       to bottom,
       rgba(255,255,255,0),
       rgba(255,255,255,0) 50%,
-      rgba(0,0,0,0.1) 50%,
-      rgba(0,0,0,0.1)
+      rgba(0,0,0,0.05) 50%,
+      rgba(0,0,0,0.05)
     );
     background-size: 100% 4px;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.3;
+    opacity: 0.2;
+  }
+  
+  /* Gold Frame Utility */
+  .gold-frame {
+    @apply border border-gold/30 relative;
+  }
+  
+  .gold-frame::before {
+    content: "";
+    @apply absolute top-0 left-0 w-2 h-2 border-t border-l border-gold;
+  }
+  
+  .gold-frame::after {
+    content: "";
+    @apply absolute top-0 right-0 w-2 h-2 border-t border-r border-gold;
+  }
+  
+  .gold-frame-bottom::before {
+    content: "";
+    @apply absolute bottom-0 left-0 w-2 h-2 border-b border-l border-gold;
+  }
+  
+  .gold-frame-bottom::after {
+    content: "";
+    @apply absolute bottom-0 right-0 w-2 h-2 border-b border-r border-gold;
   }
 }
