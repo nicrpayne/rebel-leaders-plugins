@@ -79,12 +79,10 @@ export default function LoadBay({
         />
 
         {/* --- SLOT AREA --- */}
-        {/* CRITICAL FIX: Moved to z-30 (ABOVE deck face) because the deck image is solid (no transparency). */}
+        {/* z-30 (ABOVE deck face) but using clip-path to mask the cartridge so it looks 'inside' */}
+        {/* Removed the black background to reveal the original deck slot image */}
         <div className="absolute top-[40%] left-[21%] w-[46%] h-[18%] z-30 overflow-hidden rounded-sm">
           
-          {/* Dark Void Background - Simulates the hole */}
-          <div className="absolute inset-0 bg-[#050a05] shadow-[inset_0_0_30px_rgba(0,0,0,1)] z-0" />
-
           {/* Loaded Cartridge Spine */}
           {displayEntry && (
             <div 
@@ -93,33 +91,33 @@ export default function LoadBay({
               className={cn(
                 "absolute inset-0 z-10 flex items-center justify-center transform-gpu will-change-transform",
                 
-                // CSS Keyframe Animations
-                animPhase === "inserting" && "animate-mechanical-insert",
-                animPhase === "ejecting" && "animate-mechanical-eject",
+                // CSS Keyframe Animations - PUSH IN EFFECT
+                animPhase === "inserting" && "animate-in fade-in zoom-in-90 duration-300 ease-out",
+                animPhase === "ejecting" && "animate-out fade-out zoom-out-90 duration-300 ease-in",
                 
                 // Static States
-                animPhase === "loaded" && "translate-y-0"
+                animPhase === "loaded" && "opacity-100 scale-100"
               )}
             >
               {/* Spine Image */}
               <img 
                 src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine_transparent_95539dfa.png"
                 alt="Cartridge Spine"
-                className="absolute inset-0 w-full h-full object-fill drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)]"
+                className="absolute inset-0 w-full h-full object-fill drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
               />
               
-              {/* --- PHYSICAL LABEL OVERLAY --- */}
+              {/* --- TEXT OVERLAY (No Beige Box) --- */}
+              {/* Text sits directly on the cartridge label with shadow for readability */}
               <div 
-                className="absolute w-[65%] h-[55%] bg-[#d8c6a2] flex flex-col items-center justify-center text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_1px_2px_rgba(0,0,0,0.35)]"
+                className="absolute w-[65%] h-[55%] flex flex-col items-center justify-center text-center"
                 style={{
                   transform: 'rotate(-0.5deg)',
-                  backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.1%22/%3E%3C/svg%3E")',
                 }}
               >
-                <h3 className="font-serif text-[#2a1d10] text-[10px] md:text-[11px] font-black uppercase leading-tight tracking-widest mix-blend-multiply opacity-90 px-1">
+                <h3 className="font-serif text-[#2a1d10] text-[10px] md:text-[11px] font-black uppercase leading-tight tracking-widest mix-blend-multiply opacity-90 px-1 drop-shadow-[0_1px_0_rgba(255,255,255,0.4)]">
                   {displayEntry.title}
                 </h3>
-                <span className="font-mono text-[6px] text-[#2a1d10]/60 mt-0.5 tracking-tighter">
+                <span className="font-mono text-[6px] text-[#2a1d10]/60 mt-0.5 tracking-tighter drop-shadow-[0_1px_0_rgba(255,255,255,0.4)]">
                   {displayEntry.id}
                 </span>
               </div>
