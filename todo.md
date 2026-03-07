@@ -11,5 +11,6 @@
 - [x] Move grid item titles below image
 
 ## Phase 3: Visual Polish (Current)
-- [ ] Fix slot background spillover (tighten width/height)
+- [x] Fix slot background spillover (tighten width/height)
+- [ ] Aggressively tighten slot dimensions (left: 21%, w: 47%)
 - [ ] Verify visual integrity
