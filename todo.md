@@ -23,9 +23,9 @@
 - [x] Ensure mobile responsiveness for all new elements
 
 ## Phase 5: Final Review & Delivery (Current)
-- [ ] **Fix Audio:** Implement `CodexAudio` engine (Web Audio API) to replace unreliable MP3s.
-- [ ] **Fix Animation:** Adjust `LoadBay` animation logic to ensure visibility (remove `overflow-hidden` if necessary, check z-index).
-- [ ] **Fix Visuals:** Verify `LoadBay` slot frame blend mode and positioning.
-- [ ] Verify cartridge click interaction based on user feedback
-- [ ] Check browser console for any errors related to audio or animation
-- [ ] Confirm mobile touch interactions work as expected
+- [x] **Fix Audio:** Implement `CodexAudio` engine (Web Audio API) to replace unreliable MP3s.
+- [x] **Fix Animation:** Adjust `LoadBay` animation logic to ensure visibility (remove `overflow-hidden` if necessary, check z-index).
+- [x] **Fix Visuals:** Verify `LoadBay` slot frame blend mode and positioning.
+- [ ] **Enhance Feedback:** Add "Active" glow to selected cartridge in rack.
+- [ ] **Verify Auto-Load:** Ensure recommended protocol loads automatically on arrival.
+- [ ] **Final QA:** Test Click -> Load -> Read flow end-to-end.

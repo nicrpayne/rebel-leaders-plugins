@@ -257,8 +257,8 @@ export default function Codex() {
               className={cn(
                 "group relative aspect-[1200/260] cursor-pointer transition-all duration-200",
                 loadedEntry?.id === entry.id 
-                  ? "translate-y-1 opacity-50 grayscale" 
-                  : "hover:-translate-y-0.5 hover:brightness-110"
+                  ? "translate-y-0 opacity-100 ring-2 ring-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.4)] z-10" 
+                  : "hover:-translate-y-1 hover:brightness-110 opacity-80 hover:opacity-100"
               )}
             >
               {/* Rack Slot Background (Rails) */}
