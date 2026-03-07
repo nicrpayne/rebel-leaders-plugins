@@ -144,23 +144,7 @@ export default function LoadBay({
 
       </div>
 
-      {/* --- MOBILE CONTROLS (Visible only on small screens if image buttons are too small) --- */}
-      <div className="md:hidden absolute -bottom-12 flex gap-4 w-full justify-center pointer-events-auto">
-         <button 
-            onClick={onRead}
-            disabled={!loadedEntry}
-            className="bg-amber-900/80 text-amber-100 px-4 py-2 rounded font-pixel text-xs border border-amber-500/50 active:bg-amber-700"
-         >
-            READ
-         </button>
-         <button 
-            onClick={onEject}
-            disabled={!loadedEntry}
-            className="bg-red-900/80 text-red-100 px-4 py-2 rounded font-pixel text-xs border border-red-500/50 active:bg-red-700"
-         >
-            EJECT
-         </button>
-      </div>
+
 
     </div>
   );

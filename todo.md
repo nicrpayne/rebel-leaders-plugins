@@ -14,5 +14,6 @@
 - [x] Fix slot background spillover (tighten width/height)
 - [x] Aggressively tighten slot dimensions (left: 21%, w: 47%)
 - [x] Reduce width to 46% for perfect symmetry
-- [ ] Reduce height to 18% and adjust top to 40%
+- [x] Reduce height to 18% and adjust top to 40%
+- [ ] Remove redundant mobile fallback buttons
 - [ ] Verify visual integrity
