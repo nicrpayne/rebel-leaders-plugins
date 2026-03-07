@@ -168,6 +168,20 @@ export default function GravityCheck() {
         {/* Main Interface Rack - Centered Cluster with Equal Gutters */}
         <div className="relative flex items-center justify-center min-h-[300px]">
           
+          {/* Horizon Icon Placeholder - Top Right */}
+          <div className="absolute -top-4 -right-4 z-20 hidden md:block">
+            <div className="w-12 h-12 border border-gold/30 bg-black/50 flex items-center justify-center rounded-full backdrop-blur-sm">
+              <span className="text-[8px] font-pixel text-gold/50">ICON</span>
+            </div>
+          </div>
+
+          {/* Sprite Sticker Placeholder - Bottom Left */}
+          <div className="absolute -bottom-6 -left-6 z-20 hidden md:block transform -rotate-12">
+            <div className="w-16 h-16 border-2 border-white/20 bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center shadow-lg backdrop-blur-sm">
+              <span className="text-[8px] font-pixel text-white/70 text-center leading-tight">SPRITE<br/>STICKER</span>
+            </div>
+          </div>
+          
           {/* The Cluster Grid - Mobile Reflow: Meter -> CRT -> Knob */}
           <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-8 md:gap-12 items-center justify-items-center w-full max-w-3xl relative z-10">
             
