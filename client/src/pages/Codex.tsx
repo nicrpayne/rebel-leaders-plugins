@@ -175,7 +175,10 @@ export default function Codex() {
         )}
 
         {/* --- TOP BAR: SEARCH & FILTER --- */}
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between border-b border-amber-900/20 pb-6 sticky top-0 bg-[#080808]/95 backdrop-blur z-30 pt-2">
+        <div className={cn(
+          "flex flex-col md:flex-row gap-4 items-center justify-between border-b border-amber-900/20 pb-6 sticky top-0 bg-[#080808]/95 backdrop-blur z-30 pt-2 transition-opacity duration-500",
+          loadedEntry ? "opacity-30 pointer-events-none" : "opacity-100" // Dim when loaded
+        )}>
           {/* Search Input - "Data Query" */}
           <div className="relative w-full md:w-96 group">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
@@ -214,7 +217,10 @@ export default function Codex() {
 
         {/* --- RECOMMENDATION ENGINE (SIDE-CHAIN PAYOFF) --- */}
         {hasGravityResults && recommendedEntries.length > 0 && !searchQuery && activeCategory === "ALL" && (
-          <div className="mb-4 bg-amber-900/5 border border-amber-900/20 p-4 rounded-sm relative overflow-hidden">
+          <div className={cn(
+            "mb-4 bg-amber-900/5 border border-amber-900/20 p-4 rounded-sm relative overflow-hidden transition-opacity duration-500",
+            loadedEntry ? "opacity-30 pointer-events-none" : "opacity-100" // Dim when loaded
+          )}>
             <div className="absolute top-0 right-0 p-2 opacity-20">
                 <div className="w-16 h-16 border-2 border-amber-500 rounded-full flex items-center justify-center">
                     <div className="w-12 h-12 border border-amber-500 rounded-full" />
@@ -259,7 +265,7 @@ export default function Codex() {
                   </div>
                   
                   <div className="text-amber-500/50 group-hover:text-amber-500">
-                    {loadedEntry?.id === entry.id ? "LOADED" : "LOAD"}
+                    <span className="font-pixel text-xs">&gt;</span>
                   </div>
                 </div>
               ))}
@@ -268,60 +274,64 @@ export default function Codex() {
         )}
 
         {/* --- MAIN LIBRARY GRID - "DATA CARTRIDGES" --- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 px-2">
+        <div className={cn(
+          "grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 px-2 transition-opacity duration-500",
+          loadedEntry ? "opacity-30 pointer-events-none" : "opacity-100" // Dim when loaded
+        )}>
           {filteredEntries.map((entry, index) => (
             <div 
               key={entry.id}
               onClick={() => handleLoad(entry)}
               className={cn(
-                "group relative aspect-[1200/260] cursor-pointer transition-all duration-200",
+                "group relative flex flex-col cursor-pointer transition-all duration-200",
                 loadedEntry?.id === entry.id 
-                  ? "translate-y-0 opacity-100 ring-2 ring-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.4)] z-10" 
+                  ? "opacity-100 z-10 scale-105" 
                   : "hover:-translate-y-1 hover:brightness-110 opacity-80 hover:opacity-100"
               )}
             >
-              {/* Rack Slot Background (Rails) */}
-              <div className="absolute -inset-1 border border-amber-900/10 rounded-sm pointer-events-none" />
-              <div className="absolute top-1/2 -left-3 -translate-y-1/2 font-pixel text-[6px] text-amber-900/30 -rotate-90">
-                {index % 2 === 0 ? `A${Math.floor(index/2) + 1}` : `B${Math.floor(index/2) + 1}`}
-              </div>
-              {/* Cartridge Body Image */}
-              <img 
-                src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_body-C4DC7BQ3WfAArvo6KbDhyY.webp"
-                alt="Cartridge"
-                className="absolute inset-0 w-full h-full object-contain drop-shadow-md"
-              />
+              {/* Cartridge Container */}
+              <div className="relative aspect-[1200/260] w-full mb-2">
+                {/* Rack Slot Background (Rails) */}
+                <div className="absolute -inset-1 border border-amber-900/10 rounded-sm pointer-events-none" />
+                <div className="absolute top-1/2 -left-3 -translate-y-1/2 font-pixel text-[6px] text-amber-900/30 -rotate-90">
+                  {index % 2 === 0 ? `A${Math.floor(index/2) + 1}` : `B${Math.floor(index/2) + 1}`}
+                </div>
+                
+                {/* Cartridge Body Image */}
+                <img 
+                  src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_body-C4DC7BQ3WfAArvo6KbDhyY.webp"
+                  alt="Cartridge"
+                  className="absolute inset-0 w-full h-full object-contain drop-shadow-md"
+                />
 
-              {/* Label Strip Image */}
-              <div className="absolute top-[15%] left-[5%] right-[15%] bottom-[15%] flex items-center">
-                 <img 
-                    src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_label_strip-LwPDAbUA3zduFwXko3kUQC.webp"
-                    alt="Label"
-                    className="absolute inset-0 w-full h-full object-contain opacity-90"
-                 />
-                 
-                 {/* Dynamic Label Text */}
-                 <div className="relative z-20 w-full h-full flex items-center px-4 md:px-8 gap-3">
-                    {/* ID Area */}
-                    <div className="w-[20%] flex justify-center">
-                      <span className="font-mono text-[8px] md:text-[10px] text-amber-900/80 font-bold tracking-tighter rotate-90 md:rotate-0">
-                        {entry.id}
-                      </span>
-                    </div>
-                    
-                    {/* Title Area */}
-                    <div className="flex-1 pl-3 border-l border-amber-900/40 overflow-hidden">
-                      <h3 className="font-serif text-xs md:text-sm text-[#3d2409] font-black truncate uppercase tracking-wide drop-shadow-[0_1px_0_rgba(255,255,255,0.2)]">
-                        {entry.title}
-                      </h3>
-                      <div className="flex items-center gap-2 mt-0.5">
-                         <span className="font-pixel text-[6px] md:text-[8px] text-[#5c3a15] font-bold uppercase truncate">
-                           {entry.category}
-                         </span>
-                      </div>
-                    </div>
-                 </div>
+                {/* Label Strip Image (Decorative Only) */}
+                <div className="absolute top-[15%] left-[5%] right-[15%] bottom-[15%] flex items-center pointer-events-none">
+                   <img 
+                      src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_label_strip-LwPDAbUA3zduFwXko3kUQC.webp"
+                      alt="Label"
+                      className="absolute inset-0 w-full h-full object-contain opacity-90"
+                   />
+                </div>
               </div>
+
+              {/* External Label (For Readability) */}
+              <div className="pl-4 pr-12">
+                <h3 className={cn(
+                  "font-serif text-sm md:text-base font-bold uppercase tracking-wide transition-colors",
+                  loadedEntry?.id === entry.id ? "text-amber-500" : "text-[#888] group-hover:text-amber-100"
+                )}>
+                  {entry.title}
+                </h3>
+                <div className="flex items-center gap-2 mt-1">
+                   <span className="font-pixel text-[8px] text-amber-900/60 uppercase tracking-widest border border-amber-900/20 px-1 rounded-sm">
+                     {entry.category}
+                   </span>
+                   <span className="font-mono text-[8px] text-[#444]">
+                     {entry.id}
+                   </span>
+                </div>
+              </div>
+
             </div>
           ))}
         </div>

@@ -43,10 +43,18 @@ export default function LoadBay({
 
   return (
     <div className={cn(
-      "w-full flex justify-center py-8 relative z-30 pointer-events-none", // pointer-events-none on container to prevent blocking clicks below
+      "w-full flex flex-col items-center py-8 relative z-30 pointer-events-none", // pointer-events-none on container to prevent blocking clicks below
       className
     )}>
       
+      {/* --- STATUS OVERLAY (Above Deck) --- */}
+      <div className={cn(
+        "mb-4 font-pixel text-xs md:text-sm tracking-[0.2em] transition-all duration-500 text-center",
+        loadedEntry ? "text-amber-500 opacity-100" : "text-amber-900/30 opacity-0"
+      )}>
+        STATUS: LOADED // {loadedEntry?.title || "EMPTY"}
+      </div>
+
       {/* --- 8-TRACK DECK FACE (WIDER) --- */}
       <div className="relative w-full max-w-[1000px] aspect-[21/9] shadow-2xl pointer-events-auto"> {/* pointer-events-auto on the deck itself */}
         
@@ -61,9 +69,9 @@ export default function LoadBay({
         {/* Re-aligned for the new wider image. 
             Slot is roughly centered horizontally, slightly lower than vertical center.
             Based on 21:9 image, slot is roughly 50% width, centered. */}
-        <div className="absolute top-[38%] left-[20%] w-[50%] h-[22%] z-30 flex items-center justify-center overflow-hidden">
+        <div className="absolute top-[38%] left-[20%] w-[50%] h-[22%] z-30 overflow-hidden">
           
-          {/* Internal Slot Darkness/Shadow */}
+          {/* Internal Slot Darkness/Shadow - NO BORDER */}
           <div className="absolute inset-0 bg-black/90 shadow-[inset_0_0_30px_rgba(0,0,0,1)] rounded-sm z-0" />
 
           {/* Loaded Cartridge Spine */}
@@ -71,11 +79,11 @@ export default function LoadBay({
             <div 
               key={displayEntry.id} 
               className={cn(
-                "relative w-[96%] h-[88%] shadow-xl origin-bottom z-10",
-                // Use CSS Keyframe Animations for guaranteed movement
-                animState === "inserting" && "animate-slide-up",
-                animState === "loaded" && "translate-y-0 scale-100 opacity-100", // Static final state
-                animState === "ejecting" && "animate-slide-down"
+                "absolute left-0 right-0 bottom-0 h-[88%] shadow-xl z-10 transform-gpu",
+                // Mechanical Animation: Translate Y only, no scaling
+                animState === "inserting" && "animate-mechanical-insert",
+                animState === "loaded" && "translate-y-0", // Static final state
+                animState === "ejecting" && "animate-mechanical-eject"
               )}
             >
               {/* Spine Image */}
@@ -85,13 +93,13 @@ export default function LoadBay({
                 className="absolute inset-0 w-full h-full object-fill rounded-sm brightness-90"
               />
               
-              {/* Dynamic Label Text on Spine */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-[70%] h-[60%] flex flex-col items-center justify-center text-center overflow-hidden">
-                  <h3 className="font-serif text-[#3d342b] text-[10px] md:text-sm font-bold uppercase leading-tight tracking-widest opacity-80 mix-blend-multiply drop-shadow-sm">
+              {/* Crisp Text Overlay on Spine */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-[80%] flex flex-col items-center justify-center text-center">
+                  <h3 className="font-serif text-[#2a1d10] text-[10px] md:text-xs font-black uppercase leading-tight tracking-widest drop-shadow-[0_1px_0_rgba(255,255,255,0.3)] mix-blend-multiply opacity-90">
                     {displayEntry.title}
                   </h3>
-                  <span className="font-mono text-[6px] md:text-[8px] text-[#3d342b]/60 mt-1">
+                  <span className="font-mono text-[6px] md:text-[8px] text-[#2a1d10]/60 mt-0.5">
                     {displayEntry.id}
                   </span>
                 </div>

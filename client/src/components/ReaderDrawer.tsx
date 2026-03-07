@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { CodexEntry } from "@/lib/codex-schema";
 
@@ -37,8 +38,9 @@ export default function ReaderDrawer({
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-[100] flex justify-end">
+  // Use React Portal to render at the body level, bypassing all parent stacking contexts
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex justify-end font-sans">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300"
@@ -46,7 +48,7 @@ export default function ReaderDrawer({
       />
       
       {/* Drawer Panel */}
-      <div className="relative w-full md:max-w-2xl h-full flex flex-col animate-in slide-in-from-right duration-300 z-50">
+      <div className="relative w-full md:max-w-2xl h-full flex flex-col animate-in slide-in-from-right duration-300 z-50 shadow-2xl">
         
         {/* Drawer Frame Background */}
         <div className="absolute inset-0 pointer-events-none z-0">
@@ -59,7 +61,7 @@ export default function ReaderDrawer({
         </div>
 
         {/* Content Container (Offset for frame) */}
-        <div className="relative z-10 flex flex-col h-full pl-8 md:pl-12 bg-[#080808] ml-2">
+        <div className="relative z-10 flex flex-col h-full pl-8 md:pl-12 bg-[#080808] ml-2 border-l border-[#222]">
         
           {/* Header - Tape Deck Style */}
           <div className="p-6 md:p-8 border-b border-[#222] bg-[#0c0c0c] relative overflow-hidden flex-shrink-0">
@@ -149,7 +151,6 @@ export default function ReaderDrawer({
                               <button
                                 onClick={() => {
                                   navigator.clipboard.writeText(entry.script);
-                                  // Could add a toast here if available, or just change button text temporarily
                                   const btn = document.getElementById("copy-btn-primary");
                                   if (btn) {
                                      const originalText = btn.innerText;
@@ -268,6 +269,7 @@ export default function ReaderDrawer({
 
         </div> {/* End Content Container */}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
