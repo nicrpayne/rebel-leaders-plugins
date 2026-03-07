@@ -1,26 +1,27 @@
-# The Codex Refactor: Protocol Loader Instrument
+# The Codex Redesign: Protocol Loader Instrument
 
-## Phase 1: Component Development (Completed)
-- [x] Create `LoadBay.tsx`: A persistent top strip with "Load Slot" and Transport Controls (READ, RUN, EJECT).
-- [x] Update `CodexShell.tsx`: Remove the sidebar, integrate `LoadBay` at the top, and simplify the layout.
-- [x] Redesign `CodexEntry` (Cartridge): Make them uniform height, physical-looking cartridges with grip texture.
-- [x] Implement 2-Column Grid: Replace masonry layout with a strict 2-column rack grid (1 column on mobile).
+## Phase 1: Asset Generation (Completed)
+- [x] Generate `codex_slot_frame.png`: Matte black anodized metal frame for the Load Bay.
+- [x] Generate `codex_cartridge_body.png`: Matte black polymer cartridge body with grip texture.
+- [x] Generate `codex_label_strip.png`: Amber label strip overlay for cartridges.
+- [x] Generate `codex_reader_drawer_frame.png`: Slide-out drawer frame with handle lip.
+- [x] Generate `codex_punchcard_header.png`: Optional punch-card header strip.
 
-## Phase 2: Interaction Design (Completed)
-- [x] Implement "Load" Logic: Clicking a cartridge updates the `LoadBay` state instead of opening a modal.
-- [x] Add Insert Animation: Visual feedback when a cartridge is loaded into the bay.
-- [x] Update Empty State: `LoadBay` shows "INSERT PROTOCOL" when empty.
+## Phase 2: Component Development (Completed)
+- [x] Update `LoadBay.tsx`: Implement the new visual design using generated assets.
+- [x] Update `CodexEntry` (Cartridge): Use the cartridge body and label strip assets.
+- [x] Refine Grid Layout: Ensure strict 2-column rack layout.
 
-## Phase 3: Feature Implementation (Completed)
-- [x] Create `ReaderDrawer.tsx`: A right-side slide-out drawer (not a modal) for reading content.
+## Phase 3: Interaction Design (Completed)
+- [x] Implement "Insert" Animation: Cartridge slides into the Load Bay slot.
+- [x] Implement "Eject" Animation: Cartridge slides out or disappears.
+- [x] Add Sound Effects: Ensure load, eject, and click sounds are wired up.
+
+## Phase 4: Feature Implementation (Completed)
+- [x] Update `ReaderDrawer.tsx`: Use the drawer frame asset and implement slide-out logic.
 - [x] Implement Tabs: SCRIPT | PROTOCOL | WHY.
-- [x] Implement Run Mode: Convert protocol steps into an interactive checklist.
+- [x] Implement Run Mode: Interactive checklist functionality.
 
-## Phase 4: Integration & Polish (Completed)
-- [x] Mobile Responsiveness: Ensure Load Bay is accessible and Drawer works as a full-screen sheet.
-- [x] Sound Design: Add "Tape Load", "Eject", and "Switch Click" sounds.
-- [x] Final QA: Verify the "Load -> Read -> Run" flow.
-
-## Phase 5: Final Review & Delivery (Current)
-- [ ] Save Final Checkpoint.
-- [ ] Deliver Code Blocks.
+## Phase 5: Integration & Polish (Current)
+- [ ] Mobile Responsiveness: Ensure all assets scale correctly on small screens.
+- [ ] Final QA: Verify the "Load -> Read -> Run" flow and overall aesthetic.

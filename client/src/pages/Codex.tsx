@@ -229,66 +229,48 @@ export default function Codex() {
               key={entry.id}
               onClick={() => handleLoad(entry)}
               className={cn(
-                "group relative bg-[#0a0a0a] border p-0 cursor-pointer transition-all duration-200 overflow-hidden",
+                "group relative aspect-[1200/260] cursor-pointer transition-all duration-200",
                 loadedEntry?.id === entry.id 
-                  ? "border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.2)] translate-y-0.5" 
-                  : "border-[#222] hover:border-amber-500/40 hover:-translate-y-0.5"
+                  ? "translate-y-1 opacity-50 grayscale" 
+                  : "hover:-translate-y-1 hover:brightness-110"
               )}
             >
-              {/* Cartridge Label Top */}
-              <div className={cn(
-                "h-8 border-b flex items-center justify-between px-3 transition-colors",
-                loadedEntry?.id === entry.id 
-                  ? "bg-amber-900/20 border-amber-500/50" 
-                  : "bg-[#111] border-[#222] group-hover:bg-amber-900/10"
-              )}>
-                 <span className={cn(
-                   "text-[8px] font-pixel transition-colors",
-                   loadedEntry?.id === entry.id ? "text-amber-500" : "text-[#555] group-hover:text-amber-500/70"
-                 )}>{entry.id}</span>
-                 <div className="flex gap-0.5">
-                    <div className="w-1 h-1 bg-[#333] rounded-full" />
-                    <div className="w-1 h-1 bg-[#333] rounded-full" />
-                    <div className="w-1 h-1 bg-[#333] rounded-full" />
-                 </div>
-              </div>
+              {/* Cartridge Body Image */}
+              <img 
+                src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_body-C4DC7BQ3WfAArvo6KbDhyY.webp"
+                alt="Cartridge"
+                className="absolute inset-0 w-full h-full object-contain drop-shadow-md"
+              />
 
-              {/* Cartridge Body */}
-              <div className="p-4 relative">
-                  {/* Decorative Lines */}
-                  <div className="absolute top-0 bottom-0 left-2 w-[1px] bg-[#151515]" />
-                  <div className="absolute top-0 bottom-0 right-2 w-[1px] bg-[#151515]" />
-
-                  <div className="pl-4 pr-2">
-                    <h4 className={cn(
-                      "font-mono text-sm transition-colors mb-2 line-clamp-1",
-                      loadedEntry?.id === entry.id ? "text-amber-400" : "text-[#ccc] group-hover:text-amber-400"
-                    )}>
-                        {entry.title}
-                    </h4>
-                    <p className="text-[10px] text-[#666] font-mono leading-relaxed line-clamp-2 mb-3 group-hover:text-[#888]">
-                        {entry.use_when}
-                    </p>
-                    
-                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#1a1a1a] border-dashed">
-                        <span className="text-[8px] font-pixel text-[#444] uppercase">{entry.category}</span>
-                        <div className={cn(
-                          "w-2 h-2 border transition-colors shadow-[0_0_5px_rgba(0,0,0,0)]",
-                          loadedEntry?.id === entry.id 
-                            ? "bg-amber-500 border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]" 
-                            : "bg-[#111] border-[#333] group-hover:bg-amber-500 group-hover:border-amber-500 group-hover:shadow-[0_0_8px_rgba(245,158,11,0.8)]"
-                        )} />
+              {/* Label Strip Image */}
+              <div className="absolute top-[15%] left-[5%] right-[15%] bottom-[15%] flex items-center">
+                 <img 
+                    src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_label_strip-LwPDAbUA3zduFwXko3kUQC.webp"
+                    alt="Label"
+                    className="absolute inset-0 w-full h-full object-contain opacity-90"
+                 />
+                 
+                 {/* Dynamic Label Text */}
+                 <div className="relative z-20 w-full h-full flex items-center px-4 md:px-8 gap-3">
+                    {/* ID Area */}
+                    <div className="w-[20%] flex justify-center">
+                      <span className="font-mono text-[8px] md:text-[10px] text-amber-900/80 font-bold tracking-tighter rotate-90 md:rotate-0">
+                        {entry.id}
+                      </span>
                     </div>
-                  </div>
-              </div>
-              
-              {/* Cartridge Bottom Grip */}
-              <div className="h-2 bg-[#0e0e0e] border-t border-[#1a1a1a] flex justify-center gap-1 items-center">
-                 <div className="w-[1px] h-full bg-[#222]" />
-                 <div className="w-[1px] h-full bg-[#222]" />
-                 <div className="w-[1px] h-full bg-[#222]" />
-                 <div className="w-[1px] h-full bg-[#222]" />
-                 <div className="w-[1px] h-full bg-[#222]" />
+                    
+                    {/* Title Area */}
+                    <div className="flex-1 pl-3 border-l border-amber-900/40 overflow-hidden">
+                      <h3 className="font-serif text-xs md:text-sm text-[#3d2409] font-black truncate uppercase tracking-wide drop-shadow-[0_1px_0_rgba(255,255,255,0.2)]">
+                        {entry.title}
+                      </h3>
+                      <div className="flex items-center gap-2 mt-0.5">
+                         <span className="font-pixel text-[6px] md:text-[8px] text-[#5c3a15] font-bold uppercase truncate">
+                           {entry.category}
+                         </span>
+                      </div>
+                    </div>
+                 </div>
               </div>
             </div>
           ))}
