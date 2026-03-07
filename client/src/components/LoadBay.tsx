@@ -79,8 +79,9 @@ export default function LoadBay({
         />
 
         {/* --- SLOT AREA --- */}
-        {/* EXPANDED GEOMETRY: Widened to 52% and adjusted position to match the visual hole exactly */}
-        <div className="absolute top-[40%] left-[18%] w-[52%] h-[18%] z-30 overflow-hidden rounded-sm">
+        {/* REFINED GEOMETRY: Narrowed to 48% (from 52%) and increased height to 20% (from 18%) */}
+        {/* Left adjusted to 20% to center the narrower slot */}
+        <div className="absolute top-[39%] left-[20%] w-[48%] h-[20%] z-30 overflow-hidden rounded-sm">
           
           {/* Loaded Cartridge Spine */}
           {displayEntry && (
