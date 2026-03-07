@@ -61,7 +61,8 @@ export default function LoadBay({
         {/* Re-aligned for the new wider image. 
             Slot is roughly centered horizontally, slightly lower than vertical center.
             Based on 21:9 image, slot is roughly 50% width, centered. */}
-        <div className="absolute top-[38%] left-[20%] w-[50%] h-[22%] z-30 flex items-center justify-center overflow-hidden">
+        {/* DEBUG: Removed overflow-hidden to see if cartridge is clipped */}
+        <div className="absolute top-[38%] left-[20%] w-[50%] h-[22%] z-30 flex items-center justify-center border border-green-500/50">
           
           {/* Internal Slot Darkness/Shadow */}
           <div className="absolute inset-0 bg-black/90 shadow-[inset_0_0_30px_rgba(0,0,0,1)] rounded-sm z-0" />
@@ -71,12 +72,12 @@ export default function LoadBay({
             <div 
               key={displayEntry.id} 
               className={cn(
-                "relative w-[96%] h-[88%] transition-all duration-300 ease-out shadow-xl origin-bottom z-10",
+                "relative w-[96%] h-[88%] transition-all duration-300 ease-out shadow-xl origin-bottom z-10 bg-red-500", // DEBUG: Added bg-red-500 fallback
                 // Simplified 2D Slide Animation
                 // Inserting: Starts small and low (outside), moves to normal size and position
-                animState === "inserting" && "translate-y-[100%] scale-90 opacity-0",
+                animState === "inserting" && "translate-y-[100%] scale-90 opacity-100", // DEBUG: Force opacity-100
                 animState === "loaded" && "translate-y-0 scale-100 opacity-100",
-                animState === "ejecting" && "translate-y-[100%] scale-90 opacity-0"
+                animState === "ejecting" && "translate-y-[100%] scale-90 opacity-100" // DEBUG: Force opacity-100
               )}
             >
               {/* Spine Image */}
@@ -154,13 +155,6 @@ export default function LoadBay({
             EJECT
          </button>
       </div>
-
-      {/* --- DEBUG STATUS OVERLAY (Temporary) --- */}
-      {/* Remove this after confirming it works */}
-      {/* <div className="absolute top-0 left-0 bg-black/50 text-white text-xs p-2 z-50 pointer-events-none">
-        STATUS: {loadedEntry ? `LOADED: ${loadedEntry.title}` : "EMPTY"} <br/>
-        ANIM: {animState}
-      </div> */}
 
     </div>
   );
