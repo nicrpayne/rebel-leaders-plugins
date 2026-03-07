@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useEffect, useState, useRef } from "react";
 
 interface VUMeterProps {
   value: number; // 0 to 100
@@ -7,85 +8,148 @@ interface VUMeterProps {
 }
 
 export default function VUMeter({ value, label, className }: VUMeterProps) {
-  // Map 0-100 to -35deg to +35deg (Reduced Range to prevent "clipped" look)
-  // Initial resting state is -35deg
-  const rotation = -35 + (value / 100) * 70;
+  // Realistic Needle Physics
+  const [needleRotation, setNeedleRotation] = useState(-45);
+  const requestRef = useRef<number>(0);
+  const rotationRef = useRef(-45);
+  const velocityRef = useRef(0);
+  
+  useEffect(() => {
+    // Map 0-100 to -45deg to +45deg (Standard VU arc)
+    const targetRotation = -45 + (value / 100) * 90;
+    
+    // Physics constants
+    const tension = 0.08; // Spring stiffness (lower = looser)
+    const damping = 0.85; // Friction (higher = less bounce)
+    
+    const animate = () => {
+      const diff = targetRotation - rotationRef.current;
+      
+      // Spring physics
+      velocityRef.current += diff * tension;
+      velocityRef.current *= damping;
+      rotationRef.current += velocityRef.current;
+      
+      // Clamp rotation to physical limits (-50 to +50)
+      rotationRef.current = Math.max(-50, Math.min(50, rotationRef.current));
+      
+      setNeedleRotation(rotationRef.current);
+      
+      // Continue animation if there's still significant movement or distance
+      if (Math.abs(diff) > 0.1 || Math.abs(velocityRef.current) > 0.1) {
+        requestRef.current = requestAnimationFrame(animate);
+      }
+    };
+    
+    requestRef.current = requestAnimationFrame(animate);
+    
+    return () => {
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    };
+  }, [value]);
 
   return (
-    <div className={cn("relative w-48 h-32 bg-[#111] rounded-lg border-4 border-[#222] shadow-[0_10px_20px_rgba(0,0,0,0.8)] overflow-hidden", className)}>
+    <div className={cn("relative w-48 h-32 bg-[#181818] rounded-sm border border-[#222] shadow-[0_4px_10px_rgba(0,0,0,0.8)] overflow-hidden select-none", className)}>
       
       {/* 1. CHASSIS / BACKPLATE (Dark Metal) */}
-      <div className="absolute inset-0 bg-[#1a1a1a] shadow-[inset_0_0_20px_rgba(0,0,0,1)]" />
+      <div className="absolute inset-0 bg-[#151515]" />
       
-      {/* Inner Bevel (Depth Cue) */}
-      <div className="absolute inset-0 border-t border-black/50 border-b border-white/10 pointer-events-none" />
+      {/* Inner Shadow (Depth) */}
+      <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,1)] z-10 pointer-events-none" />
 
-      {/* 2. DIAL FACE (Markings & Branding) */}
-      <div className="absolute inset-0 flex items-end justify-center pb-4">
+      {/* 2. DIAL FACE (Markings) */}
+      <div className="absolute inset-0 z-0 flex items-end justify-center pb-2">
         <svg viewBox="0 0 200 120" className="w-full h-full overflow-visible">
-          {/* Tick Marks (Radial Lines, NOT Needles) */}
+          {/* Arc Background */}
+          <path 
+            d="M 30 100 A 70 70 0 0 1 170 100" 
+            fill="none" 
+            stroke="#222" 
+            strokeWidth="1" 
+            strokeLinecap="round"
+            strokeDasharray="2 2"
+          />
+          
+          {/* Tick Marks */}
           {[...Array(11)].map((_, i) => {
-            const rot = -35 + (i * 7); // Matches new rotation range
-            const isRed = i > 7;
+            const rot = -45 + (i * 9); // 90 degree total range / 10 intervals
+            const isRed = i >= 7; // Top 30% is red zone
+            const isMajor = i % 5 === 0; // 0, 5, 10 are major ticks
+            
+            // Calculate tick positions based on rotation
+            // Center is 100, 110 (slightly below bottom edge for pivot)
+            const angleRad = (rot - 90) * (Math.PI / 180);
+            const innerR = 65;
+            const outerR = isMajor ? 85 : 75;
+            
+            const x1 = 100 + innerR * Math.cos(angleRad);
+            const y1 = 110 + innerR * Math.sin(angleRad);
+            const x2 = 100 + outerR * Math.cos(angleRad);
+            const y2 = 110 + outerR * Math.sin(angleRad);
+            
+            // Text Position
+            const textR = 95;
+            const textX = 100 + textR * Math.cos(angleRad);
+            const textY = 110 + textR * Math.sin(angleRad);
+
             return (
-              <line
-                key={i}
-                x1="100" y1="100" x2="100" y2="85"
-                stroke={isRed ? "#ef4444" : "#c5a059"}
-                strokeWidth={i % 5 === 0 ? 2 : 1}
-                transform={`rotate(${rot} 100 100)`}
-                className="opacity-90" // Increased contrast
-              />
+              <g key={i}>
+                <line
+                  x1={x1} y1={y1} x2={x2} y2={y2}
+                  stroke={isRed ? "#ef4444" : "#e5e5e5"}
+                  strokeWidth={isMajor ? 2 : 1}
+                  className="opacity-80"
+                />
+                {/* Numbers for Major Ticks */}
+                {isMajor && (
+                  <text 
+                    x={textX} 
+                    y={textY} 
+                    fill={isRed ? "#ef4444" : "#888"}
+                    fontSize="8"
+                    fontFamily="monospace"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fontWeight="bold"
+                  >
+                    {i === 0 ? "-20" : i === 5 ? "0" : "+3"}
+                  </text>
+                )}
+              </g>
             );
           })}
           
-          {/* Arc Line */}
-          <path d="M 40 100 A 60 60 0 0 1 160 100" fill="none" stroke="#444" strokeWidth="1" strokeDasharray="2 2" />
+          {/* VU Label */}
+          <text x="100" y="85" fill="#444" fontSize="10" fontFamily="monospace" textAnchor="middle" fontWeight="bold">VU</text>
         </svg>
-
-        {/* Embossed Brand Plate (Bottom Center) - REMOVED BRANDING */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-[#151515] px-3 py-1 rounded-sm border border-[#222] shadow-[inset_0_1px_2px_rgba(0,0,0,0.8),0_1px_0_rgba(255,255,255,0.05)]">
-          <span className="text-[8px] font-pixel text-[#333] tracking-widest uppercase drop-shadow-[0_1px_0_rgba(255,255,255,0.05)]">
-            SIGNAL
-          </span>
-        </div>
-
-        {/* Serial Number (Corner Detail) */}
-        <div className="absolute bottom-2 right-2 text-[6px] font-pixel text-[#333] tracking-widest">
-          RL-OS v1.0
-        </div>
-        
-        {/* Label (Moved out of the way) */}
-        {label && (
-          <div className="absolute bottom-2 left-2 text-[6px] font-pixel text-[#555] tracking-widest uppercase">
-            {label}
-          </div>
-        )}
       </div>
 
       {/* 3. NEEDLE (Single, Red, Shadowed) */}
       <div 
-        className="absolute bottom-[-10%] left-1/2 w-0.5 h-[85%] bg-[#ef4444] origin-bottom transition-transform duration-500 ease-out z-10"
+        className="absolute bottom-[-10px] left-1/2 w-[2px] h-[90px] bg-[#ef4444] origin-bottom z-20 pointer-events-none"
         style={{ 
-          transform: `translateX(-50%) rotate(${rotation}deg)`,
-          filter: "drop-shadow(2px 2px 2px rgba(0,0,0,0.5))" // Shadow lifts it off the dial
+          transform: `translateX(-50%) rotate(${needleRotation}deg)`,
+          filter: "drop-shadow(2px 2px 1px rgba(0,0,0,0.4))", // Shadow lifts it off the dial
+          transition: "transform 0.016s linear" // Smooth out the JS animation slightly
         }}
-      >
-        {/* Needle Hub (Pivot Point - Metallic Cap) */}
-        <div className="w-3 h-3 bg-gradient-to-br from-[#666] to-[#222] rounded-full absolute bottom-0 left-1/2 -translate-x-1/2 border border-[#111] shadow-lg" />
+      />
+      
+      {/* Pivot Cap (Metal Circle) */}
+      <div className="absolute bottom-[-12px] left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-[#333] to-[#000] border border-[#111] shadow-lg z-30 flex items-center justify-center pointer-events-none">
+         <div className="w-2 h-2 rounded-full bg-[#111] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]" />
       </div>
 
       {/* 4. GLASS OVERLAY (Reflection & Vignette) */}
-      <div className="absolute inset-0 pointer-events-none z-20">
-        {/* Diagonal Reflection */}
-        <div className="absolute top-0 left-0 w-full h-[40%] bg-gradient-to-b from-white/5 to-transparent transform -skew-x-12 origin-top-left" />
+      <div className="absolute inset-0 pointer-events-none z-40 rounded-sm overflow-hidden mix-blend-screen opacity-30">
+        {/* Diagonal Reflection (Sharp) */}
+        <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] bg-gradient-to-b from-white/10 via-transparent to-transparent transform -rotate-45 pointer-events-none" />
         
-        {/* Vignette (Dark Corners) */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_50%,rgba(0,0,0,0.6)_100%)]" />
-        
-        {/* Inner Shadow (Bevel Depth) */}
-        <div className="absolute inset-0 shadow-[inset_0_0_10px_rgba(0,0,0,0.8)]" />
+        {/* Top Highlight */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/30" />
       </div>
+      
+      {/* Scratches/Dust (Subtle Texture) */}
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.05] mix-blend-overlay pointer-events-none z-50" />
 
     </div>
   );
