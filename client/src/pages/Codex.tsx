@@ -20,25 +20,49 @@ export default function Codex() {
   useEffect(() => {
     // Check for signal transmission
     const params = new URLSearchParams(window.location.search);
-    if (params.get("signal") === "received") {
+    const signal = params.get("signal");
+    const bottleneck = params.get("bottleneck");
+
+    if (signal === "received") {
       setIsReceivingSignal(true);
       // Play signal sound
       const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"); // Placeholder SFX
       audio.volume = 0.2;
       audio.play().catch(() => {});
       
+      // Auto-Load Logic
+      if (bottleneck) {
+        // Map bottleneck to specific protocol ID
+        let targetId = "";
+        switch (bottleneck) {
+          case "IDENTITY": targetId = "MOVE_NAME_THE_COST"; break; // "Truth Weather" or similar
+          case "RELATIONSHIP": targetId = "MOVE_REPAIR_48H"; break;
+          case "VISION": targetId = "MOVE_STOP_LIST"; break;
+          case "CULTURE": targetId = "MOVE_MEETING_REWRITE"; break;
+          default: targetId = "MOVE_REPAIR_48H";
+        }
+
+        const targetEntry = CODEX_ENTRIES.find(e => e.id === targetId) || CODEX_ENTRIES[0];
+        
+        // Sequence: Signal (2.5s) -> Load (0.5s) -> Ready
+        setTimeout(() => {
+          setLoadedEntry(targetEntry);
+          playSound("load");
+          setIsReceivingSignal(false);
+        }, 3000); // Increased to 3s for better pacing
+      } else {
+         setTimeout(() => setIsReceivingSignal(false), 2500);
+      }
+      
       // Clear URL
       window.history.replaceState({}, "", "/codex");
-      
-      // End animation after delay
-      setTimeout(() => setIsReceivingSignal(false), 2500);
     }
 
     const savedResults = localStorage.getItem("gravityCheckResults");
     if (savedResults) {
       setHasGravityResults(true);
-      // TODO: Implement real filtering logic based on savedResults (bottleneck/leak_type)
-      // For now, just show the first 2 as "Recommended"
+      // Filter recommendations based on bottleneck if available, otherwise show generic
+      // For now, we'll just keep the existing logic or improve it later
       setRecommendedEntries(CODEX_ENTRIES.slice(0, 2));
     }
   }, []);
@@ -118,13 +142,15 @@ export default function Codex() {
         
         {/* --- SIGNAL ACQUISITION OVERLAY --- */}
         {isReceivingSignal && (
-          <div className="absolute inset-0 z-50 bg-black/90 flex flex-col items-center justify-center font-pixel text-amber-500 backdrop-blur-sm">
-            <div className="text-4xl mb-4 animate-pulse tracking-[0.2em]">INCOMING DATA STREAM</div>
-            <div className="w-64 h-2 bg-amber-900/30 rounded-full overflow-hidden border border-amber-900/50">
-              <div className="h-full bg-amber-500 animate-[width_2s_ease-in-out_forwards] shadow-[0_0_10px_rgba(245,158,11,0.8)]" style={{ width: "0%" }} />
+          <div className="absolute inset-0 z-50 bg-black/95 flex flex-col items-center justify-center font-pixel text-amber-500 backdrop-blur-md">
+            <div className="text-2xl md:text-4xl mb-8 animate-pulse tracking-[0.2em] text-center px-4">
+              SIGNAL RECEIVED: {new URLSearchParams(window.location.search).get("bottleneck") || "UNKNOWN"}
             </div>
-            <div className="mt-4 text-xs tracking-widest opacity-70 font-mono">
-              DECRYPTING PROTOCOLS // 100%
+            <div className="text-sm md:text-base mb-4 text-amber-500/80 tracking-widest">
+              AUTO-LOADING PROTOCOL...
+            </div>
+            <div className="w-64 h-1 bg-amber-900/30 rounded-full overflow-hidden border border-amber-900/50">
+              <div className="h-full bg-amber-500 animate-[width_2.5s_ease-in-out_forwards] shadow-[0_0_10px_rgba(245,158,11,0.8)]" style={{ width: "0%" }} />
             </div>
           </div>
         )}
@@ -223,8 +249,8 @@ export default function Codex() {
         )}
 
         {/* --- MAIN LIBRARY GRID - "DATA CARTRIDGES" --- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredEntries.map((entry) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 px-2">
+          {filteredEntries.map((entry, index) => (
             <div 
               key={entry.id}
               onClick={() => handleLoad(entry)}
@@ -232,9 +258,14 @@ export default function Codex() {
                 "group relative aspect-[1200/260] cursor-pointer transition-all duration-200",
                 loadedEntry?.id === entry.id 
                   ? "translate-y-1 opacity-50 grayscale" 
-                  : "hover:-translate-y-1 hover:brightness-110"
+                  : "hover:-translate-y-0.5 hover:brightness-110"
               )}
             >
+              {/* Rack Slot Background (Rails) */}
+              <div className="absolute -inset-1 border border-amber-900/10 rounded-sm pointer-events-none" />
+              <div className="absolute top-1/2 -left-3 -translate-y-1/2 font-pixel text-[6px] text-amber-900/30 -rotate-90">
+                {index % 2 === 0 ? `A${Math.floor(index/2) + 1}` : `B${Math.floor(index/2) + 1}`}
+              </div>
               {/* Cartridge Body Image */}
               <img 
                 src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_body-C4DC7BQ3WfAArvo6KbDhyY.webp"

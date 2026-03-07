@@ -81,7 +81,25 @@ export default function Results() {
     
     // Simulate transmission delay
     setTimeout(() => {
-      setLocation("/codex?signal=received");
+      // Determine the bottleneck based on the lowest score or "leak"
+      // The results object already has a "leak" field which seems to be the bottleneck description
+      // But we need the category (Identity, Relationship, Vision, Culture)
+      // Let's infer it from the lowest score if not explicitly available as a category key
+      
+      let bottleneck = "CULTURE"; // Default
+      if (results) {
+        const scores = [
+          { id: "IDENTITY", val: results.identity },
+          { id: "RELATIONSHIP", val: results.relationship },
+          { id: "VISION", val: results.vision },
+          { id: "CULTURE", val: results.culture }
+        ];
+        // Find lowest score
+        scores.sort((a, b) => a.val - b.val);
+        bottleneck = scores[0].id;
+      }
+      
+      setLocation(`/codex?signal=received&bottleneck=${bottleneck}`);
     }, 1500);
   };
 

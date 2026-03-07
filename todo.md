@@ -1,27 +1,38 @@
 # The Codex Redesign: Protocol Loader Instrument
 
-## Phase 1: Asset Generation (Completed)
-- [x] Generate `codex_slot_frame.png`: Matte black anodized metal frame for the Load Bay.
-- [x] Generate `codex_cartridge_body.png`: Matte black polymer cartridge body with grip texture.
-- [x] Generate `codex_label_strip.png`: Amber label strip overlay for cartridges.
-- [x] Generate `codex_reader_drawer_frame.png`: Slide-out drawer frame with handle lip.
-- [x] Generate `codex_punchcard_header.png`: Optional punch-card header strip.
+## Phase 1: Interaction Design: Auto-Load Sequence & Signal Handoff (Current)
+- [ ] Update `Results.tsx`: Pass the bottleneck type (Identity, Relationship, Vision, Culture) to the Codex route via state or query param.
+- [ ] Update `Codex.tsx`:
+    - [ ] Implement `useEffect` to check for incoming signal.
+    - [ ] Create "Signal Acquisition" overlay/state: `SIGNAL RECEIVED: [BOTTLENECK]`.
+    - [ ] Implement auto-selection logic: Map bottleneck to specific protocol ID.
+    - [ ] Trigger `LoadBay` insert animation automatically.
+    - [ ] Set `LoadBay` state to `READY` (pulse READ button).
+- [ ] Refine `LoadBay.tsx`: Add `pulse` prop to READ button for the "Ready" state.
 
-## Phase 2: Component Development (Completed)
-- [x] Update `LoadBay.tsx`: Implement the new visual design using generated assets.
-- [x] Update `CodexEntry` (Cartridge): Use the cartridge body and label strip assets.
-- [x] Refine Grid Layout: Ensure strict 2-column rack layout.
+## Phase 2: Visual Refinement: Load Bay & Cartridge Rack Polish
+- [ ] Update `LoadBay.tsx`:
+    - [ ] Implement "EMPTY" state: `INSERT PROTOCOL` + `Select a cartridge below` + scanline animation.
+    - [ ] Implement "LOADED" state: Cartridge partially inserted, `SIGNAL LOCKED` light, dynamic label.
+- [ ] Update `CodexEntry` (Cartridge Rack):
+    - [ ] Add slot outlines/rails background.
+    - [ ] Add bay labels (A1, A2, B1, B2...).
+    - [ ] Reduce gap between cartridges to feel like a dense rack.
+- [ ] Visual Polish: Desaturate and soften cartridge assets to match the retro aesthetic (CSS filters).
 
-## Phase 3: Interaction Design (Completed)
-- [x] Implement "Insert" Animation: Cartridge slides into the Load Bay slot.
-- [x] Implement "Eject" Animation: Cartridge slides out or disappears.
-- [x] Add Sound Effects: Ensure load, eject, and click sounds are wired up.
+## Phase 3: Feature Implementation: Copy Script & Checklist Mode
+- [ ] Update `ReaderDrawer.tsx`:
+    - [ ] **SCRIPT Tab (Default):**
+        - [ ] Add large `COPY SCRIPT` button (Primary Action).
+        - [ ] Display script content with clear typography.
+    - [ ] **RUN Mode (Secondary):**
+        - [ ] Convert script steps into interactive checklist.
+        - [ ] Add progress tracking (e.g., "0/6 COMPLETE").
 
-## Phase 4: Feature Implementation (Completed)
-- [x] Update `ReaderDrawer.tsx`: Use the drawer frame asset and implement slide-out logic.
-- [x] Implement Tabs: SCRIPT | PROTOCOL | WHY.
-- [x] Implement Run Mode: Interactive checklist functionality.
+## Phase 4: Integration & Polish: Final Animation & Sound Tuning
+- [ ] Tune Auto-Load Timing: Ensure the sequence (Signal -> Load -> Pulse) feels rhythmic and not rushed.
+- [ ] Sound Design: Add specific sounds for "Signal Received" and "Auto-Load".
+- [ ] Mobile Polish: Ensure the auto-load sequence works smoothly on mobile.
 
-## Phase 5: Integration & Polish (Current)
-- [ ] Mobile Responsiveness: Ensure all assets scale correctly on small screens.
-- [ ] Final QA: Verify the "Load -> Read -> Run" flow and overall aesthetic.
+## Phase 5: Final Review & Delivery
+- [ ] Verify the "Aha" moment: User lands -> Signal -> Auto-Load -> Read -> Copy.

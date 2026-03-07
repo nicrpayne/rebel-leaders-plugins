@@ -144,8 +144,33 @@ export default function ReaderDrawer({
                   {/* Tab Content */}
                   <div className="font-serif text-lg leading-relaxed text-[#ccc]">
                       {activeTab === "SCRIPT" && (
-                          <div className="whitespace-pre-wrap prose prose-invert prose-amber max-w-none">
-                              {entry.script}
+                          <div className="space-y-6">
+                              {/* Primary Action: Copy Script */}
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(entry.script);
+                                  // Could add a toast here if available, or just change button text temporarily
+                                  const btn = document.getElementById("copy-btn-primary");
+                                  if (btn) {
+                                     const originalText = btn.innerText;
+                                     btn.innerText = "COPIED TO CLIPBOARD";
+                                     btn.classList.add("bg-amber-500", "text-black");
+                                     setTimeout(() => {
+                                        btn.innerText = originalText;
+                                        btn.classList.remove("bg-amber-500", "text-black");
+                                     }, 2000);
+                                  }
+                                }}
+                                id="copy-btn-primary"
+                                className="w-full py-4 border border-amber-500/50 text-amber-500 font-pixel text-xs tracking-[0.2em] hover:bg-amber-500/10 transition-all uppercase flex items-center justify-center gap-3 group"
+                              >
+                                <span className="text-lg">⎘</span>
+                                COPY SCRIPT TO CLIPBOARD
+                              </button>
+
+                              <div className="whitespace-pre-wrap prose prose-invert prose-amber max-w-none p-6 bg-[#0c0c0c] border border-[#222] rounded-sm">
+                                  {entry.script}
+                              </div>
                           </div>
                       )}
                       {activeTab === "PROTOCOL" && (
@@ -219,17 +244,23 @@ export default function ReaderDrawer({
 
           {/* Footer Actions */}
           <div className="p-6 border-t border-[#222] bg-[#0c0c0c] flex justify-between items-center flex-shrink-0">
-              <div className="text-[10px] font-pixel text-[#444]">END OF FILE</div>
+              <div className="text-[10px] font-pixel text-[#444]">END OF FILE // {entry.id}</div>
               <div className="flex gap-4">
-                  <button className="text-[10px] font-pixel text-[#666] hover:text-amber-500 uppercase tracking-widest transition-colors">
-                      Copy Script
-                  </button>
                   {mode === "READ" && (
                       <button 
                           onClick={() => setMode("RUN")}
-                          className="bg-amber-900/20 hover:bg-amber-500 hover:text-black text-amber-500 border border-amber-500/30 px-6 py-3 font-pixel text-xs transition-all uppercase tracking-widest"
+                          className="bg-amber-900/20 hover:bg-amber-500 hover:text-black text-amber-500 border border-amber-500/30 px-6 py-3 font-pixel text-xs transition-all uppercase tracking-widest flex items-center gap-2"
                       >
-                          Start Run Mode
+                          <span>▶</span>
+                          INITIATE RUN MODE
+                      </button>
+                  )}
+                  {mode === "RUN" && (
+                      <button 
+                          onClick={() => setMode("READ")}
+                          className="text-[#666] hover:text-amber-500 border border-transparent hover:border-amber-500/30 px-4 py-2 font-pixel text-[10px] transition-all uppercase tracking-widest"
+                      >
+                          RETURN TO READ
                       </button>
                   )}
               </div>

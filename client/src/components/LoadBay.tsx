@@ -63,10 +63,16 @@ export default function LoadBay({
           
           {/* Empty State Text */}
           {!loadedEntry && (
-            <div className="absolute inset-0 flex items-center justify-center z-10">
-              <span className="font-pixel text-[10px] md:text-xs text-[#333] tracking-[0.2em] animate-pulse">
-                INSERT PROTOCOL CARTRIDGE
+            <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+              <span className="font-pixel text-[10px] md:text-xs text-amber-900/40 tracking-[0.2em] animate-pulse mb-2">
+                INSERT PROTOCOL
               </span>
+              <span className="font-mono text-[8px] text-amber-900/30 tracking-widest uppercase">
+                Select a cartridge below
+              </span>
+              {/* Scanline Animation */}
+              <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(245,158,11,0.05)_50%)] bg-[length:100%_4px] pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-500/5 to-transparent h-[20%] w-full animate-[scan_3s_linear_infinite] pointer-events-none" />
             </div>
           )}
 
@@ -81,6 +87,14 @@ export default function LoadBay({
                 animState === "ejecting" && "translate-x-[120%] opacity-0 scale-95"
               )}
             >
+              {/* Signal Lock Indicator */}
+              <div className={cn(
+                "absolute -top-6 right-0 flex items-center gap-2 transition-opacity duration-300",
+                animState === "loaded" ? "opacity-100" : "opacity-0"
+              )}>
+                <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse shadow-[0_0_5px_rgba(245,158,11,0.8)]" />
+                <span className="font-pixel text-[8px] text-amber-500 tracking-widest">SIGNAL LOCKED</span>
+              </div>
               {/* Cartridge Body */}
               <div className="relative w-full h-full">
                 <img 
@@ -138,7 +152,7 @@ export default function LoadBay({
               ? "bg-[#111] text-[#333] border-[#222] cursor-not-allowed"
               : isReaderOpen
                 ? "bg-amber-500 text-black border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)]"
-                : "bg-[#1a1a1a] text-amber-500 border-amber-500/30 hover:border-amber-500 hover:bg-[#222]"
+                : "bg-[#1a1a1a] text-amber-500 border-amber-500/30 hover:border-amber-500 hover:bg-[#222] animate-pulse shadow-[0_0_10px_rgba(245,158,11,0.3)]"
           )}
         >
           <span className="w-2 h-2 bg-current rounded-full" />
