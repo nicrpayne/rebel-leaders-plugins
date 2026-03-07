@@ -28,7 +28,7 @@ export default function LoadBay({
       setAnimState("inserting");
       setDisplayEntry(loadedEntry);
       // Simple timeout for animation
-      const timer = setTimeout(() => setAnimState("loaded"), 300);
+      const timer = setTimeout(() => setAnimState("loaded"), 50); // Start animation almost immediately
       return () => clearTimeout(timer);
     } else if (!loadedEntry && displayEntry) {
       // Entry removed: Start eject animation
@@ -61,8 +61,7 @@ export default function LoadBay({
         {/* Re-aligned for the new wider image. 
             Slot is roughly centered horizontally, slightly lower than vertical center.
             Based on 21:9 image, slot is roughly 50% width, centered. */}
-        {/* DEBUG: Removed overflow-hidden to see if cartridge is clipped */}
-        <div className="absolute top-[38%] left-[20%] w-[50%] h-[22%] z-30 flex items-center justify-center border border-green-500/50">
+        <div className="absolute top-[38%] left-[20%] w-[50%] h-[22%] z-30 flex items-center justify-center overflow-hidden">
           
           {/* Internal Slot Darkness/Shadow */}
           <div className="absolute inset-0 bg-black/90 shadow-[inset_0_0_30px_rgba(0,0,0,1)] rounded-sm z-0" />
@@ -72,12 +71,12 @@ export default function LoadBay({
             <div 
               key={displayEntry.id} 
               className={cn(
-                "relative w-[96%] h-[88%] transition-all duration-300 ease-out shadow-xl origin-bottom z-10 bg-red-500", // DEBUG: Added bg-red-500 fallback
+                "relative w-[96%] h-[88%] transition-all duration-300 ease-out shadow-xl origin-bottom z-10",
                 // Simplified 2D Slide Animation
                 // Inserting: Starts small and low (outside), moves to normal size and position
-                animState === "inserting" && "translate-y-[100%] scale-90 opacity-100", // DEBUG: Force opacity-100
+                animState === "inserting" && "translate-y-[110%] scale-95 opacity-0",
                 animState === "loaded" && "translate-y-0 scale-100 opacity-100",
-                animState === "ejecting" && "translate-y-[100%] scale-90 opacity-100" // DEBUG: Force opacity-100
+                animState === "ejecting" && "translate-y-[110%] scale-95 opacity-0"
               )}
             >
               {/* Spine Image */}
