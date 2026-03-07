@@ -8,7 +8,8 @@ const PLUGINS = [
     category: "MIRROR",
     desc: "12 questions. 3 minutes. Reveal the hidden forces shaping your team's orbit.",
     status: "ACTIVE",
-    link: "/gravity-check"
+    link: "/gravity-check",
+    image: "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/gravity_check_field_cover-hq3AnpZqCJZFJU9Wrxiwic.webp"
   },
   {
     id: "codex",
@@ -16,7 +17,8 @@ const PLUGINS = [
     category: "MOVE",
     desc: "A library of high-leverage leadership scripts and protocols.",
     status: "LOCKED",
-    link: "#"
+    link: "#",
+    image: "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/gravity_check_space_cover-CxYFd82JzE7j3vM9k7PJnF.webp" // Using previous gen as placeholder for Codex
   },
   {
     id: "laas",
@@ -24,61 +26,126 @@ const PLUGINS = [
     category: "MAP",
     desc: "Leadership As A Service. Measure your team's dependency ratio.",
     status: "LOCKED",
-    link: "#"
+    link: "#",
+    image: null
   }
 ];
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-forest-deep p-4 md:p-12">
-      <div className="max-w-6xl mx-auto space-y-12">
-        {/* Header */}
-        <div className="space-y-4 border-b-2 border-wood pb-8">
-          <h1 className="text-4xl md:text-6xl text-gold font-pixel tracking-widest">
-            THE ARMORY
-          </h1>
-          <p className="text-muted-foreground font-serif text-xl max-w-2xl">
-            Tools for the rebellion. Maps to see where you are. Mirrors to see who you are. Moves to change the game.
-          </p>
+    <div className="min-h-screen bg-[#121214] text-[#e0e0e0] font-sans selection:bg-[#2a2a2e] selection:text-white">
+      {/* Top Bar */}
+      <div className="h-14 border-b border-[#2a2a2e] flex items-center px-6 justify-between bg-[#18181b]">
+        <div className="flex items-center gap-4">
+          <div className="w-3 h-3 rounded-full bg-[#3a3a3e]" />
+          <span className="font-bold tracking-wider text-sm text-[#8a8a8e]">REBEL OS // ARMORY</span>
+        </div>
+        <div className="flex gap-4 text-xs font-mono text-[#5a5a5e]">
+          <span>CPU: 12%</span>
+          <span>MEM: 4.2GB</span>
+        </div>
+      </div>
+
+      <div className="flex h-[calc(100vh-3.5rem)]">
+        {/* Sidebar Filter */}
+        <div className="w-64 border-r border-[#2a2a2e] bg-[#18181b] p-6 hidden md:flex flex-col gap-8">
+          <div>
+            <h3 className="text-xs font-bold text-[#5a5a5e] mb-4 uppercase tracking-widest">Categories</h3>
+            <div className="space-y-2">
+              {["ALL", "MIRROR", "MAP", "MOVE", "SIGNAL"].map((cat) => (
+                <div 
+                  key={cat}
+                  className={cn(
+                    "text-sm py-1 px-2 rounded cursor-pointer transition-colors",
+                    cat === "ALL" ? "bg-[#2a2a2e] text-white" : "text-[#8a8a8e] hover:text-white hover:bg-[#2a2a2e]/50"
+                  )}
+                >
+                  {cat}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-bold text-[#5a5a5e] mb-4 uppercase tracking-widest">Status</h3>
+            <div className="space-y-2">
+              {["INSTALLED", "AVAILABLE", "UPDATES"].map((stat) => (
+                <div key={stat} className="text-sm text-[#8a8a8e] hover:text-white cursor-pointer py-1 px-2">
+                  {stat}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {PLUGINS.map((plugin) => (
-            <Link key={plugin.id} href={plugin.link}>
-              <div className={cn(
-                "group relative border-4 border-wood bg-forest p-8 h-80 flex flex-col justify-between transition-all duration-300",
-                plugin.status === "ACTIVE" 
-                  ? "hover:border-gold hover:shadow-[0_0_30px_rgba(197,160,89,0.2)] cursor-pointer" 
-                  : "opacity-50 grayscale cursor-not-allowed"
-              )}>
-                {/* Status Badge */}
-                <div className="absolute top-4 right-4 px-2 py-1 bg-forest-deep border border-wood text-[10px] font-pixel text-muted-foreground">
-                  {plugin.status}
-                </div>
-
-                {/* Content */}
-                <div className="space-y-4">
-                  <div className="text-xs font-pixel text-gold/50 tracking-widest">
-                    {plugin.category}
+        {/* Main Grid */}
+        <div className="flex-1 bg-[#121214] p-8 overflow-y-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {PLUGINS.map((plugin) => (
+              <Link key={plugin.id} href={plugin.link}>
+                <div className={cn(
+                  "group relative bg-[#1e1e20] rounded-lg overflow-hidden border border-[#2a2a2e] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[#3a3a3e]",
+                  plugin.status !== "ACTIVE" && "opacity-60 grayscale cursor-not-allowed pointer-events-none"
+                )}>
+                  {/* Cover Image */}
+                  <div className="aspect-[16/9] bg-[#0a0a0c] relative overflow-hidden">
+                    {plugin.image ? (
+                      <img 
+                        src={plugin.image} 
+                        alt={plugin.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[#2a2a2e] font-mono text-4xl">
+                        ?
+                      </div>
+                    )}
+                    
+                    {/* Overlay Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1e1e20] via-transparent to-transparent opacity-60" />
+                    
+                    {/* Status Badge */}
+                    <div className="absolute top-3 right-3">
+                      <span className={cn(
+                        "text-[10px] font-bold px-2 py-0.5 rounded border backdrop-blur-sm",
+                        plugin.status === "ACTIVE" 
+                          ? "bg-green-500/10 border-green-500/30 text-green-400" 
+                          : "bg-[#2a2a2e]/50 border-[#3a3a3e] text-[#5a5a5e]"
+                      )}>
+                        {plugin.status}
+                      </span>
+                    </div>
                   </div>
-                  <h3 className="text-2xl text-gold font-pixel leading-tight group-hover:text-gold-light">
-                    {plugin.title}
-                  </h3>
-                  <p className="font-serif text-lg text-muted-foreground group-hover:text-foreground transition-colors">
-                    {plugin.desc}
-                  </p>
-                </div>
 
-                {/* Footer */}
-                <div className="w-full h-1 bg-wood/30 mt-auto overflow-hidden">
-                  {plugin.status === "ACTIVE" && (
-                    <div className="h-full bg-gold w-0 group-hover:w-full transition-all duration-500 ease-out" />
-                  )}
+                  {/* Content */}
+                  <div className="p-4 space-y-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-bold text-white text-lg tracking-tight group-hover:text-green-400 transition-colors">
+                          {plugin.title}
+                        </h3>
+                        <div className="text-[10px] font-mono text-[#5a5a5e] mt-0.5">
+                          {plugin.category} // V.1.0.4
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <p className="text-sm text-[#8a8a8e] line-clamp-2 leading-relaxed">
+                      {plugin.desc}
+                    </p>
+
+                    {/* Action Bar */}
+                    <div className="pt-3 mt-2 border-t border-[#2a2a2e] flex justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <span className="text-[10px] font-mono text-[#5a5a5e]">REBEL OS</span>
+                      <span className="text-xs font-bold text-white flex items-center gap-1">
+                        LAUNCH <span className="text-green-400">→</span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>
