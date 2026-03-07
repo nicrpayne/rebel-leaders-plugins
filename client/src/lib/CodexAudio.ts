@@ -81,6 +81,11 @@ class CodexAudioEngine {
     osc.stop(t + 0.05);
   }
 
+  // Force resume audio context
+  resume() {
+    this.init();
+  }
+
   // Air release sound for Eject
   playEject() {
     this.init();

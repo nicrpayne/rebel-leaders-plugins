@@ -52,7 +52,17 @@ export default function LoadBay({
         {/* Slot Frame Container */}
         <div className="relative w-full max-w-[600px] aspect-[1400/320] min-h-[80px] overflow-visible">
           {/* Background Cavity */}
-          <div className="absolute inset-[5%] bg-[#050505] shadow-inner rounded-sm overflow-hidden" />
+          <div className="absolute inset-[5%] bg-[#050505] shadow-inner rounded-sm overflow-hidden">
+            {/* Internal Amber Light - Activates when loaded */}
+            <div className={cn(
+              "absolute inset-0 bg-amber-500/20 transition-opacity duration-500",
+              loadedEntry ? "opacity-100" : "opacity-0"
+            )} />
+            <div className={cn(
+              "absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-amber-500/30 to-transparent transition-opacity duration-500",
+              loadedEntry ? "opacity-100" : "opacity-0"
+            )} />
+          </div>
 
           {/* Slot Frame Image */}
           <img 
@@ -81,10 +91,10 @@ export default function LoadBay({
             <div 
               key={displayEntry.id} 
               className={cn(
-                "absolute inset-[8%] z-20 flex items-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
-                animState === "inserting" && "translate-x-[100%] opacity-0 scale-95",
-                animState === "loaded" && "translate-x-0 opacity-100 scale-100",
-                animState === "ejecting" && "translate-x-[100%] opacity-0 scale-95"
+                "absolute inset-[8%] z-20 flex items-center transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]", // Slower + Bounce
+                animState === "inserting" && "translate-x-[120%] opacity-0 scale-90 rotate-1",
+                animState === "loaded" && "translate-x-0 opacity-100 scale-100 rotate-0",
+                animState === "ejecting" && "translate-x-[120%] opacity-0 scale-90 rotate-1"
               )}
             >
               {/* Signal Lock Indicator */}

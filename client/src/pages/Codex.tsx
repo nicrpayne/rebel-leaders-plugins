@@ -87,6 +87,25 @@ export default function Codex() {
     });
   };
 
+  // Initialize Audio Context on first interaction
+  useEffect(() => {
+    const initAudio = () => {
+      import("@/lib/CodexAudio").then(({ codexAudio }) => {
+        codexAudio.resume();
+      });
+      window.removeEventListener("click", initAudio);
+      window.removeEventListener("keydown", initAudio);
+    };
+    
+    window.addEventListener("click", initAudio);
+    window.addEventListener("keydown", initAudio);
+    
+    return () => {
+      window.removeEventListener("click", initAudio);
+      window.removeEventListener("keydown", initAudio);
+    };
+  }, []);
+
   // Interaction Handlers
   const handleLoad = (entry: CodexEntry) => {
     setLoadedEntry(entry);

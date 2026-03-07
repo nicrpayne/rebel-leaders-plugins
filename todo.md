@@ -26,6 +26,9 @@
 - [x] **Fix Audio:** Implement `CodexAudio` engine (Web Audio API) to replace unreliable MP3s.
 - [x] **Fix Animation:** Adjust `LoadBay` animation logic to ensure visibility (remove `overflow-hidden` if necessary, check z-index).
 - [x] **Fix Visuals:** Verify `LoadBay` slot frame blend mode and positioning.
-- [ ] **Enhance Feedback:** Add "Active" glow to selected cartridge in rack.
+- [x] **Enhance Feedback:** Add "Active" glow to selected cartridge in rack.
+- [ ] **Fix Load Bay Visibility:** Add internal amber light to illuminate loaded cartridge.
+- [ ] **Fix Audio Context:** Force audio context resume on first user interaction.
+- [ ] **Exaggerate Animation:** Slow down insert animation and add bounce effect.
 - [ ] **Verify Auto-Load:** Ensure recommended protocol loads automatically on arrival.
 - [ ] **Final QA:** Test Click -> Load -> Read flow end-to-end.
