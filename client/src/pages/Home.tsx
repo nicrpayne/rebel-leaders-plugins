@@ -6,7 +6,7 @@ const PLUGINS = [
     id: "gravity-check",
     title: "GRAVITY CHECK",
     category: "MIRROR",
-    desc: "12 questions. 3 minutes. Reveal the hidden forces shaping your team's orbit.",
+    desc: "15 questions. 3 minutes. Reveal the hidden forces shaping your team's orbit.",
     status: "ACTIVE",
     link: "/gravity-check",
     image: "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/gravity_check_field_cover-hq3AnpZqCJZFJU9Wrxiwic.webp"
@@ -18,7 +18,7 @@ const PLUGINS = [
     desc: "A library of high-leverage leadership scripts and protocols.",
     status: "LOCKED",
     link: "#",
-    image: "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/gravity_check_space_cover-CxYFd82JzE7j3vM9k7PJnF.webp" // Using previous gen as placeholder for Codex
+    image: "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cover-GFY7usmeN4FzNRmJ64c5wD.webp"
   },
   {
     id: "laas",
@@ -27,7 +27,7 @@ const PLUGINS = [
     desc: "Leadership As A Service. Measure your team's dependency ratio.",
     status: "LOCKED",
     link: "#",
-    image: null
+    image: "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/laas_calibrator_cover-YcDCAQRmWtFr53Pcpd8CL5.webp"
   }
 ];
 
@@ -84,7 +84,7 @@ export default function Home() {
             {PLUGINS.map((plugin) => (
               <Link key={plugin.id} href={plugin.link}>
                 <div className={cn(
-                  "group relative bg-[#1e1e20] rounded-lg overflow-hidden border border-[#2a2a2e] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[#3a3a3e]",
+                  "group relative bg-[#1e1e20] rounded-lg overflow-hidden border border-[#2a2a2e] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[#3a3a3e] h-full flex flex-col",
                   plugin.status !== "ACTIVE" && "opacity-60 grayscale cursor-not-allowed pointer-events-none"
                 )}>
                   {/* Cover Image */}
@@ -105,7 +105,7 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1e1e20] via-transparent to-transparent opacity-60" />
                     
                     {/* Status Badge */}
-                    <div className="absolute top-3 right-3">
+                    <div className="absolute top-3 right-3 z-10">
                       <span className={cn(
                         "text-[10px] font-bold px-2 py-0.5 rounded border backdrop-blur-sm",
                         plugin.status === "ACTIVE" 
@@ -118,7 +118,7 @@ export default function Home() {
                   </div>
 
                   {/* Content */}
-                  <div className="p-4 space-y-3">
+                  <div className="p-4 space-y-3 flex-1 flex flex-col">
                     <div className="flex justify-between items-start">
                       <div>
                         <h3 className="font-bold text-white text-lg tracking-tight group-hover:text-green-400 transition-colors">
@@ -130,7 +130,7 @@ export default function Home() {
                       </div>
                     </div>
                     
-                    <p className="text-sm text-[#8a8a8e] line-clamp-2 leading-relaxed">
+                    <p className="text-sm text-[#8a8a8e] line-clamp-2 leading-relaxed flex-1">
                       {plugin.desc}
                     </p>
 
