@@ -44,10 +44,11 @@ export default function LoadBay({
     else if (!loadedEntry && prevId) {
       setAnimPhase("ejecting"); // Trigger CSS animation
       
+      // Extend timer slightly to ensure animation finishes before unmount
       const timer = setTimeout(() => {
         setAnimPhase("idle");
         setDisplayEntry(null);
-      }, 400); // Match CSS duration
+      }, 450); // Increased buffer to prevent flicker
       
       prevLoadedIdRef.current = undefined;
       return () => clearTimeout(timer);
@@ -87,14 +88,17 @@ export default function LoadBay({
           {/* Loaded Cartridge Spine */}
           {displayEntry && (
             <div 
-              // KEY IS BACK: Forces remount on every ID change -> triggers CSS animation immediately
-              key={displayEntry.id} 
+              // Use ID as key ONLY when inserting to trigger mount animation.
+              // When ejecting, we MUST keep the same key so React doesn't remount it (which kills the exit animation).
+              key={animPhase === "ejecting" ? displayEntry.id : displayEntry.id + "-active"}
               className={cn(
                 "absolute inset-0 z-10 flex items-center justify-center transform-gpu will-change-transform",
                 
                 // CSS Keyframe Animations - PUSH IN EFFECT
                 animPhase === "inserting" && "animate-in fade-in zoom-in-90 duration-300 ease-out",
-                animPhase === "ejecting" && "animate-out fade-out zoom-out-90 duration-300 ease-in",
+                
+                // Eject Animation - Explicitly defined to avoid conflicts
+                animPhase === "ejecting" && "animate-out fade-out zoom-out-90 duration-300 ease-in fill-mode-forwards",
                 
                 // Static States
                 animPhase === "loaded" && "opacity-100 scale-100"
