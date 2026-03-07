@@ -40,14 +40,13 @@ export default function LoadBay({
       setAnimPhase("preInsert");
 
       // Trigger animation on next frame
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setAnimPhase("inserting");
-        });
-      });
+      // Use setTimeout instead of rAF to ensure React has time to render the preInsert state
+      setTimeout(() => {
+        setAnimPhase("inserting");
+      }, 50);
 
       // Complete animation
-      const timer = setTimeout(() => setAnimPhase("loaded"), 320);
+      const timer = setTimeout(() => setAnimPhase("loaded"), 350); // 300ms + buffer
       
       prevLoadedIdRef.current = currentId;
       return () => clearTimeout(timer);
@@ -59,7 +58,7 @@ export default function LoadBay({
       const timer = setTimeout(() => {
         setAnimPhase("idle");
         setDisplayEntry(null);
-      }, 260);
+      }, 300); // Match duration
       
       prevLoadedIdRef.current = undefined;
       return () => clearTimeout(timer);
@@ -103,17 +102,17 @@ export default function LoadBay({
           {/* Loaded Cartridge Spine */}
           {displayEntry && (
             <div 
-              key={displayEntry.id} 
+              // REMOVED KEY to prevent full unmount/remount which breaks transitions
               className={cn(
                 // Sizing: Height 100% of slot (snug fit), Width 100%
                 // Position: Absolute inside the overflow-hidden slot
-                "absolute inset-0 z-10 flex items-center justify-center transform-gpu will-change-transform",
+                "absolute inset-0 z-10 flex items-center justify-center transform-gpu will-change-transform transition-transform duration-300 ease-out",
                 
                 // Animation States
-                animPhase === "preInsert" && "translate-y-[120%]", // Start below slot
-                animPhase === "inserting" && "transition-transform duration-300 ease-out translate-y-0", // Slide up
+                animPhase === "preInsert" && "translate-y-[120%] duration-0", // Start below slot (instant move)
+                animPhase === "inserting" && "translate-y-0", // Slide up (animated)
                 animPhase === "loaded" && "translate-y-0", // Static final state
-                animPhase === "ejecting" && "transition-transform duration-250 ease-in translate-y-[120%]" // Slide down
+                animPhase === "ejecting" && "translate-y-[120%] duration-250 ease-in" // Slide down (animated)
               )}
             >
               {/* Spine Image - TRANSPARENT PNG */}
