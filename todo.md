@@ -16,5 +16,6 @@
 - [x] Reduce width to 46% for perfect symmetry
 - [x] Reduce height to 18% and adjust top to 40%
 - [x] Remove redundant mobile fallback buttons
-- [ ] Remove hover overlays from deck buttons
+- [x] Remove hover overlays from deck buttons
+- [ ] Fix cartridge size and perspective (remove white box, increase scale)
 - [ ] Verify visual integrity
