@@ -27,7 +27,7 @@ export default function LoadBay({
       // New entry loaded: Start insert animation
       setAnimState("inserting");
       setDisplayEntry(loadedEntry);
-      // Linear shove animation timing
+      // Simple timeout for animation
       const timer = setTimeout(() => setAnimState("loaded"), 300);
       return () => clearTimeout(timer);
     } else if (!loadedEntry && displayEntry) {
@@ -61,21 +61,22 @@ export default function LoadBay({
         {/* Re-aligned for the new wider image. 
             Slot is roughly centered horizontally, slightly lower than vertical center.
             Based on 21:9 image, slot is roughly 50% width, centered. */}
-        <div className="absolute top-[38%] left-[20%] w-[50%] h-[22%] z-30 flex items-center justify-center perspective-[1000px]">
+        <div className="absolute top-[38%] left-[20%] w-[50%] h-[22%] z-30 flex items-center justify-center overflow-hidden">
           
           {/* Internal Slot Darkness/Shadow */}
-          <div className="absolute inset-0 bg-black/90 shadow-[inset_0_0_30px_rgba(0,0,0,1)] rounded-sm" />
+          <div className="absolute inset-0 bg-black/90 shadow-[inset_0_0_30px_rgba(0,0,0,1)] rounded-sm z-0" />
 
           {/* Loaded Cartridge Spine */}
           {displayEntry && (
             <div 
               key={displayEntry.id} 
               className={cn(
-                "relative w-[96%] h-[88%] transition-all duration-300 ease-linear shadow-xl origin-bottom",
-                // Linear "Shove" Animation (Z-axis or Scale)
-                animState === "inserting" && "translate-y-[20%] scale-105 opacity-0",
+                "relative w-[96%] h-[88%] transition-all duration-300 ease-out shadow-xl origin-bottom z-10",
+                // Simplified 2D Slide Animation
+                // Inserting: Starts small and low (outside), moves to normal size and position
+                animState === "inserting" && "translate-y-[100%] scale-90 opacity-0",
                 animState === "loaded" && "translate-y-0 scale-100 opacity-100",
-                animState === "ejecting" && "translate-y-[20%] scale-105 opacity-0"
+                animState === "ejecting" && "translate-y-[100%] scale-90 opacity-0"
               )}
             >
               {/* Spine Image */}
@@ -109,8 +110,8 @@ export default function LoadBay({
             onClick={onRead}
             disabled={!loadedEntry}
             className={cn(
-              "w-1/2 h-full opacity-50 hover:opacity-80 bg-amber-500/20 border-2 border-red-500/50 transition-all cursor-pointer rounded-sm active:scale-95 active:brightness-125",
-              !loadedEntry && "cursor-not-allowed opacity-20 border-none"
+              "w-1/2 h-full opacity-0 hover:opacity-20 bg-amber-500 transition-all cursor-pointer rounded-sm active:scale-95 active:brightness-125",
+              !loadedEntry && "cursor-not-allowed opacity-0"
             )}
             title="READ PROTOCOL"
           />
@@ -120,8 +121,8 @@ export default function LoadBay({
             onClick={onEject}
             disabled={!loadedEntry}
             className={cn(
-              "w-1/2 h-full opacity-50 hover:opacity-80 bg-red-500/20 border-2 border-red-500/50 transition-all cursor-pointer rounded-sm active:scale-95 active:brightness-125",
-              !loadedEntry && "cursor-not-allowed opacity-20 border-none"
+              "w-1/2 h-full opacity-0 hover:opacity-20 bg-red-500 transition-all cursor-pointer rounded-sm active:scale-95 active:brightness-125",
+              !loadedEntry && "cursor-not-allowed opacity-0"
             )}
             title="EJECT CARTRIDGE"
           />
@@ -153,6 +154,13 @@ export default function LoadBay({
             EJECT
          </button>
       </div>
+
+      {/* --- DEBUG STATUS OVERLAY (Temporary) --- */}
+      {/* Remove this after confirming it works */}
+      {/* <div className="absolute top-0 left-0 bg-black/50 text-white text-xs p-2 z-50 pointer-events-none">
+        STATUS: {loadedEntry ? `LOADED: ${loadedEntry.title}` : "EMPTY"} <br/>
+        ANIM: {animState}
+      </div> */}
 
     </div>
   );
