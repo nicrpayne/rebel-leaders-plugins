@@ -5,7 +5,6 @@ import { CodexEntry } from "@/lib/codex-schema";
 import { CODEX_ENTRIES } from "@/lib/codex-data";
 import CodexShell from "@/components/CodexShell";
 import ReaderDrawer from "@/components/ReaderDrawer";
-import CodexGridCard from "@/components/CodexGridCard";
 
 export default function Codex() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -82,23 +81,8 @@ export default function Codex() {
         setBottleneckReason(`Reason: Low ${lowest.category} Score detected`);
         
         // Filter recommendations: Top 3 matching the lowest category
+        // If not enough, fill with others
         let recs = CODEX_ENTRIES.filter(e => e.category === lowest.category);
-        
-        // Priority Logic: If Identity or Relationship, prioritize Coaching Pack (Core Protocols v1)
-        // New Logic: Prioritize entries where trigger_point === "1:1" and/or leak_types contains dependency|low-agency|leader-bottleneck
-        if (lowest.category === "Identity" || lowest.category === "Conflict") { // Conflict maps to Relationship in data
-             recs.sort((a, b) => {
-                 const aPriority = (a.trigger_point === "1:1" || a.leak_types.some(l => ["dependency", "low-agency", "leader-bottleneck"].includes(l))) ? 1 : 0;
-                 const bPriority = (b.trigger_point === "1:1" || b.leak_types.some(l => ["dependency", "low-agency", "leader-bottleneck"].includes(l))) ? 1 : 0;
-                 
-                 if (aPriority !== bPriority) return bPriority - aPriority;
-                 
-                 // Secondary sort: Coaching Pack
-                 const aIsCoaching = a.pack === "Core Protocols v1" ? 1 : 0;
-                 const bIsCoaching = b.pack === "Core Protocols v1" ? 1 : 0;
-                 return bIsCoaching - aIsCoaching;
-             });
-        }
         
         // If we need more, add from second lowest
         if (recs.length < 3 && scores[1]) {
@@ -119,17 +103,6 @@ export default function Codex() {
   const filteredEntries = CODEX_ENTRIES.filter(entry => {
     const matchesSearch = entry.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           entry.script.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    if (activeCategory === "COACHING") {
-       // Coaching Filter Logic
-       // trigger_point === "1:1" OR leak_types includes dependency|low-agency|leader-bottleneck OR title contains "Coaching"
-       const is1on1 = entry.trigger_point === "1:1";
-       const hasCoachingLeak = entry.leak_types.some(l => ["dependency", "low-agency", "leader-bottleneck"].includes(l));
-       const hasCoachingTitle = entry.title.toLowerCase().includes("coaching");
-       
-       return matchesSearch && (is1on1 || hasCoachingLeak || hasCoachingTitle);
-    }
-
     const matchesCategory = activeCategory === "ALL" || entry.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
@@ -267,23 +240,24 @@ export default function Codex() {
               placeholder="QUERY PROTOCOLS..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#050505] border border-amber-900/30 text-amber-500 font-mono text-xs py-2 pl-8 pr-4 focus:outline-none focus:border-amber-500/50 focus:shadow-[0_0_15px_rgba(245,158,11,0.1)] transition-all placeholder-amber-900/50"
+              className="w-full bg-[#050505] border border-amber-900/30 text-amber-500 font-mono text-xs py-2 pl-8 pr-4 focus:outline-none focus:border-amber-500/50 focus:shadow-[0_0_15px_rgba(245,158,11,0.1)] transition-all placeholder:text-amber-900/40 rounded-sm"
             />
-            {/* Scanline effect on focus */}
-            <div className="absolute bottom-0 left-0 h-[1px] bg-amber-500/50 w-0 group-focus-within:w-full transition-all duration-500" />
+            <div className="absolute right-2 top-1/2 -translate-y-1/2">
+              <div className="w-1.5 h-1.5 bg-amber-500/20 animate-pulse rounded-full" />
+            </div>
           </div>
 
           {/* Category Tabs - "Sector Select" */}
-          <div className="flex gap-4 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-            {["ALL", "COACHING", "CONFLICT", "VISION", "CULTURE", "IDENTITY", "ALIGNMENT"].map((cat) => (
+          <div className="flex gap-1 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide">
+            {["ALL", "CONFLICT", "VISION", "ALIGNMENT", "CULTURE"].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={cn(
-                  "font-pixel text-[10px] tracking-widest px-3 py-1 transition-all whitespace-nowrap border border-transparent",
+                  "px-3 py-1.5 text-[9px] font-pixel tracking-widest border transition-all whitespace-nowrap rounded-sm",
                   activeCategory === cat 
-                    ? "text-amber-500 border-amber-500/30 bg-amber-900/10 shadow-[0_0_10px_rgba(245,158,11,0.2)]" 
-                    : "text-amber-900/60 hover:text-amber-500/80 hover:border-amber-900/30"
+                    ? "bg-amber-500/10 text-amber-500 border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.1)]" 
+                    : "bg-transparent text-amber-900/60 border-transparent hover:text-amber-400 hover:border-amber-900/30"
                 )}
               >
                 {cat}
@@ -292,53 +266,65 @@ export default function Codex() {
           </div>
         </div>
 
-        {/* --- PRIORITY TRANSMISSION (GRAVITY CHECK RESULTS) --- */}
+        {/* --- RECOMMENDATION ENGINE (SIDE-CHAIN PAYOFF) --- */}
         {hasGravityResults && recommendedEntries.length > 0 && !searchQuery && activeCategory === "ALL" && (
-          <div className="animate-in fade-in slide-in-from-top-4 duration-700">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-2 h-2 bg-amber-500 animate-pulse rounded-full" />
-              <h3 className="font-pixel text-xs text-amber-500 tracking-[0.2em] uppercase">
-                PRIORITY TRANSMISSION
+          <div className={cn(
+            "mb-4 bg-amber-900/5 border border-amber-900/20 p-4 rounded-sm relative overflow-hidden transition-opacity duration-500",
+            loadedEntry ? "opacity-30 pointer-events-none" : "opacity-100" // Dim when loaded
+          )}>
+            <div className="absolute top-0 right-0 p-2 opacity-20">
+                <div className="w-16 h-16 border-2 border-amber-500 rounded-full flex items-center justify-center">
+                    <div className="w-12 h-12 border border-amber-500 rounded-full" />
+                </div>
+            </div>
+            
+            <div className="flex items-center gap-2 mb-2 relative z-10">
+              <div className="w-2 h-2 bg-amber-500 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
+              <h3 className="font-pixel text-[10px] text-amber-500 tracking-[0.2em] uppercase">
+                Priority Transmission
               </h3>
-              <div className="h-[1px] flex-1 bg-gradient-to-r from-amber-900/50 to-transparent" />
             </div>
             
             {/* Reason Line */}
-            <div className="mb-4 font-mono text-[10px] text-amber-500/70 uppercase tracking-widest pl-4 border-l border-amber-900/30">
-               {bottleneckReason}
+            <div className="mb-4 relative z-10">
+               <p className="font-mono text-xs text-amber-500/70 italic">
+                 {bottleneckReason}
+               </p>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-              {recommendedEntries.map((entry, i) => (
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
+              {recommendedEntries.map(entry => (
                 <div 
                   key={entry.id}
                   onClick={() => handleLoad(entry)}
-                  className="group relative border border-amber-500/30 bg-amber-900/5 hover:bg-amber-900/10 transition-all cursor-pointer overflow-hidden h-48 flex flex-col justify-between p-5 hover:shadow-[0_0_20px_rgba(245,158,11,0.15)] hover:border-amber-500/60"
+                  className={cn(
+                    "group relative bg-[#0a0a0a] border p-4 cursor-pointer transition-all duration-300 flex gap-4 items-center",
+                    loadedEntry?.id === entry.id 
+                      ? "border-amber-500 bg-amber-900/20 shadow-[0_0_15px_rgba(245,158,11,0.2)]" 
+                      : "border-amber-500/30 hover:border-amber-500 hover:bg-[#111]"
+                  )}
                 >
-                  {/* Scanline Overlay */}
-                  <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.2)_50%)] bg-[length:100%_4px] pointer-events-none opacity-20" />
-                  
-                  <div>
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="font-pixel text-[8px] text-amber-500 tracking-widest">REC_0{i+1}</span>
-                      <span className="font-mono text-[10px] text-amber-500/50">{entry.time_commitment}</span>
-                    </div>
-                    <h4 className="font-serif text-xl text-amber-100 leading-tight group-hover:text-amber-400 transition-colors">
-                      {entry.title}
-                    </h4>
+                  {/* Tape Reel Icon */}
+                  <div className="w-10 h-10 bg-[#151515] rounded-full border border-[#333] flex items-center justify-center group-hover:border-amber-500/50 group-hover:animate-[spin_4s_linear_infinite] flex-shrink-0">
+                     <div className="w-3 h-3 bg-[#222] rounded-full border border-[#444] flex items-center justify-center">
+                        <div className="w-1 h-1 bg-amber-900/50 rounded-full" />
+                     </div>
+                     <div className="absolute w-8 h-8 border border-dashed border-[#333] rounded-full" />
                   </div>
 
-                  <div className="flex justify-between items-end">
-                     <div className="flex gap-1">
-                        {entry.leak_types.slice(0, 2).map(tag => (
-                          <span key={tag} className="text-[8px] font-mono text-amber-900/60 uppercase border border-amber-900/20 px-1">
-                            {tag.replace("-", " ")}
-                          </span>
-                        ))}
-                     </div>
-                     <span className="text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity font-pixel text-[10px] tracking-widest">
-                        LOAD &gt;
-                     </span>
+                  <div className="flex-1 min-w-0">
+                      <h4 className="font-mono text-xs text-amber-100 group-hover:text-amber-400 transition-colors mb-1 truncate">
+                        {entry.title}
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[8px] font-pixel text-amber-900/60 bg-amber-900/10 px-1.5 py-0.5 rounded-sm">
+                          {entry.category}
+                        </span>
+                      </div>
+                  </div>
+                  
+                  <div className="text-amber-500/20 group-hover:text-amber-500 transition-colors text-xs">
+                    &gt;
                   </div>
                 </div>
               ))}
@@ -346,68 +332,85 @@ export default function Codex() {
           </div>
         )}
 
-        {/* --- CULTURE PLUGIN STATUS MESSAGE --- */}
-        {activeCategory === "CULTURE" && filteredEntries.length === 0 && (
-           <div className="w-full border border-amber-900/30 bg-amber-900/5 p-4 mb-6 flex items-center justify-between animate-in fade-in slide-in-from-top-2">
-              <div className="flex items-center gap-3">
-                 <div className="w-2 h-2 bg-amber-500/50 rounded-full animate-pulse" />
-                 <span className="font-mono text-xs text-amber-500/80 uppercase tracking-widest">
-                    CULTURE PLUGIN NOT INSTALLED
-                 </span>
+        {/* --- CALIBRATION REQUIRED (Empty State) --- */}
+        {!hasGravityResults && !searchQuery && activeCategory === "ALL" && (
+           <div className={cn(
+            "mb-4 bg-[#0a0a0a] border border-dashed border-amber-900/30 p-6 rounded-sm flex flex-col items-center justify-center text-center gap-4 transition-opacity duration-500",
+            loadedEntry ? "opacity-30 pointer-events-none" : "opacity-100"
+           )}>
+              <div className="w-12 h-12 border border-amber-900/50 rounded-full flex items-center justify-center animate-pulse">
+                 <span className="text-amber-900 text-xl">!</span>
               </div>
-              <span className="font-pixel text-[10px] text-amber-900/40">ERR_404</span>
+              <div>
+                 <h3 className="font-pixel text-xs text-amber-900 tracking-widest uppercase mb-2">Calibration Required</h3>
+                 <p className="font-mono text-sm text-[#666] max-w-md">
+                    Codex is operating in passive mode. Run a Gravity Check to unlock personalized protocol recommendations.
+                 </p>
+              </div>
+              <Link href="/gravity-check">
+                 <button className="px-6 py-2 bg-amber-900/10 border border-amber-900/30 text-amber-500 font-pixel text-[10px] tracking-widest hover:bg-amber-900/20 hover:border-amber-500/50 transition-all uppercase">
+                    Initiate Gravity Check
+                 </button>
+              </Link>
            </div>
         )}
 
-        {/* --- MAIN LIBRARY GRID --- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* --- PROTOCOL GRID --- */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-8">
           {filteredEntries.map((entry) => (
-            <CodexGridCard 
-               key={entry.id}
-               entry={entry}
-               isActive={loadedEntry?.id === entry.id}
-               onClick={() => handleLoad(entry)}
-            />
+            <div 
+              key={entry.id}
+              onClick={() => handleLoad(entry)}
+              className={cn(
+                "group relative bg-[#0a0a0a] border p-4 cursor-pointer transition-all duration-300 hover:bg-[#111]",
+                loadedEntry?.id === entry.id 
+                  ? "border-amber-500 bg-amber-900/20 shadow-[0_0_15px_rgba(245,158,11,0.2)]" 
+                  : "border-amber-900/20 hover:border-amber-500/50",
+                loadedEntry && loadedEntry.id !== entry.id ? "opacity-50 grayscale" : "opacity-100"
+              )}
+            >
+              <div className="flex justify-between items-start mb-3">
+                <span className={cn(
+                  "text-[9px] font-pixel tracking-widest px-1.5 py-0.5 border",
+                  loadedEntry?.id === entry.id 
+                    ? "text-amber-500 border-amber-500 bg-amber-900/20" 
+                    : "text-amber-900/60 border-amber-900/30 group-hover:text-amber-500/70 group-hover:border-amber-500/30"
+                )}>
+                  {entry.category}
+                </span>
+                <span className="text-[9px] font-pixel text-[#333] group-hover:text-[#555]">
+                  {entry.id.split('_')[1]}
+                </span>
+              </div>
+              
+              <h3 className={cn(
+                "font-mono text-sm mb-2 transition-colors",
+                loadedEntry?.id === entry.id ? "text-amber-400" : "text-[#888] group-hover:text-amber-100"
+              )}>
+                {entry.title}
+              </h3>
+              
+              <div className="flex items-center gap-2 mt-4">
+                 <div className="h-[1px] flex-1 bg-[#222] group-hover:bg-[#333]" />
+                 <span className="text-[9px] font-pixel text-[#444] group-hover:text-amber-500/50">
+                   LOAD
+                 </span>
+              </div>
+            </div>
           ))}
         </div>
 
-        {/* Empty State / Calibration Required */}
-        {filteredEntries.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 text-amber-900/40 font-mono text-sm">
-            {!hasGravityResults && activeCategory === "ALL" && !searchQuery ? (
-               <div className="text-center space-y-4 animate-in fade-in duration-700">
-                  <div className="w-16 h-16 border border-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                     <div className="w-2 h-2 bg-amber-900/50 rounded-full animate-ping" />
-                  </div>
-                  <h3 className="font-pixel text-xs text-amber-500 tracking-[0.2em] uppercase">CALIBRATION REQUIRED</h3>
-                  <p className="text-amber-900/60 max-w-md mx-auto">
-                     Access to priority protocols is restricted. Complete the Gravity Check to unlock tailored mission parameters.
-                  </p>
-                  <Link href="/gravity-check">
-                     <button className="mt-4 px-6 py-2 border border-amber-900/30 text-amber-500 font-pixel text-[10px] tracking-widest hover:bg-amber-900/10 transition-colors uppercase">
-                        INITIATE GRAVITY CHECK &gt;
-                     </button>
-                  </Link>
-               </div>
-            ) : (
-               <>
-                 <span>NO PROTOCOLS FOUND</span>
-                 <span className="text-xs mt-2">ADJUST QUERY PARAMETERS</span>
-               </>
-            )}
-          </div>
-        )}
-
       </div>
 
-      {/* --- READER DRAWER (The "Machine" Interface) --- */}
+      {/* --- READER DRAWER --- */}
       {loadedEntry && (
         <ReaderDrawer 
           entry={loadedEntry}
           isOpen={isReaderOpen}
           onClose={() => {
-             setIsReaderOpen(false);
-             // Optional: Clear loaded entry on close? No, keep it loaded in deck.
+            setIsReaderOpen(false);
+            // Optional: Revert to READ mode on close? Or keep state?
+            // Keeping state allows resuming where left off.
           }}
           initialMode={readerMode}
         />
