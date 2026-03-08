@@ -95,3 +95,11 @@
 - [ ] Adjust the layout to make the cartridges look like physical objects sitting on the shelves (standing face-out or stacked).
 - [ ] Ensure the shelves have enough visual depth to support the full cartridges.
 - [ ] Maintain the cabinet frame and atmospheric details but adapt them to the new scale.
+
+# Implement Mixed Shelf Layout (Spines + Stacks)
+
+- [ ] Refactor `CodexGrid.tsx` to support different layouts per shelf row.
+- [ ] **Top Shelf:** Implement a tightly packed row of vertical `CodexSpine` components (like books/tapes on a shelf).
+- [ ] **Middle/Bottom Shelves:** Implement horizontal stacks of `CodexGridCard` components (piled up).
+- [ ] **Density & Lighting:** Significantly darken the background and add a "spotlight" overlay to match the moody reference atmosphere.
+- [ ] Ensure the cartridges look like they have weight and are sitting *on* the shelf, not floating.
