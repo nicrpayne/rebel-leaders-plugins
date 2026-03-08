@@ -352,23 +352,37 @@ export default function Codex() {
               key={entry.id}
               onClick={() => handleLoad(entry)}
               className={cn(
-                "group relative border border-[#222] bg-[#0a0a0a] hover:bg-[#111] transition-all cursor-pointer overflow-hidden h-32 flex flex-col justify-between p-4 hover:border-amber-900/40",
+                "group relative border border-[#222] bg-[#0a0a0a] hover:bg-[#111] transition-all cursor-pointer overflow-hidden h-48 flex flex-col justify-between p-5 hover:border-amber-900/40",
                 loadedEntry?.id === entry.id ? "border-amber-500/50 bg-amber-900/10" : ""
               )}
             >
-              <div className="flex justify-between items-start">
+              {/* Tape / Preview Image */}
+              <div className="absolute top-0 right-0 w-24 h-full opacity-20 group-hover:opacity-30 transition-opacity pointer-events-none mix-blend-screen">
+                 <img 
+                   src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_punchcard_header-JtB8WXchbX2yc6P7JMTyZr.webp"
+                   alt="Tape"
+                   className="h-full w-full object-cover grayscale"
+                 />
+              </div>
+
+              <div className="relative z-10">
+                <div className="flex justify-between items-start mb-2">
+                   <span className="font-pixel text-[8px] text-[#444] group-hover:text-[#666] tracking-widest">
+                      {entry.id.split("_")[1]}
+                   </span>
+                   <span className="font-mono text-[10px] text-[#444] group-hover:text-[#666] uppercase tracking-widest">
+                      {entry.id.split("_")[2] || "GEN"}
+                   </span>
+                </div>
                 <h4 className={cn(
-                  "font-serif text-lg leading-tight transition-colors",
+                  "font-serif text-xl leading-tight transition-colors pr-8",
                   loadedEntry?.id === entry.id ? "text-amber-400" : "text-[#888] group-hover:text-[#ccc]"
                 )}>
                   {entry.title}
                 </h4>
-                <span className="font-pixel text-[8px] text-[#444] group-hover:text-[#666] tracking-widest">
-                  {entry.id.split("_")[1]}
-                </span>
               </div>
 
-              <div className="flex justify-between items-end">
+              <div className="relative z-10 flex justify-between items-end">
                  <span className="font-mono text-[10px] text-[#444] group-hover:text-[#666] uppercase tracking-widest">
                     {entry.category} // {entry.time_commitment}
                  </span>
@@ -382,11 +396,30 @@ export default function Codex() {
           ))}
         </div>
 
-        {/* Empty State */}
+        {/* Empty State / Calibration Required */}
         {filteredEntries.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-amber-900/40 font-mono text-sm">
-            <span>NO PROTOCOLS FOUND</span>
-            <span className="text-xs mt-2">ADJUST QUERY PARAMETERS</span>
+            {!hasGravityResults && activeCategory === "ALL" && !searchQuery ? (
+               <div className="text-center space-y-4 animate-in fade-in duration-700">
+                  <div className="w-16 h-16 border border-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                     <div className="w-2 h-2 bg-amber-900/50 rounded-full animate-ping" />
+                  </div>
+                  <h3 className="font-pixel text-xs text-amber-500 tracking-[0.2em] uppercase">CALIBRATION REQUIRED</h3>
+                  <p className="text-amber-900/60 max-w-md mx-auto">
+                     Access to priority protocols is restricted. Complete the Gravity Check to unlock tailored mission parameters.
+                  </p>
+                  <Link href="/gravity-check">
+                     <button className="mt-4 px-6 py-2 border border-amber-900/30 text-amber-500 font-pixel text-[10px] tracking-widest hover:bg-amber-900/10 transition-colors uppercase">
+                        INITIATE GRAVITY CHECK &gt;
+                     </button>
+                  </Link>
+               </div>
+            ) : (
+               <>
+                 <span>NO PROTOCOLS FOUND</span>
+                 <span className="text-xs mt-2">ADJUST QUERY PARAMETERS</span>
+               </>
+            )}
           </div>
         )}
 
