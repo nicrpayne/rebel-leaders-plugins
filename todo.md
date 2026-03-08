@@ -49,3 +49,10 @@
 - [ ] Analyze `CodexShell.tsx` to identify the padding/margin causing the gap.
 - [ ] Reduce the vertical spacing between the header (Deck) and the content area (Grid).
 - [ ] Ensure the layout remains responsive and doesn't feel cramped.
+
+# Aggressively Reduce Spacing
+
+- [ ] Inspect `LoadBay.tsx` and remove any excess bottom padding/margin.
+- [ ] Update `CodexShell.tsx` to pull the content area upwards (negative margin if needed).
+- [ ] Check `CodexTopBar.tsx` for unnecessary top spacing.
+- [ ] Ensure the grid is immediately visible below the deck without scrolling.

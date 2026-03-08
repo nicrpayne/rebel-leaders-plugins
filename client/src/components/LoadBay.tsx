@@ -57,7 +57,7 @@ export default function LoadBay({
 
   return (
     <div className={cn(
-      "w-full flex flex-col items-center py-8 relative z-30 pointer-events-none select-none", 
+      "w-full flex flex-col items-center pt-8 pb-0 relative z-30 pointer-events-none select-none", 
       className
     )}>
       
