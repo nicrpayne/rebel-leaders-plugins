@@ -36,9 +36,15 @@ export interface CodexEntry {
     field_notes?: string[]; // Ancient wisdom / modern science tie-ins
   };
   
+  // Coaching Pack Fields (New)
+  pack?: string; // e.g., "Core Protocols v1"
+  keys_primary?: string[]; // e.g., ["Emotional"]
+  keys_secondary?: string[]; // e.g., ["Leading"]
+  keys_notes?: string; // Short explanation of the key focus
+  why_it_works?: string; // Explanation of the mechanism
+  
   // Legacy fields (to be deprecated or mapped)
   use_when?: string; 
-  why_it_works?: string; 
   watch_for?: string[]; 
   
   // Status

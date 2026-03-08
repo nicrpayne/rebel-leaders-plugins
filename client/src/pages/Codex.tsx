@@ -81,8 +81,16 @@ export default function Codex() {
         setBottleneckReason(`Reason: Low ${lowest.category} Score detected`);
         
         // Filter recommendations: Top 3 matching the lowest category
-        // If not enough, fill with others
+        // Priority Logic: If Identity or Relationship, prioritize Coaching Pack (Core Protocols v1)
         let recs = CODEX_ENTRIES.filter(e => e.category === lowest.category);
+        
+        if (lowest.category === "Identity" || lowest.category === "Conflict") { // Conflict maps to Relationship in data
+             recs.sort((a, b) => {
+                 const aIsCoaching = a.pack === "Core Protocols v1" ? 1 : 0;
+                 const bIsCoaching = b.pack === "Core Protocols v1" ? 1 : 0;
+                 return bIsCoaching - aIsCoaching; // Coaching first
+             });
+        }
         
         // If we need more, add from second lowest
         if (recs.length < 3 && scores[1]) {
@@ -103,6 +111,17 @@ export default function Codex() {
   const filteredEntries = CODEX_ENTRIES.filter(entry => {
     const matchesSearch = entry.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           entry.script.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    if (activeCategory === "COACHING") {
+       // Coaching Filter Logic
+       const isRelationship = entry.category === "Relationship";
+       const hasCoachingLeak = entry.leak_types.some(l => ["dependency", "low-agency", "leader-bottleneck"].includes(l));
+       const hasCoachingTitle = entry.title.toLowerCase().includes("coaching");
+       const isCoreProtocol = entry.pack === "Core Protocols v1";
+       
+       return matchesSearch && (isRelationship || hasCoachingLeak || hasCoachingTitle || isCoreProtocol);
+    }
+
     const matchesCategory = activeCategory === "ALL" || entry.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
@@ -249,7 +268,7 @@ export default function Codex() {
 
           {/* Category Tabs - "Sector Select" */}
           <div className="flex gap-1 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide">
-            {["ALL", "CONFLICT", "VISION", "ALIGNMENT", "CULTURE"].map((cat) => (
+            {["ALL", "COACHING", "CONFLICT", "VISION", "ALIGNMENT", "CULTURE"].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
@@ -320,6 +339,11 @@ export default function Codex() {
                         <span className="text-[8px] font-pixel text-amber-900/60 bg-amber-900/10 px-1.5 py-0.5 rounded-sm">
                           {entry.category}
                         </span>
+                        {entry.pack === "Core Protocols v1" && (
+                           <span className="text-[8px] font-pixel text-amber-500 bg-amber-900/20 px-1.5 py-0.5 rounded-sm">
+                             COACHING
+                           </span>
+                        )}
                       </div>
                   </div>
                   

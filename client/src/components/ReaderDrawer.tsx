@@ -20,6 +20,9 @@ export default function ReaderDrawer({
   const [mode, setMode] = useState<"READ" | "RUN">(initialMode);
   const [checklist, setChecklist] = useState<boolean[]>([]);
 
+  // Detect Coaching Entry
+  const isCoaching = entry.pack === "Core Protocols v1" || entry.title.toLowerCase().includes("coaching");
+
   // Sync mode when initialMode changes
   useEffect(() => {
     if (isOpen) {
@@ -164,6 +167,16 @@ export default function ReaderDrawer({
                                 </p>
                               </div>
 
+                              {/* Coaching Specific: Why It Works */}
+                              {isCoaching && entry.why_it_works && (
+                                <div className="p-4 bg-amber-900/5 border border-amber-900/20 rounded-sm">
+                                  <h3 className="font-pixel text-[10px] text-amber-500/70 mb-2 uppercase tracking-widest select-none">Why It Works</h3>
+                                  <p className="text-sm font-sans text-amber-100/80 italic">
+                                    "{entry.why_it_works}"
+                                  </p>
+                                </div>
+                              )}
+
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Use When */}
                                 <div>
@@ -192,13 +205,15 @@ export default function ReaderDrawer({
                                 </div>
                               </div>
 
-                              {/* Outcome */}
-                              <div className="p-4 bg-amber-900/5 border border-amber-900/20 rounded-sm">
-                                <h3 className="font-pixel text-[10px] text-amber-500/70 mb-2 uppercase tracking-widest select-none">Expected Outcome</h3>
-                                <p className="text-sm font-sans text-amber-100/80 italic">
-                                  "{entry.briefing.outcome}"
-                                </p>
-                              </div>
+                              {/* Outcome (Only show if not Coaching, or if Coaching doesn't have why_it_works) */}
+                              {(!isCoaching || !entry.why_it_works) && (
+                                <div className="p-4 bg-amber-900/5 border border-amber-900/20 rounded-sm">
+                                  <h3 className="font-pixel text-[10px] text-amber-500/70 mb-2 uppercase tracking-widest select-none">Expected Outcome</h3>
+                                  <p className="text-sm font-sans text-amber-100/80 italic">
+                                    "{entry.briefing.outcome}"
+                                  </p>
+                                </div>
+                              )}
 
                               {/* Primary CTAs */}
                               <div className="pt-4 flex flex-col gap-3 select-none">
@@ -207,7 +222,7 @@ export default function ReaderDrawer({
                                   className="w-full py-4 bg-amber-500 text-black font-pixel text-xs tracking-[0.2em] hover:bg-amber-400 transition-all uppercase flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)]"
                                 >
                                   <span>▶</span>
-                                  INITIATE RUN MODE
+                                  {isCoaching ? "INITIATE COACHING SEQUENCE" : "INITIATE RUN MODE"}
                                 </button>
                                 <button 
                                   onClick={() => setActiveTab("SCRIPT")}
@@ -221,75 +236,47 @@ export default function ReaderDrawer({
 
                       {/* --- SCRIPT TAB --- */}
                       {activeTab === "SCRIPT" && (
-                          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                              <div className="flex justify-between items-center mb-2 select-none">
-                                <span className="font-pixel text-[10px] text-[#666] uppercase tracking-widest">Verbatim Script</span>
-                                <button
-                                  onClick={() => {
-                                    navigator.clipboard.writeText(entry.script);
-                                    const btn = document.getElementById("copy-btn-script");
-                                    if (btn) {
-                                       const originalText = btn.innerText;
-                                       btn.innerText = "COPIED";
-                                       btn.classList.add("text-amber-500");
-                                       setTimeout(() => {
-                                          btn.innerText = "COPY TO CLIPBOARD";
-                                          btn.classList.remove("text-amber-500");
-                                       }, 2000);
-                                    }
-                                  }}
-                                  id="copy-btn-script"
-                                  className="text-[10px] font-pixel text-[#555] hover:text-amber-500 transition-colors uppercase tracking-widest flex items-center gap-2"
-                                >
-                                  <span>⎘</span>
-                                  COPY TO CLIPBOARD
-                                </button>
-                              </div>
-
-                              <div className="whitespace-pre-wrap prose prose-invert prose-amber max-w-none p-8 bg-[#0c0c0c] border border-[#222] rounded-sm font-serif text-xl leading-relaxed text-amber-100/90 shadow-inner select-text">
+                          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 select-text">
+                              <div className="p-6 bg-[#111] border border-[#333] font-mono text-sm md:text-base text-amber-100 leading-loose whitespace-pre-wrap relative group">
                                   {entry.script}
+                                  
+                                  {/* Copy Button */}
+                                  <button 
+                                    onClick={() => navigator.clipboard.writeText(entry.script)}
+                                    className="absolute top-4 right-4 p-2 bg-[#222] border border-[#444] text-[#888] hover:text-amber-500 hover:border-amber-500 transition-all opacity-0 group-hover:opacity-100"
+                                    title="Copy to Clipboard"
+                                  >
+                                    <span className="font-pixel text-[10px] uppercase tracking-widest">COPY</span>
+                                  </button>
                               </div>
                           </div>
                       )}
 
                       {/* --- EXECUTION TAB --- */}
                       {activeTab === "EXECUTION" && (
-                          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300 select-text">
-                              <div className="flex justify-between items-center mb-4 select-none">
-                                <p className="text-sm font-sans text-[#888] italic">
-                                    Step-by-step execution guide.
-                                </p>
-                                <button 
-                                  onClick={() => setMode("RUN")}
-                                  className="text-[10px] font-pixel text-amber-500 border border-amber-500/30 px-3 py-1 hover:bg-amber-500/10 transition-colors uppercase tracking-widest"
-                                >
-                                  Start Checklist
-                                </button>
-                              </div>
-                              
-                              {steps.map((step, i) => (
-                                  <div key={i} className="flex gap-4 p-4 border border-[#222] bg-[#0c0c0c]">
-                                      <span className="font-pixel text-amber-900/50 text-xs pt-1 select-none">0{i + 1}</span>
-                                      <p className="text-base font-sans text-[#ccc]">{step}</p>
-                                  </div>
-                              ))}
+                          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 select-text">
+                              <ol className="space-y-6 list-decimal list-inside font-mono text-sm text-[#ccc]">
+                                  {entry.protocol.map((step, i) => (
+                                      <li key={i} className="pl-4 border-l border-[#333]">
+                                          <span className="text-amber-100">{step}</span>
+                                      </li>
+                                  ))}
+                              </ol>
                           </div>
                       )}
 
                       {/* --- PROOF TAB --- */}
                       {activeTab === "PROOF" && entry.proof && (
-                          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 select-text">
+                          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500 select-text">
                               
                               {/* Research */}
                               {entry.proof.research && (
                                 <div>
-                                  <h3 className="font-pixel text-[10px] text-amber-500 mb-4 uppercase tracking-widest flex items-center gap-2 select-none">
-                                    <span className="w-2 h-2 bg-amber-500/50 rounded-full"></span>
-                                    Research & Data
-                                  </h3>
+                                  <h3 className="font-pixel text-[10px] text-[#666] mb-4 uppercase tracking-widest border-b border-[#222] pb-1 select-none">Research & Data</h3>
                                   <ul className="space-y-4">
                                     {entry.proof.research.map((item, i) => (
-                                      <li key={i} className="p-4 bg-[#0c0c0c] border border-[#222] text-sm font-sans text-[#ccc] leading-relaxed">
+                                      <li key={i} className="flex gap-3 text-sm font-sans text-[#ccc]">
+                                        <span className="text-amber-500/50 mt-1 select-none">●</span>
                                         {item}
                                       </li>
                                     ))}
@@ -300,21 +287,16 @@ export default function ReaderDrawer({
                               {/* Books */}
                               {entry.proof.books && (
                                 <div>
-                                  <h3 className="font-pixel text-[10px] text-amber-500 mb-4 uppercase tracking-widest flex items-center gap-2 select-none">
-                                    <span className="w-2 h-2 bg-amber-500/50 rounded-full"></span>
-                                    Reference Material
-                                  </h3>
-                                  <div className="grid grid-cols-1 gap-3">
+                                  <h3 className="font-pixel text-[10px] text-[#666] mb-4 uppercase tracking-widest border-b border-[#222] pb-1 select-none">Reference Library</h3>
+                                  <div className="grid grid-cols-1 gap-4">
                                     {entry.proof.books.map((book, i) => (
-                                      <div key={i} className="flex items-center justify-between p-3 border border-[#222] hover:border-amber-500/30 transition-colors">
-                                        <div>
-                                          <div className="text-amber-100 font-serif italic">{book.title}</div>
-                                          <div className="text-xs text-[#666] font-mono">{book.author}</div>
-                                        </div>
+                                      <div key={i} className="p-4 bg-[#111] border border-[#222] flex flex-col">
+                                        <span className="font-serif text-amber-100 text-lg italic">{book.title}</span>
+                                        <span className="font-mono text-xs text-[#666] uppercase tracking-widest mt-1">{book.author}</span>
                                         {book.chapter && (
-                                          <div className="text-[10px] font-pixel text-[#444] bg-[#111] px-2 py-1 select-none">
-                                            {book.chapter}
-                                          </div>
+                                          <span className="font-mono text-xs text-amber-500/70 mt-2">
+                                            See: {book.chapter}
+                                          </span>
                                         )}
                                       </div>
                                     ))}
@@ -325,13 +307,10 @@ export default function ReaderDrawer({
                               {/* Field Notes */}
                               {entry.proof.field_notes && (
                                 <div>
-                                  <h3 className="font-pixel text-[10px] text-amber-500 mb-4 uppercase tracking-widest flex items-center gap-2 select-none">
-                                    <span className="w-2 h-2 bg-amber-500/50 rounded-full"></span>
-                                    Field Notes
-                                  </h3>
-                                  <div className="p-4 bg-[#111] border-l-2 border-[#333] text-sm font-mono text-[#888] italic">
+                                  <h3 className="font-pixel text-[10px] text-[#666] mb-4 uppercase tracking-widest border-b border-[#222] pb-1 select-none">Field Notes</h3>
+                                  <div className="p-6 bg-[#151515] border-l-2 border-amber-900/50 italic text-[#999] font-serif">
                                     {entry.proof.field_notes.map((note, i) => (
-                                      <p key={i}>{note}</p>
+                                      <p key={i} className="mb-4 last:mb-0">"{note}"</p>
                                     ))}
                                   </div>
                                 </div>
@@ -341,75 +320,76 @@ export default function ReaderDrawer({
                   </div>
               </div>
             ) : (
-              /* RUN MODE (Checklist) */
-              <div className="p-6 md:p-8 space-y-6 animate-in slide-in-from-right duration-300 select-none">
-                  <div className="flex items-center justify-between mb-4">
-                      <span className="font-pixel text-[10px] text-amber-500 tracking-widest animate-pulse">EXECUTION IN PROGRESS</span>
-                      <span className="font-mono text-xs text-[#666]">
-                          {checklist.filter(Boolean).length} / {steps.length} COMPLETE
-                      </span>
-                  </div>
-                  
-                  {/* Progress Bar */}
-                  <div className="h-1 bg-[#222] w-full mb-8 relative overflow-hidden">
-                      <div 
-                          className="h-full bg-amber-500 transition-all duration-300 relative z-10"
-                          style={{ width: `${(checklist.filter(Boolean).length / steps.length) * 100}%` }}
-                      />
-                      {/* Background Grid Pattern */}
-                      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
+              /* --- RUN MODE (CHECKLIST) --- */
+              <div className="p-6 md:p-8 h-full flex flex-col animate-in fade-in zoom-in-95 duration-300">
+                  <div className="flex items-center justify-between mb-8 border-b border-amber-900/30 pb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-amber-500 animate-pulse rounded-full shadow-[0_0_10px_rgba(245,158,11,0.8)]" />
+                      <h3 className="font-pixel text-xs text-amber-500 tracking-[0.2em] uppercase">
+                        {isCoaching ? "COACHING SEQUENCE ACTIVE" : "RUN MODE ACTIVE"}
+                      </h3>
+                    </div>
+                    <button 
+                      onClick={() => setMode("READ")}
+                      className="text-[#666] hover:text-amber-500 font-pixel text-[10px] tracking-widest uppercase transition-colors"
+                    >
+                      ABORT SEQUENCE
+                    </button>
                   </div>
 
-                  <div className="space-y-2">
-                      {steps.map((step, i) => (
-                          <div 
-                              key={i}
-                              onClick={() => toggleStep(i)}
-                              className={cn(
-                                  "flex gap-4 p-4 border cursor-pointer transition-all duration-200 select-none group",
-                                  checklist[i] 
-                                      ? "bg-amber-900/10 border-amber-500/30 opacity-50" 
-                                      : "bg-[#0c0c0c] border-[#222] hover:border-amber-500/50 hover:bg-[#111]"
-                              )}
-                          >
-                              <div className={cn(
-                                  "w-6 h-6 border flex items-center justify-center flex-shrink-0 transition-colors",
-                                  checklist[i] ? "bg-amber-500 border-amber-500" : "border-[#444] group-hover:border-amber-500/50"
-                              )}>
-                                  {checklist[i] && <span className="text-black font-bold text-xs">✓</span>}
-                              </div>
-                              <p className={cn(
-                                  "text-base transition-colors font-sans",
-                                  checklist[i] ? "text-amber-500/50 line-through" : "text-[#ccc] group-hover:text-amber-100"
-                              )}>{step}</p>
+                  <div className="flex-1 overflow-y-auto pr-2 space-y-4">
+                    {steps.map((step, index) => (
+                      <div 
+                        key={index}
+                        onClick={() => toggleStep(index)}
+                        className={cn(
+                          "p-4 border transition-all cursor-pointer group relative overflow-hidden",
+                          checklist[index] 
+                            ? "bg-amber-900/10 border-amber-500/30 opacity-50" 
+                            : "bg-[#111] border-[#333] hover:border-amber-500/50"
+                        )}
+                      >
+                        <div className="flex gap-4 items-start relative z-10">
+                          <div className={cn(
+                            "w-6 h-6 border flex items-center justify-center transition-all mt-0.5 flex-shrink-0",
+                            checklist[index] 
+                              ? "bg-amber-500 border-amber-500 text-black" 
+                              : "border-[#444] text-transparent group-hover:border-amber-500/50"
+                          )}>
+                            ✓
                           </div>
-                      ))}
+                          <p className={cn(
+                            "font-mono text-sm md:text-base transition-all leading-relaxed",
+                            checklist[index] ? "text-amber-500/50 line-through" : "text-amber-100"
+                          )}>
+                            {step}
+                          </p>
+                        </div>
+                        
+                        {/* Progress Bar Background */}
+                        {checklist[index] && (
+                           <div className="absolute inset-0 bg-amber-500/5 pointer-events-none" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Progress Footer */}
+                  <div className="mt-6 pt-6 border-t border-[#222] flex items-center justify-between">
+                     <div className="font-pixel text-[10px] text-[#666] tracking-widest uppercase">
+                        PROGRESS: {checklist.filter(Boolean).length} / {steps.length}
+                     </div>
+                     {checklist.filter(Boolean).length === steps.length && (
+                        <div className="font-pixel text-xs text-amber-500 tracking-widest uppercase animate-pulse">
+                           SEQUENCE COMPLETE
+                        </div>
+                     )}
                   </div>
               </div>
             )}
-
+            
           </div>
-
-          {/* Footer Actions */}
-          <div className="p-6 border-t border-[#222] bg-[#0c0c0c] flex justify-between items-center flex-shrink-0 z-20 select-none">
-              <div className="text-[10px] font-pixel text-[#444]">END OF FILE // {entry.id}</div>
-              <div className="flex gap-4">
-                  {mode === "READ" ? (
-                      <div className="text-[9px] font-mono text-[#333]">
-                        READ_ONLY_MODE
-                      </div>
-                  ) : (
-                      <button 
-                          onClick={() => setMode("READ")}
-                          className="text-[#666] hover:text-amber-500 border border-transparent hover:border-amber-500/30 px-4 py-2 font-pixel text-[10px] transition-all uppercase tracking-widest"
-                      >
-                          ABORT RUN
-                      </button>
-                  )}
-              </div>
-          </div>
-
-        </div> {/* End Content Container */}
+        </div>
       </div>
     </div>,
     document.body

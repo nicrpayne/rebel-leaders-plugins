@@ -6,16 +6,22 @@ export const CODEX_ENTRIES: CodexEntry[] = [
     title: "Repair in 48 Hours",
     category: "Conflict",
     flywheel_node: ["Relationship"],
-    leak_types: ["rupture_hang", "silence_tax", "politics_drag"],
-    dominant_forces: ["avoidance_unrepaired_rupture", "image_performance"],
+    leak_types: ["rupture_hang", "silence_tax", "politics_drag", "relational-drift", "resentment", "micro-breach"],
+    dominant_forces: ["avoidance_unrepaired_rupture", "image_performance", "avoidance", "defensiveness"],
     time_commitment: "10 min",
     difficulty: 3,
+    pack: "Core Protocols v1",
+    keys_primary: ["Emotional"],
+    keys_secondary: ["Leading"],
+    keys_notes: "Trains repair speed and emotional responsibility without shame.",
+    why_it_works: "Small repairs prevent story-building. Fast repair preserves trust bandwidth and teaches the team that rupture is normal and repair is expected.",
     briefing: {
       objective: "Close the narrative gap before it hardens into resentment.",
       use_when: [
         "You've had a heated interaction and the air feels thick.",
         "You notice a team member avoiding eye contact or Slack replies.",
-        "You feel a lingering 'hangover' from a previous meeting."
+        "You feel a lingering 'hangover' from a previous meeting.",
+        "A moment landed wrong and you can feel distance forming."
       ],
       avoid: [
         "Waiting for the 'perfect time' (it doesn't exist).",
@@ -52,10 +58,15 @@ export const CODEX_ENTRIES: CodexEntry[] = [
     title: "Truth Weather",
     category: "Culture",
     flywheel_node: ["Identity"],
-    leak_types: ["silence_tax", "scarcity_weather", "meeting_drain"],
-    dominant_forces: ["fear_scarcity", "image_performance"],
+    leak_types: ["silence_tax", "scarcity_weather", "meeting_drain", "silence", "avoidance", "performative-harmony"],
+    dominant_forces: ["fear_scarcity", "image_performance", "fear", "status", "conflict-avoidance"],
     time_commitment: "3 min",
     difficulty: 2,
+    pack: "Core Protocols v1",
+    keys_primary: ["Emotional"],
+    keys_secondary: ["Leading"],
+    keys_notes: "Normalizes emotional truth so leadership isn’t forced through performance.",
+    why_it_works: "It breaks the spell of performative normalcy and lowers the cost of honesty by making truth small, shared, and non-punitive.",
     briefing: {
       objective: "Normalize honesty and reduce masking in high-stakes meetings.",
       use_when: [
@@ -96,10 +107,15 @@ export const CODEX_ENTRIES: CodexEntry[] = [
     title: "Name the Cost of Truth",
     category: "Identity",
     flywheel_node: ["Identity"],
-    leak_types: ["silence_tax", "politics_drag"],
-    dominant_forces: ["image_performance", "fear_scarcity"],
+    leak_types: ["silence_tax", "politics_drag", "withholding", "people-pleasing", "image-management"],
+    dominant_forces: ["image_performance", "fear_scarcity", "fear", "approval", "scarcity"],
     time_commitment: "15 min",
-    difficulty: 4,
+    difficulty: 4, // Kept original difficulty
+    pack: "Core Protocols v1",
+    keys_primary: ["Emotional"],
+    keys_secondary: ["Leading"],
+    keys_notes: "Reduces fear-based masking by making truth-cost visible and discussable.",
+    why_it_works: "It surfaces the hidden incentives. Once the cost is visible, courage becomes rational instead of heroic.",
     briefing: {
       objective: "Identify and reduce the hidden penalties for speaking up.",
       use_when: [
@@ -137,10 +153,15 @@ export const CODEX_ENTRIES: CodexEntry[] = [
     title: "Stop List",
     category: "Vision",
     flywheel_node: ["Vision"],
-    leak_types: ["meaning_collapse", "meeting_drain", "role_fog", "scarcity_weather"],
-    dominant_forces: ["meaning_drift", "control_forcing"],
+    leak_types: ["meaning_collapse", "meeting_drain", "role_fog", "scarcity_weather", "overcommitment", "blurred-priorities", "burnout"],
+    dominant_forces: ["meaning_drift", "control_forcing", "scarcity", "status", "people-pleasing"],
     time_commitment: "20 min",
     difficulty: 3,
+    pack: "Core Protocols v1",
+    keys_primary: ["Leading"],
+    keys_secondary: ["Emotional"],
+    keys_notes: "Restores integrity by making tradeoffs explicit and protecting capacity.",
+    why_it_works: "Capacity is moral. A Stop List converts vague stress into concrete tradeoffs and protects the team from performative commitments.",
     briefing: {
       objective: "Restore integrity by actively stopping work to protect capacity.",
       use_when: [
@@ -178,16 +199,22 @@ export const CODEX_ENTRIES: CodexEntry[] = [
     title: "Decision Rights Map",
     category: "Alignment",
     flywheel_node: ["Vision"],
-    leak_types: ["role_fog", "politics_drag", "meeting_drain"],
-    dominant_forces: ["control_forcing", "image_performance"],
+    leak_types: ["role_fog", "politics_drag", "meeting_drain", "thrash", "politics", "rework"],
+    dominant_forces: ["control_forcing", "image_performance", "control", "ambiguity"],
     time_commitment: "15 min",
     difficulty: 2,
+    pack: "Core Protocols v1",
+    keys_primary: ["Leading"],
+    keys_secondary: ["Technical Proficiency"],
+    keys_notes: "Clarifies authority and coordination so execution stops paying an ambiguity tax.",
+    why_it_works: "Most ‘alignment problems’ are actually authority and clarity problems. Decision rights reduce politics by removing ambiguity.",
     briefing: {
       objective: "Eliminate role fog and the 'ambiguity tax' on decisions.",
       use_when: [
         "Confusion about ownership creates churn.",
         "Decisions are revisited multiple times.",
-        "Politics are used to influence outcomes."
+        "Politics are used to influence outcomes.",
+        "Work keeps looping because nobody knows who decides."
       ],
       avoid: [
         "Treating 'consult' as a veto.",
@@ -218,10 +245,15 @@ export const CODEX_ENTRIES: CodexEntry[] = [
     title: "Meeting Rewrite",
     category: "Culture",
     flywheel_node: ["Culture"],
-    leak_types: ["meeting_drain", "politics_drag", "role_fog"],
-    dominant_forces: ["control_forcing", "meaning_drift"],
+    leak_types: ["meeting_drain", "politics_drag", "role_fog", "fatigue", "noise", "calendar-bloat"],
+    dominant_forces: ["control_forcing", "meaning_drift", "default-behavior", "avoidance"],
     time_commitment: "20 min",
     difficulty: 2,
+    pack: "Core Protocols v1",
+    keys_primary: ["Leading"],
+    keys_secondary: ["Emotional"],
+    keys_notes: "Redesigns rituals so culture forms people instead of draining them.",
+    why_it_works: "Meetings become identity rituals. Rewriting them breaks unconscious loops and restores time as a sign of respect.",
     briefing: {
       objective: "Transform a draining ritual into a productive tool.",
       use_when: [
@@ -269,70 +301,122 @@ export const CODEX_ENTRIES: CodexEntry[] = [
       use_when: [
         "The team is overwhelmed because too much is active at once.",
         "Projects are started but not finished.",
-        "Quality is slipping due to context switching."
+        "Quality is slipping"
       ],
       avoid: [
-        "Secretly continuing 'Not Now' work.",
-        "Allowing exception creep."
+        "Setting limits but not enforcing them.",
+        "Allowing 'shadow work' to bypass the limit."
       ],
-      outcome: "Lowers nervous-system load and restores the confidence of completion."
+      outcome: "Forces prioritization and increases flow by reducing context switching."
     },
-    script: "We’re not overwhelmed because we’re weak. We’re overwhelmed because we’re overloaded.\n\nWe’re putting a cap on active work so we can finish what matters.",
+    script: "We are doing too much to do any of it well. We are setting a WIP limit of [Number] items per person/team. Nothing new starts until something finishes.",
     protocol: [
-      "Count active initiatives (anything consuming real time).",
-      "Set a cap (often 3–5).",
-      "Move everything else to ‘Not Now’ (visible).",
-      "Weekly: only add one new thing when one exits."
+      "Visualize all current work (Kanban board or list).",
+      "Set a hard limit on items in 'Doing' column.",
+      "When limit is reached, block new work until a slot opens.",
+      "Celebrate finishing, not starting."
     ],
     proof: {
       research: [
-        "Kanban principles show that limiting WIP improves flow and reduces cycle time.",
-        "Context switching reduces productivity by up to 40%."
+        "Little's Law proves that reducing WIP decreases cycle time (speed of delivery).",
+        "Multitasking reduces productivity by up to 40% due to context switching costs."
       ],
       books: [
-        { title: "Personal Kanban", author: "Jim Benson" }
+        { title: "Making Work Visible", author: "Dominica DeGrandis" }
       ]
     },
-    context_tags: ["sprint_planning", "workload_management"]
+    context_tags: ["agile", "workflow"]
   },
   {
     id: "MOVE_MINORITY_REPORT",
     title: "Minority Report",
     category: "Alignment",
     flywheel_node: ["Relationship"],
-    leak_types: ["politics_drag", "silence_tax", "role_fog"],
-    dominant_forces: ["image_performance", "fear_scarcity"],
-    time_commitment: "5 min",
+    leak_types: ["false-consensus", "silent-dissent", "backchanneling"],
+    dominant_forces: ["fear", "status", "conflict-avoidance"],
+    time_commitment: "10–15 min",
     difficulty: 3,
+    pack: "Core Protocols v1",
+    keys_primary: ["Leading"],
+    keys_secondary: ["Emotional"],
+    keys_notes: "Trains psychological safety for disagreement and improves decision quality.",
+    why_it_works: "It makes dissent socially safe by making it role-based. Great teams don’t avoid conflict; they metabolize it.",
     briefing: {
-      objective: "Legitimize dissent to prevent groupthink and fragile decisions.",
+      objective: "Legitimize dissent to prevent groupthink and false consensus.",
       use_when: [
-        "Decisions feel fragile because dissent happens in private.",
-        "Everyone agrees too quickly.",
-        "You suspect the 'Abilene Paradox' (agreement to something no one wants)."
+        "Decisions feel ‘agreed’ publicly but contested privately afterward.",
+        "Everyone nods but energy is low.",
+        "You suspect people are holding back risks."
       ],
       avoid: [
-        "Punishing the messenger.",
-        "Using it to stall indefinitely."
+        "Punishing the dissenter.",
+        "Debating the feedback immediately (just listen first)."
       ],
-      outcome: "Flips dissent from 'disloyalty' to 'value' and extracts wisdom from skeptics."
+      outcome: "Improves decision quality and psychological safety by making disagreement a valued contribution."
     },
-    script: "Before we finalize: who will offer a minority report—the best argument against this plan?\n\nThis isn’t sabotage. It’s love for reality.",
+    script: "Before we decide — I want the Minority Report. If you disagree, your job is to protect us from our blind spot. What are we missing?",
     protocol: [
-      "Ask for a minority report before finalizing any significant decision.",
-      "Listen without rebuttal.",
-      "Ask: ‘Does this change our decision, or just our risk mitigation?’",
-      "Thank the dissenter visibly."
+      "Ask for dissent before the decision is finalized.",
+      "Invite specifically: “Who sees a risk we’re ignoring?”",
+      "Thank dissent out loud (make it prestigious).",
+      "Capture risks + mitigations.",
+      "Decide, then commit: “We disagree and commit.”"
     ],
     proof: {
       research: [
-        "Devil's advocacy improves decision quality by challenging assumptions.",
-        "Constructive conflict is essential for innovation."
+        "Research on 'Devil's Advocate' roles shows they improve group decision quality by 25%.",
+        "Constructive conflict is a hallmark of high-performing teams."
       ],
       books: [
-        { title: "Originals", author: "Adam Grant" }
+        { title: "Think Again", author: "Adam Grant" }
       ]
     },
     context_tags: ["decision_making", "strategy"]
+  },
+  {
+    id: "MOVE_FRIDGE_RIGHTS_AUDIT",
+    title: "Fridge Rights Audit",
+    category: "Relationship",
+    flywheel_node: ["Relationship"],
+    leak_types: ["low-belonging", "thin-relationships", "transactional-teams"],
+    dominant_forces: ["busyness", "distance"],
+    time_commitment: "10–20 min",
+    difficulty: 2,
+    pack: "Core Protocols v1",
+    keys_primary: ["Emotional"],
+    keys_secondary: ["Leading"],
+    keys_notes: "Turns belonging into a measurable signal and nudges relational investment.",
+    why_it_works: "Belonging isn't a vibe; it's a set of permissions. Naming the level of permission makes it safe to increase it.",
+    briefing: {
+      objective: "Assess and deepen the level of psychological safety and belonging.",
+      use_when: [
+        "Team interacts only as roles; relationships feel thin.",
+        "New team formation.",
+        "Remote teams feeling disconnected."
+      ],
+      avoid: [
+        "Forcing intimacy.",
+        "Judging low scores (it's data, not failure)."
+      ],
+      outcome: "Turns belonging into a measurable signal and nudges relational investment."
+    },
+    script: "Quick diagnostic: if you walked into my house, would you feel ‘fridge rights’ — like you could grab water without asking? On this team, do we have that kind of belonging?",
+    protocol: [
+      "Explain ‘fridge rights’ in one sentence.",
+      "Have each person rate 1–5 privately, then share patterns.",
+      "Ask: “What would raise it one point?”",
+      "Pick one ritual (shared meal, buddy check-in, off-stage time).",
+      "Re-measure in 2 weeks."
+    ],
+    proof: {
+      research: [
+        "Belonging is a fundamental human need (Maslow).",
+        "Teams with high belonging have 56% better job performance (HBR)."
+      ],
+      books: [
+        { title: "The Culture Code", author: "Daniel Coyle" }
+      ]
+    },
+    context_tags: ["team_building", "offsite"]
   }
 ];
