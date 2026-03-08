@@ -1,5 +1,7 @@
-# Revert Codex Visuals
+# Restore & Refactor Codex
 
-- [ ] Revert the `Codex.tsx` grid card rendering to the previous stable state (no "tape" overlay, clean amber archive style).
-- [ ] Ensure the "Calibration Required" state is preserved.
-- [ ] Verify that the new v1 data logic (filtering, recommendations) is still functional.
+- [ ] Restore the tape image rendering in `Codex.tsx` grid cards.
+- [ ] Restore the "Culture Plugin" status message logic.
+- [ ] Create `client/src/components/CodexGridCard.tsx` and move the card logic there.
+- [ ] Update `Codex.tsx` to use the new component.
+- [ ] Verify that visuals are restored and logic is preserved.

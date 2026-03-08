@@ -5,6 +5,7 @@ import { CodexEntry } from "@/lib/codex-schema";
 import { CODEX_ENTRIES } from "@/lib/codex-data";
 import CodexShell from "@/components/CodexShell";
 import ReaderDrawer from "@/components/ReaderDrawer";
+import CodexGridCard from "@/components/CodexGridCard";
 
 export default function Codex() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -345,40 +346,28 @@ export default function Codex() {
           </div>
         )}
 
+        {/* --- CULTURE PLUGIN STATUS MESSAGE --- */}
+        {activeCategory === "CULTURE" && filteredEntries.length === 0 && (
+           <div className="w-full border border-amber-900/30 bg-amber-900/5 p-4 mb-6 flex items-center justify-between animate-in fade-in slide-in-from-top-2">
+              <div className="flex items-center gap-3">
+                 <div className="w-2 h-2 bg-amber-500/50 rounded-full animate-pulse" />
+                 <span className="font-mono text-xs text-amber-500/80 uppercase tracking-widest">
+                    CULTURE PLUGIN NOT INSTALLED
+                 </span>
+              </div>
+              <span className="font-pixel text-[10px] text-amber-900/40">ERR_404</span>
+           </div>
+        )}
+
         {/* --- MAIN LIBRARY GRID --- */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredEntries.map((entry) => (
-            <div 
-              key={entry.id}
-              onClick={() => handleLoad(entry)}
-              className={cn(
-                "group relative border border-[#222] bg-[#0a0a0a] hover:bg-[#111] transition-all cursor-pointer overflow-hidden h-32 flex flex-col justify-between p-4 hover:border-amber-900/40",
-                loadedEntry?.id === entry.id ? "border-amber-500/50 bg-amber-900/10" : ""
-              )}
-            >
-              <div className="flex justify-between items-start">
-                <h4 className={cn(
-                  "font-serif text-lg leading-tight transition-colors",
-                  loadedEntry?.id === entry.id ? "text-amber-400" : "text-[#888] group-hover:text-[#ccc]"
-                )}>
-                  {entry.title}
-                </h4>
-                <span className="font-pixel text-[8px] text-[#444] group-hover:text-[#666] tracking-widest">
-                  {entry.id.split("_")[1]}
-                </span>
-              </div>
-
-              <div className="flex justify-between items-end">
-                 <span className="font-mono text-[10px] text-[#444] group-hover:text-[#666] uppercase tracking-widest">
-                    {entry.category} // {entry.time_commitment}
-                 </span>
-                 {loadedEntry?.id === entry.id && (
-                    <span className="text-amber-500 font-pixel text-[8px] tracking-widest animate-pulse">
-                       ACTIVE
-                    </span>
-                 )}
-              </div>
-            </div>
+            <CodexGridCard 
+               key={entry.id}
+               entry={entry}
+               isActive={loadedEntry?.id === entry.id}
+               onClick={() => handleLoad(entry)}
+            />
           ))}
         </div>
 
