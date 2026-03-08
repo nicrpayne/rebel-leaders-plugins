@@ -1,35 +1,38 @@
-# Coaching Pack Integration
+# Codex Content System v1 Upgrade
 
-## Phase 1: Ingest Coaching Pack Data
-- [ ] Update `CodexEntry` schema in `client/src/lib/codex-schema.ts` to include optional fields: `pack`, `keys_primary`, `keys_secondary`, `keys_notes`, `why_it_works`.
-- [ ] Parse the JSON content from `pasted_content_26.txt` and append it to `client/src/lib/codex-data.ts`.
-- [ ] Ensure existing entries remain valid or are updated if they duplicate the new pack (e.g., `MOVE_TRUTH_WEATHER` exists in both; prefer the new pack version or merge).
+## Phase 1: Schema & Data Upgrade
+- [ ] Update `CodexEntry` schema in `client/src/lib/codex-schema.ts` with new fields:
+    - `checklist`: `{ id: string; label: string; micro_prompt?: string; artifact?: string; time_box?: string }[]`
+    - `proof`: `{ research?: { claim: string; source: string; note?: string }[]; books?: { title: string; author?: string; chapter_or_section?: string; why?: string }[]; media?: { title: string; creator?: string; timestamp_or_episode?: string; why?: string }[]; field_notes?: { note: string }[] }`
+    - `keys`: `("spiritual"|"emotional"|"leading"|"physical"|"technical")[]`
+    - `trigger_point`: `("1:1"|"feedback"|"repair"|"meeting"|"decision"|"performance")`
+- [ ] Update `client/src/lib/codex-data.ts` to reflect the new schema (add placeholder/default values where needed to avoid errors).
 
-## Phase 2: Implement Coaching Tab & Filtering
-- [ ] Update `Codex.tsx` to add a "COACHING" tab in the category selector.
-- [ ] Implement filtering logic for "COACHING":
-    - [ ] `category === "Relationship"` OR
-    - [ ] `leak_types` includes "dependency", "low-agency", "leader-bottleneck" OR
-    - [ ] `title` includes "Coaching" OR
-    - [ ] `pack` === "Core Protocols v1" (if we use that field).
+## Phase 2: Briefing First UI Refinement
+- [ ] Update `ReaderDrawer.tsx`:
+    - Enforce primary CTA: `[ INITIATE RUN MODE ]` on BRIEFING screen.
+    - Secondary CTAs: `[ VIEW SCRIPT ]`, `[ VIEW EXECUTION ]`.
+    - Visually de-emphasize `PROOF` tab.
 
-## Phase 3: Enhance Reader for Coaching Entries
-- [ ] Update `ReaderDrawer.tsx` to detect if an entry is a "Coaching" entry.
-- [ ] Implement "Briefing First" UI for Coaching entries:
-    - [ ] Show `Objective` (`use_when`), `When to Use` (`leak_types`/`dominant_forces`), `Time`, `Difficulty`.
-    - [ ] Add `why_it_works` section if available.
-    - [ ] Primary CTA: `[ INITIATE COACHING SEQUENCE ]` (Run Mode).
-    - [ ] Secondary CTA: `[ VIEW SCRIPT ]`.
+## Phase 3: Enhanced Run Mode & Persistence
+- [ ] Update `ReaderDrawer.tsx` for Run Mode:
+    - Use `checklist` from schema if present.
+    - Fallback: Derive simple checklist from `protocol` if `checklist` is missing.
+    - Add step completion state (checkbox).
+    - Add progress indicator.
+    - Add optional per-step notes (textarea that toggles?).
+    - Implement `localStorage` persistence for Run Mode state (keyed by protocol ID).
 
-## Phase 4: Refine Run Mode & Recommendations
-- [ ] Update `ReaderDrawer.tsx` Run Mode:
-    - [ ] Add "Complete Step" interaction (checkbox or button).
-    - [ ] Add progress indicator.
-- [ ] Update `Codex.tsx` recommendation logic:
-    - [ ] If Gravity Check bottleneck is `Identity` or `Relationship`, prioritize Coaching Pack entries in "Priority Transmission".
+## Phase 4: Recommendation & Filtering Logic Update
+- [ ] Update `Codex.tsx`:
+    - **Gravity Check Context Routing:**
+        - If bottleneck is `Identity` or `Relationship`: Prioritize entries where `trigger_point === "1:1"` OR `leak_types` contains `dependency`|`low-agency`|`leader-bottleneck`.
+        - Else: Fallback to `flywheel_node` matching + `leak_types` matching.
+    - **Coaching Filter:**
+        - Add top-level filter "COACHING".
+        - Logic: `trigger_point === "1:1"` OR `leak_types` includes `dependency`|`low-agency`|`leader-bottleneck` OR `title` contains "Coaching".
+    - Ensure Amber Archive aesthetic remains.
 
 ## Phase 5: Final Review & Delivery
-- [ ] Verify all new entries load correctly.
-- [ ] Test filtering and search.
-- [ ] Test Run Mode flow.
+- [ ] Verify all changes.
 - [ ] Create checkpoint.

@@ -15,6 +15,8 @@ export const CODEX_ENTRIES: CodexEntry[] = [
     keys_secondary: ["Leading"],
     keys_notes: "Trains repair speed and emotional responsibility without shame.",
     why_it_works: "Small repairs prevent story-building. Fast repair preserves trust bandwidth and teaches the team that rupture is normal and repair is expected.",
+    trigger_point: "repair",
+    keys: ["emotional", "leading"],
     briefing: {
       objective: "Close the narrative gap before it hardens into resentment.",
       use_when: [
@@ -38,17 +40,25 @@ export const CODEX_ENTRIES: CodexEntry[] = [
       "Make a repair request: one specific change for next time.",
       "Close with gratitude + one commitment each."
     ],
+    checklist: [
+      { id: "step1", label: "Schedule 10-min sync within 48h", time_box: "2 min" },
+      { id: "step2", label: "Name the rupture (1 sentence)", micro_prompt: "I think something got strained..." },
+      { id: "step3", label: "Own your part", micro_prompt: "Here's my part: ____" },
+      { id: "step4", label: "Ask impact", micro_prompt: "How did it land for you?" },
+      { id: "step5", label: "Make repair request", micro_prompt: "What would repair look like?" },
+      { id: "step6", label: "Close with commitment" }
+    ],
     proof: {
       research: [
-        "Gottman Institute studies show that successful relationships aren't defined by lack of conflict, but by the speed and quality of repair.",
-        "Neuroscience indicates that unresolved social threat triggers the same neural pathways as physical pain, reducing cognitive function."
+        { claim: "Successful relationships aren't defined by lack of conflict, but by the speed and quality of repair.", source: "Gottman Institute" },
+        { claim: "Unresolved social threat triggers the same neural pathways as physical pain, reducing cognitive function.", source: "Neuroscience" }
       ],
       books: [
-        { title: "The Culture Code", author: "Daniel Coyle", chapter: "Share Vulnerability" },
+        { title: "The Culture Code", author: "Daniel Coyle", chapter_or_section: "Share Vulnerability" },
         { title: "Crucial Conversations", author: "Patterson et al." }
       ],
       field_notes: [
-        "In high-stakes environments (SEAL teams, ER units), repair must happen immediately to maintain operational integrity."
+        { note: "In high-stakes environments (SEAL teams, ER units), repair must happen immediately to maintain operational integrity." }
       ]
     },
     context_tags: ["1on1", "peer", "direct_report"]
@@ -67,6 +77,8 @@ export const CODEX_ENTRIES: CodexEntry[] = [
     keys_secondary: ["Leading"],
     keys_notes: "Normalizes emotional truth so leadership isn’t forced through performance.",
     why_it_works: "It breaks the spell of performative normalcy and lowers the cost of honesty by making truth small, shared, and non-punitive.",
+    trigger_point: "meeting",
+    keys: ["emotional", "leading"],
     briefing: {
       objective: "Normalize honesty and reduce masking in high-stakes meetings.",
       use_when: [
@@ -87,17 +99,23 @@ export const CODEX_ENTRIES: CodexEntry[] = [
       "Round-robin: one sentence each; no commentary.",
       "If someone overshares, gently restate: ‘one sentence, then we’ll keep moving.’"
     ],
+    checklist: [
+      { id: "step1", label: "Open meeting with prompt", micro_prompt: "What weather are you bringing?" },
+      { id: "step2", label: "Leader goes first", micro_prompt: "Model brevity + honesty" },
+      { id: "step3", label: "Round robin (no fixing)", time_box: "3 min" },
+      { id: "step4", label: "Close and begin meeting" }
+    ],
     proof: {
       research: [
-        "Psychological safety is the #1 predictor of high-performing teams (Google Aristotle Project).",
-        "Naming an emotion reduces its intensity in the amygdala (affect labeling)."
+        { claim: "Psychological safety is the #1 predictor of high-performing teams.", source: "Google Aristotle Project" },
+        { claim: "Naming an emotion reduces its intensity in the amygdala (affect labeling).", source: "Neuroscience" }
       ],
       books: [
         { title: "No Hard Feelings", author: "Liz Fosslien & Mollie West Duffy" },
         { title: "Radical Candor", author: "Kim Scott" }
       ],
       field_notes: [
-        "Pilots use 'weather reports' to align on conditions before takeoff. This is the same principle for social dynamics."
+        { note: "Pilots use 'weather reports' to align on conditions before takeoff. This is the same principle for social dynamics." }
       ]
     },
     context_tags: ["team_meeting", "kickoff"]
@@ -110,12 +128,14 @@ export const CODEX_ENTRIES: CodexEntry[] = [
     leak_types: ["silence_tax", "politics_drag", "withholding", "people-pleasing", "image-management"],
     dominant_forces: ["image_performance", "fear_scarcity", "fear", "approval", "scarcity"],
     time_commitment: "15 min",
-    difficulty: 4, // Kept original difficulty
+    difficulty: 4,
     pack: "Core Protocols v1",
     keys_primary: ["Emotional"],
     keys_secondary: ["Leading"],
     keys_notes: "Reduces fear-based masking by making truth-cost visible and discussable.",
     why_it_works: "It surfaces the hidden incentives. Once the cost is visible, courage becomes rational instead of heroic.",
+    trigger_point: "meeting",
+    keys: ["emotional", "leading"],
     briefing: {
       objective: "Identify and reduce the hidden penalties for speaking up.",
       use_when: [
@@ -137,10 +157,17 @@ export const CODEX_ENTRIES: CodexEntry[] = [
       "Make one visible change that proves you meant it (policy, ritual, protection, clarity).",
       "Revisit in 2 weeks: ‘Did the cost change?’"
     ],
+    checklist: [
+      { id: "step1", label: "Ask the question", micro_prompt: "What does it cost to tell the truth here?" },
+      { id: "step2", label: "Capture answers verbatim", time_box: "5 min" },
+      { id: "step3", label: "Select one cost to reduce" },
+      { id: "step4", label: "Commit to one visible change" },
+      { id: "step5", label: "Schedule 2-week review" }
+    ],
     proof: {
       research: [
-        "Amy Edmondson's research on psychological safety highlights 'interpersonal risk' as a key barrier to learning.",
-        "High-reliability organizations (HROs) obsess over failure and encourage reporting errors without punishment."
+        { claim: "Interpersonal risk is a key barrier to learning.", source: "Amy Edmondson" },
+        { claim: "High-reliability organizations obsess over failure and encourage reporting errors without punishment.", source: "HRO Theory" }
       ],
       books: [
         { title: "The Fearless Organization", author: "Amy Edmondson" }
@@ -162,6 +189,8 @@ export const CODEX_ENTRIES: CodexEntry[] = [
     keys_secondary: ["Emotional"],
     keys_notes: "Restores integrity by making tradeoffs explicit and protecting capacity.",
     why_it_works: "Capacity is moral. A Stop List converts vague stress into concrete tradeoffs and protects the team from performative commitments.",
+    trigger_point: "decision",
+    keys: ["leading", "emotional"],
     briefing: {
       objective: "Restore integrity by actively stopping work to protect capacity.",
       use_when: [
@@ -182,10 +211,16 @@ export const CODEX_ENTRIES: CodexEntry[] = [
       "Publish the stop list where people can see it.",
       "Review weekly for 2 minutes: ‘Did we actually stop?’"
     ],
+    checklist: [
+      { id: "step1", label: "List active initiatives", time_box: "5 min" },
+      { id: "step2", label: "Select 1-2 items to stop" },
+      { id: "step3", label: "Publish Stop List" },
+      { id: "step4", label: "Schedule weekly review" }
+    ],
     proof: {
       research: [
-        "Cognitive load theory suggests that excessive WIP (work in progress) degrades decision quality and increases error rates.",
-        "Essentialism isn't about doing more things; it's about doing the right things."
+        { claim: "Excessive WIP degrades decision quality and increases error rates.", source: "Cognitive Load Theory" },
+        { claim: "Essentialism isn't about doing more things; it's about doing the right things.", source: "Greg McKeown" }
       ],
       books: [
         { title: "Essentialism", author: "Greg McKeown" },
@@ -208,6 +243,8 @@ export const CODEX_ENTRIES: CodexEntry[] = [
     keys_secondary: ["Technical Proficiency"],
     keys_notes: "Clarifies authority and coordination so execution stops paying an ambiguity tax.",
     why_it_works: "Most ‘alignment problems’ are actually authority and clarity problems. Decision rights reduce politics by removing ambiguity.",
+    trigger_point: "decision",
+    keys: ["leading", "technical"],
     briefing: {
       objective: "Eliminate role fog and the 'ambiguity tax' on decisions.",
       use_when: [
@@ -226,197 +263,124 @@ export const CODEX_ENTRIES: CodexEntry[] = [
     protocol: [
       "Pick one hot domain (roadmap, scope, hiring, priorities).",
       "Fill Owner/Decider/Consult/Inform live in the meeting.",
-      "Write it somewhere visible and link it in your recurring meeting.",
-      "Run it for 2 weeks, then adjust."
+      "Write it somewhere visible and link it in your recurring meeting doc.",
+      "When confusion hits, point to the map."
+    ],
+    checklist: [
+      { id: "step1", label: "Select domain", micro_prompt: "Roadmap, Hiring, etc." },
+      { id: "step2", label: "Define Owner & Decider" },
+      { id: "step3", label: "Define Consult & Inform" },
+      { id: "step4", label: "Publish and link" }
     ],
     proof: {
       research: [
-        "Bain & Company's RAPID framework improves decision effectiveness by clarifying roles.",
-        "Role ambiguity is a primary source of workplace stress."
+        { claim: "Role clarity reduces stress and increases job satisfaction.", source: "Organizational Psychology" },
+        { claim: "DACI/RACI frameworks reduce decision latency.", source: "Management Science" }
       ],
       books: [
-        { title: "Decide & Deliver", author: "Marcia W. Blenko et al." }
+        { title: "High Output Management", author: "Andy Grove" }
       ]
     },
-    context_tags: ["project_kickoff", "role_clarity"]
+    context_tags: ["planning", "project_kickoff"]
   },
   {
     id: "MOVE_MEETING_REWRITE",
     title: "Meeting Rewrite",
     category: "Culture",
     flywheel_node: ["Culture"],
-    leak_types: ["meeting_drain", "politics_drag", "role_fog", "fatigue", "noise", "calendar-bloat"],
-    dominant_forces: ["control_forcing", "meaning_drift", "default-behavior", "avoidance"],
-    time_commitment: "20 min",
-    difficulty: 2,
-    pack: "Core Protocols v1",
-    keys_primary: ["Leading"],
-    keys_secondary: ["Emotional"],
-    keys_notes: "Redesigns rituals so culture forms people instead of draining them.",
-    why_it_works: "Meetings become identity rituals. Rewriting them breaks unconscious loops and restores time as a sign of respect.",
-    briefing: {
-      objective: "Transform a draining ritual into a productive tool.",
-      use_when: [
-        "Your most frequent meeting produces fatigue, not clarity.",
-        "People are multitasking during the call.",
-        "There is no clear output."
-      ],
-      avoid: [
-        "Letting updates swallow the timebox.",
-        "Pretending a decision will happen when it can't."
-      ],
-      outcome: "Changes the lived reality of the team by redesigning a core ritual."
-    },
-    script: "We’re rewriting this meeting like a tool: purpose, output, roles, and a timebox.\n\nIf we can’t name the output, we shouldn’t be meeting.",
-    protocol: [
-      "Choose the most hated recurring meeting.",
-      "Define Purpose (one sentence) and Output (decision/plan/clarity).",
-      "Assign roles: facilitator, timekeeper, decider.",
-      "Timebox 20–30% shorter than current.",
-      "Ban updates unless they directly serve the output.",
-      "Run it twice before judging."
-    ],
-    proof: {
-      research: [
-        "Studies show that 50% of meeting time is wasted, contributing to 'Zoom fatigue' and reduced productivity.",
-        "Rituals shape culture more than values statements."
-      ],
-      books: [
-        { title: "The Art of Gathering", author: "Priya Parker" }
-      ]
-    },
-    context_tags: ["recurring_meeting", "team_sync"]
-  },
-  {
-    id: "MOVE_WIP_LIMIT",
-    title: "WIP Limit",
-    category: "Culture",
-    flywheel_node: ["Culture"],
-    leak_types: ["scarcity_weather", "hero_subsidy", "meeting_drain"],
-    dominant_forces: ["fear_scarcity", "control_forcing"],
+    leak_types: ["meeting_drain", "silence_tax", "role_fog", "boredom", "waste", "low-energy"],
+    dominant_forces: ["control_forcing", "apathy_drift", "inertia", "obligation"],
     time_commitment: "10 min",
-    difficulty: 3,
-    briefing: {
-      objective: "Stop the overwhelm by capping active work.",
-      use_when: [
-        "The team is overwhelmed because too much is active at once.",
-        "Projects are started but not finished.",
-        "Quality is slipping"
-      ],
-      avoid: [
-        "Setting limits but not enforcing them.",
-        "Allowing 'shadow work' to bypass the limit."
-      ],
-      outcome: "Forces prioritization and increases flow by reducing context switching."
-    },
-    script: "We are doing too much to do any of it well. We are setting a WIP limit of [Number] items per person/team. Nothing new starts until something finishes.",
-    protocol: [
-      "Visualize all current work (Kanban board or list).",
-      "Set a hard limit on items in 'Doing' column.",
-      "When limit is reached, block new work until a slot opens.",
-      "Celebrate finishing, not starting."
-    ],
-    proof: {
-      research: [
-        "Little's Law proves that reducing WIP decreases cycle time (speed of delivery).",
-        "Multitasking reduces productivity by up to 40% due to context switching costs."
-      ],
-      books: [
-        { title: "Making Work Visible", author: "Dominica DeGrandis" }
-      ]
-    },
-    context_tags: ["agile", "workflow"]
-  },
-  {
-    id: "MOVE_MINORITY_REPORT",
-    title: "Minority Report",
-    category: "Alignment",
-    flywheel_node: ["Relationship"],
-    leak_types: ["false-consensus", "silent-dissent", "backchanneling"],
-    dominant_forces: ["fear", "status", "conflict-avoidance"],
-    time_commitment: "10–15 min",
-    difficulty: 3,
-    pack: "Core Protocols v1",
-    keys_primary: ["Leading"],
-    keys_secondary: ["Emotional"],
-    keys_notes: "Trains psychological safety for disagreement and improves decision quality.",
-    why_it_works: "It makes dissent socially safe by making it role-based. Great teams don’t avoid conflict; they metabolize it.",
-    briefing: {
-      objective: "Legitimize dissent to prevent groupthink and false consensus.",
-      use_when: [
-        "Decisions feel ‘agreed’ publicly but contested privately afterward.",
-        "Everyone nods but energy is low.",
-        "You suspect people are holding back risks."
-      ],
-      avoid: [
-        "Punishing the dissenter.",
-        "Debating the feedback immediately (just listen first)."
-      ],
-      outcome: "Improves decision quality and psychological safety by making disagreement a valued contribution."
-    },
-    script: "Before we decide — I want the Minority Report. If you disagree, your job is to protect us from our blind spot. What are we missing?",
-    protocol: [
-      "Ask for dissent before the decision is finalized.",
-      "Invite specifically: “Who sees a risk we’re ignoring?”",
-      "Thank dissent out loud (make it prestigious).",
-      "Capture risks + mitigations.",
-      "Decide, then commit: “We disagree and commit.”"
-    ],
-    proof: {
-      research: [
-        "Research on 'Devil's Advocate' roles shows they improve group decision quality by 25%.",
-        "Constructive conflict is a hallmark of high-performing teams."
-      ],
-      books: [
-        { title: "Think Again", author: "Adam Grant" }
-      ]
-    },
-    context_tags: ["decision_making", "strategy"]
-  },
-  {
-    id: "MOVE_FRIDGE_RIGHTS_AUDIT",
-    title: "Fridge Rights Audit",
-    category: "Relationship",
-    flywheel_node: ["Relationship"],
-    leak_types: ["low-belonging", "thin-relationships", "transactional-teams"],
-    dominant_forces: ["busyness", "distance"],
-    time_commitment: "10–20 min",
     difficulty: 2,
     pack: "Core Protocols v1",
-    keys_primary: ["Emotional"],
-    keys_secondary: ["Leading"],
-    keys_notes: "Turns belonging into a measurable signal and nudges relational investment.",
-    why_it_works: "Belonging isn't a vibe; it's a set of permissions. Naming the level of permission makes it safe to increase it.",
+    keys_primary: ["Leading"],
+    keys_secondary: ["Technical Proficiency"],
+    keys_notes: "Reclaims time and energy by deleting or refactoring zombie meetings.",
+    why_it_works: "Meetings are the operating system of culture. Bad meetings are a tax on everything. Rewriting them signals that time is respected.",
+    trigger_point: "meeting",
+    keys: ["leading", "technical"],
     briefing: {
-      objective: "Assess and deepen the level of psychological safety and belonging.",
+      objective: "Eliminate low-value time sinks and restore meeting purpose.",
       use_when: [
-        "Team interacts only as roles; relationships feel thin.",
-        "New team formation.",
-        "Remote teams feeling disconnected."
+        "People dread the recurring meeting.",
+        "Agendas are vague or nonexistent.",
+        "People are multitasking during the call."
       ],
       avoid: [
-        "Forcing intimacy.",
-        "Judging low scores (it's data, not failure)."
+        "Keeping a meeting just because 'we always have it'.",
+        "Inviting people 'just in case'."
       ],
-      outcome: "Turns belonging into a measurable signal and nudges relational investment."
+      outcome: "Frees up capacity and increases engagement in the meetings that remain."
     },
-    script: "Quick diagnostic: if you walked into my house, would you feel ‘fridge rights’ — like you could grab water without asking? On this team, do we have that kind of belonging?",
+    script: "This meeting isn’t serving us anymore. Let’s kill it, shorten it, or change the goal.\n\nIf we keep it, what is the ONE decision we need to make?",
     protocol: [
-      "Explain ‘fridge rights’ in one sentence.",
-      "Have each person rate 1–5 privately, then share patterns.",
-      "Ask: “What would raise it one point?”",
-      "Pick one ritual (shared meal, buddy check-in, off-stage time).",
-      "Re-measure in 2 weeks."
+      "Audit your calendar for 'zombie meetings'.",
+      "Cancel one recurring meeting this week as an experiment.",
+      "For the rest: require a clear purpose and agenda.",
+      "Shorten 60m meetings to 45m or 30m."
+    ],
+    checklist: [
+      { id: "step1", label: "Audit calendar", time_box: "5 min" },
+      { id: "step2", label: "Cancel one zombie meeting" },
+      { id: "step3", label: "Refactor remaining meetings", micro_prompt: "Purpose + Agenda" },
+      { id: "step4", label: "Shorten durations" }
     ],
     proof: {
       research: [
-        "Belonging is a fundamental human need (Maslow).",
-        "Teams with high belonging have 56% better job performance (HBR)."
+        { claim: "Executives spend ~23 hours/week in meetings, often with low ROI.", source: "HBR" },
+        { claim: "Parkinson's Law: Work expands to fill the time available.", source: "Cyril Northcote Parkinson" }
       ],
       books: [
-        { title: "The Culture Code", author: "Daniel Coyle" }
+        { title: "Death by Meeting", author: "Patrick Lencioni" }
       ]
     },
-    context_tags: ["team_building", "offsite"]
+    context_tags: ["calendar_audit", "productivity"]
+  },
+  {
+    id: "MOVE_VISION_CAST",
+    title: "The 'Why Now' Frame",
+    category: "Vision",
+    flywheel_node: ["Vision", "Identity"],
+    leak_types: ["alignment_drift", "purpose_void"],
+    dominant_forces: ["apathy_drift"],
+    context_tags: ["team_meeting", "kickoff", "all_hands"],
+    difficulty: 2,
+    time_commitment: "5 min",
+    trigger_point: "meeting",
+    keys: ["leading", "spiritual"],
+    briefing: {
+      objective: "Transform a generic task into a strategic imperative.",
+      use_when: [
+        "The team treats a new initiative as 'just another task'.",
+        "Energy is low during a kickoff meeting.",
+        "You hear 'we'll get to it if we have time'."
+      ],
+      avoid: [
+        "Focusing only on the 'what' or 'how'.",
+        "Using corporate buzzwords without connecting to the mission."
+      ],
+      outcome: "Shifts the team from compliance to commitment by connecting the task to survival or identity."
+    },
+    script: "We aren't doing this because corporate asked. We are doing this because if we don't solve [Problem X] by Q3, we lose our ability to [Core Mission Y]. This is about protecting our standard.",
+    protocol: [
+      "Identify the 'Default Future' (what happens if we do nothing).",
+      "Identify the 'Altered Future' (what happens if we succeed).",
+      "Present the gap as the enemy, not the workload."
+    ],
+    checklist: [
+      { id: "step1", label: "Identify Default Future" },
+      { id: "step2", label: "Identify Altered Future" },
+      { id: "step3", label: "Present the Gap" }
+    ],
+    proof: {
+      research: [
+        { claim: "Simon Sinek's 'Golden Circle' theory demonstrates that inspiration starts with 'Why'.", source: "Simon Sinek" },
+        { claim: "Loss aversion bias makes people more motivated to avoid a loss (the Default Future) than to acquire a gain.", source: "Behavioral Economics" }
+      ],
+      books: [
+        { title: "Start with Why", author: "Simon Sinek" },
+        { title: "Made to Stick", author: "Chip & Dan Heath" }
+      ]
+    }
   }
 ];

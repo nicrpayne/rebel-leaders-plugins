@@ -29,11 +29,21 @@ export interface CodexEntry {
   script: string; // The exact words to say
   protocol: string[]; // Step-by-step execution guide
   
-  // Proof / Research (New Structure)
+  // Checklist (New v1)
+  checklist?: {
+    id: string;
+    label: string;
+    micro_prompt?: string;
+    artifact?: string;
+    time_box?: string;
+  }[];
+
+  // Proof / Research (New Structure v1)
   proof?: {
-    research?: string[]; // 2-4 bullet points (1-2 sentences each)
-    books?: { title: string; author: string; chapter?: string }[];
-    field_notes?: string[]; // Ancient wisdom / modern science tie-ins
+    research?: { claim: string; source: string; note?: string }[];
+    books?: { title: string; author?: string; chapter_or_section?: string; why?: string }[];
+    media?: { title: string; creator?: string; timestamp_or_episode?: string; why?: string }[];
+    field_notes?: { note: string }[];
   };
   
   // Coaching Pack Fields (New)
@@ -43,6 +53,10 @@ export interface CodexEntry {
   keys_notes?: string; // Short explanation of the key focus
   why_it_works?: string; // Explanation of the mechanism
   
+  // v1 New Fields
+  keys?: ("spiritual"|"emotional"|"leading"|"physical"|"technical")[];
+  trigger_point?: ("1:1"|"feedback"|"repair"|"meeting"|"decision"|"performance");
+
   // Legacy fields (to be deprecated or mapped)
   use_when?: string; 
   watch_for?: string[]; 
@@ -85,15 +99,15 @@ export const MOCK_CODEX_ENTRIES: CodexEntry[] = [
     ],
     proof: {
       research: [
-        "Gottman Institute studies show that successful relationships aren't defined by lack of conflict, but by the speed and quality of repair.",
-        "Neuroscience indicates that unresolved social threat triggers the same neural pathways as physical pain, reducing cognitive function."
+        { claim: "Successful relationships aren't defined by lack of conflict, but by the speed and quality of repair.", source: "Gottman Institute" },
+        { claim: "Unresolved social threat triggers the same neural pathways as physical pain, reducing cognitive function.", source: "Neuroscience" }
       ],
       books: [
-        { title: "The Culture Code", author: "Daniel Coyle", chapter: "Share Vulnerability" },
+        { title: "The Culture Code", author: "Daniel Coyle", chapter_or_section: "Share Vulnerability" },
         { title: "Crucial Conversations", author: "Patterson et al." }
       ],
       field_notes: [
-        "In high-stakes environments (SEAL teams, ER units), repair must happen immediately to maintain operational integrity."
+        { note: "In high-stakes environments (SEAL teams, ER units), repair must happen immediately to maintain operational integrity." }
       ]
     }
   },
@@ -128,8 +142,8 @@ export const MOCK_CODEX_ENTRIES: CodexEntry[] = [
     ],
     proof: {
       research: [
-        "Simon Sinek's 'Golden Circle' theory demonstrates that inspiration starts with 'Why'.",
-        "Loss aversion bias makes people more motivated to avoid a loss (the Default Future) than to acquire a gain."
+        { claim: "Simon Sinek's 'Golden Circle' theory demonstrates that inspiration starts with 'Why'.", source: "Simon Sinek" },
+        { claim: "Loss aversion bias makes people more motivated to avoid a loss (the Default Future) than to acquire a gain.", source: "Behavioral Economics" }
       ],
       books: [
         { title: "Start with Why", author: "Simon Sinek" },
