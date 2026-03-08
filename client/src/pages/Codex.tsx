@@ -19,6 +19,7 @@ export default function Codex() {
   const [hasGravityResults, setHasGravityResults] = useState(false);
   const [isReceivingSignal, setIsReceivingSignal] = useState(false);
   const [bottleneckReason, setBottleneckReason] = useState<string>("");
+  const [isBannerDismissed, setIsBannerDismissed] = useState(false);
 
   // Load Gravity Check Results & Filter Recommendations
   useEffect(() => {
@@ -277,11 +278,23 @@ export default function Codex() {
         )}
 
         {/* --- CALIBRATION REQUIRED (Empty State) --- */}
-        {!hasGravityResults && !searchQuery && activeCategory === "ALL" && (
+        {!hasGravityResults && !searchQuery && activeCategory === "ALL" && !isBannerDismissed && (
            <div className={cn(
-            "mb-4 bg-[#0a0a0a] border border-dashed border-amber-900/30 p-6 rounded-sm flex flex-col items-center justify-center text-center gap-4 transition-opacity duration-500",
+            "mb-4 bg-[#0a0a0a] border border-dashed border-amber-900/30 p-6 rounded-sm flex flex-col items-center justify-center text-center gap-4 transition-opacity duration-500 relative",
             loadedEntry ? "opacity-30 pointer-events-none" : "opacity-100"
            )}>
+              {/* Dismiss Button */}
+              <button 
+                onClick={() => setIsBannerDismissed(true)}
+                className="absolute top-2 right-2 text-amber-900/50 hover:text-amber-500 transition-colors p-2"
+                aria-label="Dismiss"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+
               <div className="w-12 h-12 border border-amber-900/50 rounded-full flex items-center justify-center animate-pulse">
                  <span className="text-amber-900 text-xl">!</span>
               </div>

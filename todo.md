@@ -37,3 +37,9 @@
 - [ ] Create `CodexGrid.tsx` to isolate the card rendering logic.
 - [ ] Update `Codex.tsx` to use these new components, removing the inline rendering logic.
 - [ ] Verify that the refactor has not introduced any regressions.
+
+# Add Dismissal to Gravity Check Banner
+
+- [ ] Add a state variable `isBannerDismissed` to `Codex.tsx`.
+- [ ] Add a close button (X icon) to the "Calibration Required" banner.
+- [ ] Implement the dismissal logic to hide the banner when the button is clicked.
