@@ -76,3 +76,15 @@
 - [ ] Generate a straight-on, tileable shelf beam asset (metal/industrial).
 - [ ] Refactor `CodexGrid.tsx` to stack these beams and place spines on them.
 - [ ] Ensure the layout is responsive and maintains the "flat" perspective.
+
+# Generate Nic Figurine Asset
+
+- [ ] Generate a high-fidelity 3D 'Vinyl Collectible' asset of the Nic character.
+- [ ] Ensure the asset matches the specific details of the existing sprite (pose, outfit, features).
+- [ ] Present the generated asset to the user for approval.
+
+# Generate 3D Voxel Nic Asset
+
+- [ ] Generate a high-fidelity '3D Voxel/Pixel Art' collectible asset of the Nic character.
+- [ ] Ensure the asset strictly adheres to the original sprite's design (hair, beard, sword, proportions).
+- [ ] Present the generated asset to the user for approval.
