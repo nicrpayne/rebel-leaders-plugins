@@ -15,6 +15,7 @@ export default function Codex() {
   const [recommendedEntries, setRecommendedEntries] = useState<CodexEntry[]>([]);
   const [hasGravityResults, setHasGravityResults] = useState(false);
   const [isReceivingSignal, setIsReceivingSignal] = useState(false);
+  const [bottleneckReason, setBottleneckReason] = useState<string>("");
 
   // Load Gravity Check Results & Filter Recommendations
   useEffect(() => {
@@ -61,9 +62,40 @@ export default function Codex() {
     const savedResults = localStorage.getItem("gravityCheckResults");
     if (savedResults) {
       setHasGravityResults(true);
-      // Filter recommendations based on bottleneck if available, otherwise show generic
-      // For now, we'll just keep the existing logic or improve it later
-      setRecommendedEntries(CODEX_ENTRIES.slice(0, 2));
+      try {
+        const results = JSON.parse(savedResults);
+        
+        // Find lowest score
+        const scores = [
+          { category: "Identity", score: results.identity },
+          { category: "Conflict", score: results.relationship }, // Map Relationship -> Conflict category
+          { category: "Vision", score: results.vision },
+          { category: "Culture", score: results.culture }
+        ];
+        
+        // Sort by score ascending
+        scores.sort((a, b) => a.score - b.score);
+        const lowest = scores[0];
+        
+        // Set reason
+        setBottleneckReason(`Reason: Low ${lowest.category} Score detected`);
+        
+        // Filter recommendations: Top 3 matching the lowest category
+        // If not enough, fill with others
+        let recs = CODEX_ENTRIES.filter(e => e.category === lowest.category);
+        
+        // If we need more, add from second lowest
+        if (recs.length < 3 && scores[1]) {
+           const secondary = CODEX_ENTRIES.filter(e => e.category === scores[1].category);
+           recs = [...recs, ...secondary];
+        }
+        
+        setRecommendedEntries(recs.slice(0, 3));
+        
+      } catch (e) {
+        console.error("Failed to parse gravity results", e);
+        setHasGravityResults(false);
+      }
     }
   }, []);
 
@@ -148,6 +180,22 @@ export default function Codex() {
       isReaderOpen={isReaderOpen}
       footerControls={
         <div className="flex items-center gap-4">
+           {/* Deck State Indicators (Visible when Reader is Open) */}
+           {isReaderOpen && (
+             <div className="flex gap-4 mr-4 animate-in fade-in duration-500">
+                <div className="flex flex-col items-end">
+                  <span className="text-[8px] font-pixel text-amber-500/50 tracking-widest">STATUS</span>
+                  <span className="text-[10px] font-pixel text-amber-500 tracking-widest">LOADED</span>
+                </div>
+                <div className="flex flex-col items-end">
+                  <span className="text-[8px] font-pixel text-amber-500/50 tracking-widest">MODE</span>
+                  <span className="text-[10px] font-pixel text-amber-500 tracking-widest animate-pulse">
+                    {readerMode}
+                  </span>
+                </div>
+             </div>
+           )}
+
            <div className="flex flex-col items-end">
               <span className="text-[8px] font-pixel text-amber-900/60 tracking-widest">BUFFER</span>
               <div className="w-16 h-1 bg-amber-900/20 rounded-full overflow-hidden">
@@ -157,7 +205,10 @@ export default function Codex() {
         </div>
       }
     >
-      <div className="flex flex-col h-full w-full gap-6 overflow-y-auto pr-2 pb-20 scrollbar-thin scrollbar-thumb-amber-900/20 scrollbar-track-transparent">
+      <div className={cn(
+        "flex flex-col h-full w-full gap-6 overflow-y-auto pr-2 pb-20 scrollbar-thin scrollbar-thumb-amber-900/20 scrollbar-track-transparent transition-all duration-500",
+        isReaderOpen ? "opacity-40 pointer-events-none blur-[1px]" : "opacity-100" // Dim background when reader is open
+      )}>
         
         {/* --- SIGNAL ACQUISITION OVERLAY --- */}
         {isReceivingSignal && (
@@ -227,14 +278,21 @@ export default function Codex() {
                 </div>
             </div>
             
-            <div className="flex items-center gap-2 mb-4 relative z-10">
+            <div className="flex items-center gap-2 mb-2 relative z-10">
               <div className="w-2 h-2 bg-amber-500 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
               <h3 className="font-pixel text-[10px] text-amber-500 tracking-[0.2em] uppercase">
                 Priority Transmission
               </h3>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
+            {/* Reason Line */}
+            <div className="mb-4 relative z-10">
+               <p className="font-mono text-xs text-amber-500/70 italic">
+                 {bottleneckReason}
+               </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
               {recommendedEntries.map(entry => (
                 <div 
                   key={entry.id}
@@ -247,25 +305,26 @@ export default function Codex() {
                   )}
                 >
                   {/* Tape Reel Icon */}
-                  <div className="w-12 h-12 bg-[#151515] rounded-full border border-[#333] flex items-center justify-center group-hover:border-amber-500/50 group-hover:animate-[spin_4s_linear_infinite]">
-                     <div className="w-4 h-4 bg-[#222] rounded-full border border-[#444] flex items-center justify-center">
+                  <div className="w-10 h-10 bg-[#151515] rounded-full border border-[#333] flex items-center justify-center group-hover:border-amber-500/50 group-hover:animate-[spin_4s_linear_infinite] flex-shrink-0">
+                     <div className="w-3 h-3 bg-[#222] rounded-full border border-[#444] flex items-center justify-center">
                         <div className="w-1 h-1 bg-amber-900/50 rounded-full" />
                      </div>
-                     <div className="absolute w-10 h-10 border border-dashed border-[#333] rounded-full" />
+                     <div className="absolute w-8 h-8 border border-dashed border-[#333] rounded-full" />
                   </div>
 
-                  <div className="flex-1">
-                      <h4 className="font-mono text-sm text-amber-100 group-hover:text-amber-400 transition-colors mb-1">
+                  <div className="flex-1 min-w-0">
+                      <h4 className="font-mono text-xs text-amber-100 group-hover:text-amber-400 transition-colors mb-1 truncate">
                         {entry.title}
                       </h4>
                       <div className="flex items-center gap-2">
-                        <span className="text-[8px] font-pixel text-amber-900/80 bg-amber-900/10 px-1">MATCH 98%</span>
-                        <span className="text-[8px] font-pixel text-[#444]">{entry.category}</span>
+                        <span className="text-[8px] font-pixel text-amber-900/60 bg-amber-900/10 px-1.5 py-0.5 rounded-sm">
+                          {entry.category}
+                        </span>
                       </div>
                   </div>
                   
-                  <div className="text-amber-500/50 group-hover:text-amber-500">
-                    <span className="font-pixel text-xs">&gt;</span>
+                  <div className="text-amber-500/20 group-hover:text-amber-500 transition-colors text-xs">
+                    &gt;
                   </div>
                 </div>
               ))}
@@ -273,78 +332,87 @@ export default function Codex() {
           </div>
         )}
 
-        {/* --- MAIN LIBRARY GRID - "DATA CARTRIDGES" --- */}
-        <div className={cn(
-          "grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 px-2 transition-opacity duration-500",
-          loadedEntry ? "opacity-30 pointer-events-none" : "opacity-100" // Dim when loaded
-        )}>
-          {filteredEntries.map((entry, index) => (
+        {/* --- CALIBRATION REQUIRED (Empty State) --- */}
+        {!hasGravityResults && !searchQuery && activeCategory === "ALL" && (
+           <div className={cn(
+            "mb-4 bg-[#0a0a0a] border border-dashed border-amber-900/30 p-6 rounded-sm flex flex-col items-center justify-center text-center gap-4 transition-opacity duration-500",
+            loadedEntry ? "opacity-30 pointer-events-none" : "opacity-100"
+           )}>
+              <div className="w-12 h-12 border border-amber-900/50 rounded-full flex items-center justify-center animate-pulse">
+                 <span className="text-amber-900 text-xl">!</span>
+              </div>
+              <div>
+                 <h3 className="font-pixel text-xs text-amber-900 tracking-widest uppercase mb-2">Calibration Required</h3>
+                 <p className="font-mono text-sm text-[#666] max-w-md">
+                    Codex is operating in passive mode. Run a Gravity Check to unlock personalized protocol recommendations.
+                 </p>
+              </div>
+              <Link href="/gravity-check">
+                 <button className="px-6 py-2 bg-amber-900/10 border border-amber-900/30 text-amber-500 font-pixel text-[10px] tracking-widest hover:bg-amber-900/20 hover:border-amber-500/50 transition-all uppercase">
+                    Initiate Gravity Check
+                 </button>
+              </Link>
+           </div>
+        )}
+
+        {/* --- PROTOCOL GRID --- */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-8">
+          {filteredEntries.map((entry) => (
             <div 
               key={entry.id}
               onClick={() => handleLoad(entry)}
               className={cn(
-                "group relative flex flex-col cursor-pointer transition-all duration-200",
+                "group relative bg-[#0a0a0a] border p-4 cursor-pointer transition-all duration-300 hover:bg-[#111]",
                 loadedEntry?.id === entry.id 
-                  ? "opacity-100 z-10 scale-105" 
-                  : "hover:-translate-y-1 hover:brightness-110 opacity-80 hover:opacity-100"
+                  ? "border-amber-500 bg-amber-900/20 shadow-[0_0_15px_rgba(245,158,11,0.2)]" 
+                  : "border-amber-900/20 hover:border-amber-500/50",
+                loadedEntry && loadedEntry.id !== entry.id ? "opacity-50 grayscale" : "opacity-100"
               )}
             >
-              {/* Cartridge Container */}
-              <div className="relative aspect-[1200/260] w-full mb-2">
-                {/* Rack Slot Background (Rails) */}
-                <div className="absolute -inset-1 border border-amber-900/10 rounded-sm pointer-events-none" />
-                <div className="absolute top-1/2 -left-3 -translate-y-1/2 font-pixel text-[6px] text-amber-900/30 -rotate-90">
-                  {index % 2 === 0 ? `A${Math.floor(index/2) + 1}` : `B${Math.floor(index/2) + 1}`}
-                </div>
-                
-                {/* Cartridge Body Image */}
-                <img 
-                  src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_body-C4DC7BQ3WfAArvo6KbDhyY.webp"
-                  alt="Cartridge"
-                  className="absolute inset-0 w-full h-full object-contain drop-shadow-md"
-                />
-
-                {/* Label Strip Image (Decorative Only) */}
-                <div className="absolute top-[15%] left-[5%] right-[15%] bottom-[15%] flex items-center pointer-events-none">
-                   <img 
-                      src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_label_strip-LwPDAbUA3zduFwXko3kUQC.webp"
-                      alt="Label"
-                      className="absolute inset-0 w-full h-full object-contain opacity-90"
-                   />
-                </div>
-              </div>
-
-              {/* External Label (For Readability) */}
-              <div className="pl-4 pr-12">
-                <h3 className={cn(
-                  "font-serif text-sm md:text-base font-bold uppercase tracking-wide transition-colors",
-                  loadedEntry?.id === entry.id ? "text-amber-500" : "text-[#888] group-hover:text-amber-100"
+              <div className="flex justify-between items-start mb-3">
+                <span className={cn(
+                  "text-[9px] font-pixel tracking-widest px-1.5 py-0.5 border",
+                  loadedEntry?.id === entry.id 
+                    ? "text-amber-500 border-amber-500 bg-amber-900/20" 
+                    : "text-amber-900/60 border-amber-900/30 group-hover:text-amber-500/70 group-hover:border-amber-500/30"
                 )}>
-                  {entry.title}
-                </h3>
-                <div className="flex items-center gap-2 mt-1">
-                   <span className="font-pixel text-[8px] text-amber-900/60 uppercase tracking-widest border border-amber-900/20 px-1 rounded-sm">
-                     {entry.category}
-                   </span>
-                   <span className="font-mono text-[8px] text-[#444]">
-                     {entry.id}
-                   </span>
-                </div>
+                  {entry.category}
+                </span>
+                <span className="text-[9px] font-pixel text-[#333] group-hover:text-[#555]">
+                  {entry.id.split('_')[1]}
+                </span>
               </div>
-
+              
+              <h3 className={cn(
+                "font-mono text-sm mb-2 transition-colors",
+                loadedEntry?.id === entry.id ? "text-amber-400" : "text-[#888] group-hover:text-amber-100"
+              )}>
+                {entry.title}
+              </h3>
+              
+              <div className="flex items-center gap-2 mt-4">
+                 <div className="h-[1px] flex-1 bg-[#222] group-hover:bg-[#333]" />
+                 <span className="text-[9px] font-pixel text-[#444] group-hover:text-amber-500/50">
+                   LOAD
+                 </span>
+              </div>
             </div>
           ))}
         </div>
 
       </div>
 
-      {/* --- READER DRAWER (Slide-Over) --- */}
+      {/* --- READER DRAWER --- */}
       {loadedEntry && (
         <ReaderDrawer 
           entry={loadedEntry}
           isOpen={isReaderOpen}
+          onClose={() => {
+            setIsReaderOpen(false);
+            // Optional: Revert to READ mode on close? Or keep state?
+            // Keeping state allows resuming where left off.
+          }}
           initialMode={readerMode}
-          onClose={() => setIsReaderOpen(false)}
         />
       )}
     </CodexShell>
