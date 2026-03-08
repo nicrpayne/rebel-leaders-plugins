@@ -88,3 +88,10 @@
 - [ ] Generate a high-fidelity '3D Voxel/Pixel Art' collectible asset of the Nic character.
 - [ ] Ensure the asset strictly adheres to the original sprite's design (hair, beard, sword, proportions).
 - [ ] Present the generated asset to the user for approval.
+
+# Refactor CodexGrid for Physical Shelf Layout
+
+- [ ] Replace `CodexSpine` components in `CodexGrid.tsx` with `CodexGridCard` (or a variant) to display full cassette cartridges.
+- [ ] Adjust the layout to make the cartridges look like physical objects sitting on the shelves (standing face-out or stacked).
+- [ ] Ensure the shelves have enough visual depth to support the full cartridges.
+- [ ] Maintain the cabinet frame and atmospheric details but adapt them to the new scale.

@@ -1,5 +1,5 @@
 import { CodexEntry } from "@/lib/codex-schema";
-import CodexSpine from "@/components/CodexSpine";
+import CodexGridCard from "@/components/CodexGridCard";
 
 interface CodexGridProps {
   entries: CodexEntry[];
@@ -33,12 +33,12 @@ export default function CodexGrid({ entries, loadedEntryId, onLoad }: CodexGridP
         </div>
 
         {/* Shelf Unit Container */}
-        <div className="relative z-10 flex flex-col gap-16 py-12 px-8 md:px-16">
+        <div className="relative z-10 flex flex-col gap-24 py-16 px-8 md:px-16">
           {rows.map((row, rowIndex) => (
             <div key={rowIndex} className="relative group">
               
               {/* The Shelf Beam (Background) */}
-              <div className="absolute bottom-0 left-0 right-0 h-20 z-0 flex items-end">
+              <div className="absolute bottom-0 left-0 right-0 h-24 z-0 flex items-end">
                  {/* Tiled Beam Texture */}
                  <div 
                    className="w-full h-full bg-repeat-x opacity-90"
@@ -48,14 +48,21 @@ export default function CodexGrid({ entries, loadedEntryId, onLoad }: CodexGridP
                    }}
                  />
                  {/* Shadow under the shelf */}
-                 <div className="absolute -bottom-6 left-0 right-0 h-6 bg-black/80 blur-lg" />
+                 <div className="absolute -bottom-8 left-0 right-0 h-8 bg-black/80 blur-xl" />
               </div>
 
-              {/* The Cartridges on the Shelf */}
-              <div className="relative z-10 flex justify-center gap-6 px-8 items-end pb-4">
-                {row.map((entry) => (
-                  <div key={entry.id} className="w-full max-w-xs transform transition-transform hover:-translate-y-2 duration-200">
-                    <CodexSpine
+              {/* The Cartridges on the Shelf - Standing Face Out */}
+              <div className="relative z-10 flex justify-center gap-8 md:gap-12 items-end pb-6 px-4">
+                {row.map((entry, i) => (
+                  <div 
+                    key={entry.id} 
+                    className="transform transition-all duration-300 hover:-translate-y-2"
+                    style={{
+                      // Slight random rotation for "hand-placed" feel
+                      transform: `rotate(${rowIndex % 2 === 0 ? (i % 2 === 0 ? '1deg' : '-1deg') : (i % 2 === 0 ? '-0.5deg' : '0.5deg')})`
+                    }}
+                  >
+                    <CodexGridCard
                       entry={entry}
                       isActive={loadedEntryId === entry.id}
                       onClick={() => onLoad(entry)}
@@ -65,7 +72,7 @@ export default function CodexGrid({ entries, loadedEntryId, onLoad }: CodexGridP
                 
                 {/* Empty slots filler if row is incomplete */}
                 {row.length < 3 && Array.from({ length: 3 - row.length }).map((_, i) => (
-                   <div key={`empty-${i}`} className="w-full max-w-xs h-16 opacity-0" />
+                   <div key={`empty-${i}`} className="w-64 h-40 opacity-0" />
                 ))}
               </div>
 
@@ -75,7 +82,7 @@ export default function CodexGrid({ entries, loadedEntryId, onLoad }: CodexGridP
               {rowIndex === 0 && (
                 <img 
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/worn_journals-6V7HD3tR3KNhSZ2bpTifhC.png"
-                  className="absolute -bottom-1 right-4 w-32 md:w-40 object-contain opacity-90 pointer-events-none z-20 transform rotate-1 drop-shadow-lg"
+                  className="absolute -bottom-2 right-8 w-32 md:w-40 object-contain opacity-90 pointer-events-none z-20 transform rotate-2 drop-shadow-2xl"
                   alt="Worn Journals"
                 />
               )}
@@ -84,7 +91,7 @@ export default function CodexGrid({ entries, loadedEntryId, onLoad }: CodexGridP
               {rowIndex % 2 !== 0 && (
                 <img 
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/shelf_detail_wires-LCzUDw7KPprZH2FVYWygnT.webp"
-                  className="absolute -bottom-2 left-8 w-20 h-20 object-contain opacity-60 pointer-events-none z-20"
+                  className="absolute -bottom-4 left-12 w-24 h-24 object-contain opacity-60 pointer-events-none z-20"
                   alt="Wires"
                 />
               )}
@@ -93,7 +100,7 @@ export default function CodexGrid({ entries, loadedEntryId, onLoad }: CodexGridP
               {rowIndex % 3 === 0 && rowIndex !== 0 && (
                 <img 
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/shelf_detail_tool-ADMbZH8ynfLnw6dmqKuqhv.webp"
-                  className="absolute -bottom-1 left-16 w-12 h-12 object-contain opacity-50 pointer-events-none z-20 transform rotate-45"
+                  className="absolute -bottom-2 left-20 w-16 h-16 object-contain opacity-50 pointer-events-none z-20 transform rotate-12"
                   alt="Tool"
                 />
               )}
