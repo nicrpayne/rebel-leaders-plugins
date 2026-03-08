@@ -86,11 +86,21 @@ export default function Codex() {
         
         // Filter recommendations: Top 3 matching the lowest category
         // If not enough, fill with others
-        let recs = CODEX_ENTRIES.filter(e => e.category === lowest.category);
+        let recs: CodexEntry[] = [];
+
+        // PRIORITY LOGIC: If bottleneck is Identity or Relationship, prioritize Coaching Pack
+        if (lowest.category === "Identity" || lowest.category === "Relationship") {
+          const coachingEntries = CODEX_ENTRIES.filter(e => e.pack === "Coaching Pack v1");
+          recs = [...coachingEntries];
+        }
+
+        // Fill remaining slots with category matches
+        const categoryMatches = CODEX_ENTRIES.filter(e => e.category === lowest.category && !recs.includes(e));
+        recs = [...recs, ...categoryMatches];
         
-        // If we need more, add from second lowest
+        // If still need more, add from second lowest
         if (recs.length < 3 && scores[1]) {
-           const secondary = CODEX_ENTRIES.filter(e => e.category === scores[1].category);
+           const secondary = CODEX_ENTRIES.filter(e => e.category === scores[1].category && !recs.includes(e));
            recs = [...recs, ...secondary];
         }
         
@@ -107,7 +117,25 @@ export default function Codex() {
   const filteredEntries = CODEX_ENTRIES.filter(entry => {
     const matchesSearch = entry.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           entry.script.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = activeCategory === "ALL" || entry.category === activeCategory;
+    
+    let matchesCategory = false;
+    if (activeCategory === "ALL") {
+      matchesCategory = true;
+    } else if (activeCategory === "COACHING") {
+      // Coaching Filter Logic:
+      // 1. Category is "Relationship"
+      // 2. leak_types includes specific keywords
+      // 3. Title includes "Coaching"
+      // 4. Pack is "Coaching Pack v1"
+      matchesCategory = 
+        entry.category === "Relationship" ||
+        entry.leak_types.some(t => ["dependency", "low-agency", "leader-bottleneck"].includes(t)) ||
+        entry.title.toLowerCase().includes("coaching") ||
+        entry.pack === "Coaching Pack v1";
+    } else {
+      matchesCategory = entry.category === activeCategory;
+    }
+
     return matchesSearch && matchesCategory;
   });
 

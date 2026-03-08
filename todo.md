@@ -56,3 +56,32 @@
 - [ ] Update `CodexShell.tsx` to pull the content area upwards (negative margin if needed).
 - [ ] Check `CodexTopBar.tsx` for unnecessary top spacing.
 - [ ] Ensure the grid is immediately visible below the deck without scrolling.
+
+# Integrate Coaching Pack Content
+
+- [ ] Update `src/lib/codex-schema.ts` to include new fields: `pack`, `flywheel_node`, `leak_types`, `dominant_forces`, `use_when`, `difficulty`, `keys_primary`, `keys_secondary`, `keys_notes`, `why_it_works`.
+- [ ] Update `src/lib/codex-data.ts` with the 24 entries provided in `pasted_content_29.txt`.
+- [ ] Ensure existing entries are compatible with the updated schema (add default values if needed).
+
+# Implement Coaching Filter
+
+- [ ] Update `CodexTopBar.tsx` to add a "COACHING" filter tab.
+- [ ] Implement filtering logic in `Codex.tsx`:
+    - Show entries where `category === "Relationship"` OR `leak_types` includes "dependency", "low-agency", "leader-bottleneck" OR `title` includes "Coaching".
+- [ ] Ensure the filter works alongside the existing search functionality.
+
+# Update Recommendation Logic
+
+- [ ] Modify `Codex.tsx` recommendation logic:
+    - If Gravity Check bottleneck is "Identity" or "Relationship", prioritize "Coaching Pack" entries.
+    - Fallback to existing logic for other bottlenecks.
+
+# Enhance Reader & Run Mode
+
+- [ ] Update `ReaderDrawer.tsx` to support "Briefing First" layout for Coaching entries:
+    - Show `use_when`, `leak_types`, `dominant_forces`, `time`, `difficulty`.
+    - Add "INITIATE COACHING SEQUENCE" (Primary CTA) and "VIEW SCRIPT" (Secondary CTA).
+- [ ] Update `RunMode.tsx` to feel like guided coaching:
+    - Step-by-step protocol with progress indicator.
+    - Clear "Complete Step" interaction.
+- [ ] Ensure styling remains "Amber/Archive/Data-bank" (no design changes).

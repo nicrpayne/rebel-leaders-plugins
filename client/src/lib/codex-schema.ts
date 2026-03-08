@@ -16,6 +16,7 @@ export interface CodexEntry {
   // Metadata
   difficulty: Difficulty;
   time_commitment: string; // e.g., "10 min"
+  pack?: string; // e.g., "Core Protocols v1", "Coaching Pack v1"
   
   // Tactical Briefing (New Structure)
   briefing: {
@@ -29,6 +30,12 @@ export interface CodexEntry {
   script: string; // The exact words to say
   protocol: string[]; // Step-by-step execution guide
   
+  // Coaching Pack Specific Fields
+  keys_primary?: string[];
+  keys_secondary?: string[];
+  keys_notes?: string;
+  why_it_works?: string;
+  
   // Proof / Research (New Structure)
   proof?: {
     research?: string[]; // 2-4 bullet points (1-2 sentences each)
@@ -38,7 +45,6 @@ export interface CodexEntry {
   
   // Legacy fields (to be deprecated or mapped)
   use_when?: string; 
-  why_it_works?: string; 
   watch_for?: string[]; 
   
   // Status

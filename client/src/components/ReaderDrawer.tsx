@@ -207,13 +207,13 @@ export default function ReaderDrawer({
                                   className="w-full py-4 bg-amber-500 text-black font-pixel text-xs tracking-[0.2em] hover:bg-amber-400 transition-all uppercase flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)]"
                                 >
                                   <span>▶</span>
-                                  INITIATE RUN MODE
+                                  {entry.pack === "Coaching Pack v1" ? "INITIATE COACHING SEQUENCE" : "INITIATE RUN MODE"}
                                 </button>
                                 <button 
                                   onClick={() => setActiveTab("SCRIPT")}
                                   className="w-full py-3 border border-[#333] text-[#888] font-pixel text-[10px] tracking-[0.2em] hover:text-amber-500 hover:border-amber-500/30 transition-all uppercase"
                                 >
-                                  VIEW SCRIPT SOURCE
+                                  {entry.pack === "Coaching Pack v1" ? "VIEW SCRIPT" : "VIEW SCRIPT SOURCE"}
                                 </button>
                               </div>
                           </div>
@@ -344,7 +344,9 @@ export default function ReaderDrawer({
               /* RUN MODE (Checklist) */
               <div className="p-6 md:p-8 space-y-6 animate-in slide-in-from-right duration-300 select-none">
                   <div className="flex items-center justify-between mb-4">
-                      <span className="font-pixel text-[10px] text-amber-500 tracking-widest animate-pulse">EXECUTION IN PROGRESS</span>
+                      <span className="font-pixel text-[10px] text-amber-500 tracking-widest animate-pulse">
+                        {entry.pack === "Coaching Pack v1" ? "COACHING SEQUENCE ACTIVE" : "EXECUTION IN PROGRESS"}
+                      </span>
                       <span className="font-mono text-xs text-[#666]">
                           {checklist.filter(Boolean).length} / {steps.length} COMPLETE
                       </span>
@@ -360,31 +362,74 @@ export default function ReaderDrawer({
                       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
                   </div>
 
-                  <div className="space-y-2">
-                      {steps.map((step, i) => (
-                          <div 
-                              key={i}
-                              onClick={() => toggleStep(i)}
-                              className={cn(
-                                  "flex gap-4 p-4 border cursor-pointer transition-all duration-200 select-none group",
-                                  checklist[i] 
-                                      ? "bg-amber-900/10 border-amber-500/30 opacity-50" 
-                                      : "bg-[#0c0c0c] border-[#222] hover:border-amber-500/50 hover:bg-[#111]"
-                              )}
-                          >
-                              <div className={cn(
-                                  "w-6 h-6 border flex items-center justify-center flex-shrink-0 transition-colors",
-                                  checklist[i] ? "bg-amber-500 border-amber-500" : "border-[#444] group-hover:border-amber-500/50"
-                              )}>
-                                  {checklist[i] && <span className="text-black font-bold text-xs">✓</span>}
-                              </div>
-                              <p className={cn(
-                                  "text-base transition-colors font-sans",
-                                  checklist[i] ? "text-amber-500/50 line-through" : "text-[#ccc] group-hover:text-amber-100"
-                              )}>{step}</p>
-                          </div>
-                      ))}
+                  <div className="space-y-4">
+                      {steps.map((step, i) => {
+                          const isComplete = checklist[i];
+                          const isNext = !isComplete && (i === 0 || checklist[i - 1]);
+                          
+                          return (
+                            <div 
+                                key={i}
+                                onClick={() => toggleStep(i)}
+                                className={cn(
+                                    "flex gap-4 p-6 border cursor-pointer transition-all duration-300 select-none group relative overflow-hidden",
+                                    isComplete 
+                                        ? "bg-amber-900/5 border-amber-900/20 opacity-60" 
+                                        : isNext
+                                          ? "bg-[#111] border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.1)] scale-[1.02]"
+                                          : "bg-[#0c0c0c] border-[#222] hover:border-[#444]"
+                                )}
+                            >
+                                {/* Step Number */}
+                                <div className={cn(
+                                  "font-pixel text-xs pt-1 transition-colors",
+                                  isComplete ? "text-amber-900/40" : isNext ? "text-amber-500" : "text-[#333]"
+                                )}>
+                                  0{i + 1}
+                                </div>
+
+                                <div className="flex-1">
+                                  <p className={cn(
+                                      "text-lg transition-colors font-serif leading-relaxed",
+                                      isComplete ? "text-amber-900/60 line-through decoration-amber-900/30" : isNext ? "text-amber-100" : "text-[#666]"
+                                  )}>{step}</p>
+                                  
+                                  {/* "Complete Step" Interaction for Next Item */}
+                                  {isNext && (
+                                    <div className="mt-4 flex items-center gap-2 text-[10px] font-pixel text-amber-500 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                                      <span className="w-2 h-2 bg-amber-500 animate-pulse" />
+                                      Click to Complete
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* Checkbox Visual */}
+                                <div className={cn(
+                                    "w-6 h-6 border flex items-center justify-center flex-shrink-0 transition-all duration-300 rounded-sm",
+                                    isComplete ? "bg-amber-500 border-amber-500" : isNext ? "border-amber-500/50" : "border-[#333]"
+                                )}>
+                                    {isComplete && <span className="text-black font-bold text-xs">✓</span>}
+                                </div>
+                            </div>
+                          );
+                      })}
                   </div>
+                  
+                  {/* Completion Message */}
+                  {checklist.every(Boolean) && (
+                    <div className="mt-8 p-6 bg-amber-500/10 border border-amber-500/30 text-center animate-in zoom-in duration-300">
+                      <h3 className="font-pixel text-amber-500 text-sm tracking-widest mb-2">SEQUENCE COMPLETE</h3>
+                      <p className="font-serif text-amber-100/80 italic">
+                        "Trust the protocol. Review outcomes in 7 days."
+                      </p>
+                      <button 
+                        onClick={onClose}
+                        className="mt-4 px-6 py-2 bg-amber-500 text-black font-pixel text-[10px] tracking-widest hover:bg-amber-400 transition-colors"
+                      >
+                        CLOSE FILE
+                      </button>
+                    </div>
+                  )}
               </div>
             )}
 
