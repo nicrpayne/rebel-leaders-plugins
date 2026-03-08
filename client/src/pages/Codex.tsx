@@ -5,6 +5,7 @@ import { CodexEntry } from "@/lib/codex-schema";
 import { CODEX_ENTRIES } from "@/lib/codex-data";
 import CodexShell from "@/components/CodexShell";
 import ReaderDrawer from "@/components/ReaderDrawer";
+import CodexGridCard from "@/components/CodexGridCard";
 
 export default function Codex() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -294,39 +295,12 @@ export default function Codex() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
               {recommendedEntries.map(entry => (
-                <div 
+                <CodexGridCard
                   key={entry.id}
+                  entry={entry}
+                  isActive={loadedEntry?.id === entry.id}
                   onClick={() => handleLoad(entry)}
-                  className={cn(
-                    "group relative bg-[#0a0a0a] border p-4 cursor-pointer transition-all duration-300 flex gap-4 items-center",
-                    loadedEntry?.id === entry.id 
-                      ? "border-amber-500 bg-amber-900/20 shadow-[0_0_15px_rgba(245,158,11,0.2)]" 
-                      : "border-amber-500/30 hover:border-amber-500 hover:bg-[#111]"
-                  )}
-                >
-                  {/* Tape Reel Icon */}
-                  <div className="w-10 h-10 bg-[#151515] rounded-full border border-[#333] flex items-center justify-center group-hover:border-amber-500/50 group-hover:animate-[spin_4s_linear_infinite] flex-shrink-0">
-                     <div className="w-3 h-3 bg-[#222] rounded-full border border-[#444] flex items-center justify-center">
-                        <div className="w-1 h-1 bg-amber-900/50 rounded-full" />
-                     </div>
-                     <div className="absolute w-8 h-8 border border-dashed border-[#333] rounded-full" />
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                      <h4 className="font-mono text-xs text-amber-100 group-hover:text-amber-400 transition-colors mb-1 truncate">
-                        {entry.title}
-                      </h4>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[8px] font-pixel text-amber-900/60 bg-amber-900/10 px-1.5 py-0.5 rounded-sm">
-                          {entry.category}
-                        </span>
-                      </div>
-                  </div>
-                  
-                  <div className="text-amber-500/20 group-hover:text-amber-500 transition-colors text-xs">
-                    &gt;
-                  </div>
-                </div>
+                />
               ))}
             </div>
           </div>
@@ -358,45 +332,12 @@ export default function Codex() {
         {/* --- PROTOCOL GRID --- */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-8">
           {filteredEntries.map((entry) => (
-            <div 
+            <CodexGridCard
               key={entry.id}
+              entry={entry}
+              isActive={loadedEntry?.id === entry.id}
               onClick={() => handleLoad(entry)}
-              className={cn(
-                "group relative bg-[#0a0a0a] border p-4 cursor-pointer transition-all duration-300 hover:bg-[#111]",
-                loadedEntry?.id === entry.id 
-                  ? "border-amber-500 bg-amber-900/20 shadow-[0_0_15px_rgba(245,158,11,0.2)]" 
-                  : "border-amber-900/20 hover:border-amber-500/50",
-                loadedEntry && loadedEntry.id !== entry.id ? "opacity-50 grayscale" : "opacity-100"
-              )}
-            >
-              <div className="flex justify-between items-start mb-3">
-                <span className={cn(
-                  "text-[9px] font-pixel tracking-widest px-1.5 py-0.5 border",
-                  loadedEntry?.id === entry.id 
-                    ? "text-amber-500 border-amber-500 bg-amber-900/20" 
-                    : "text-amber-900/60 border-amber-900/30 group-hover:text-amber-500/70 group-hover:border-amber-500/30"
-                )}>
-                  {entry.category}
-                </span>
-                <span className="text-[9px] font-pixel text-[#333] group-hover:text-[#555]">
-                  {entry.id.split('_')[1]}
-                </span>
-              </div>
-              
-              <h3 className={cn(
-                "font-mono text-sm mb-2 transition-colors",
-                loadedEntry?.id === entry.id ? "text-amber-400" : "text-[#888] group-hover:text-amber-100"
-              )}>
-                {entry.title}
-              </h3>
-              
-              <div className="flex items-center gap-2 mt-4">
-                 <div className="h-[1px] flex-1 bg-[#222] group-hover:bg-[#333]" />
-                 <span className="text-[9px] font-pixel text-[#444] group-hover:text-amber-500/50">
-                   LOAD
-                 </span>
-              </div>
-            </div>
+            />
           ))}
         </div>
 

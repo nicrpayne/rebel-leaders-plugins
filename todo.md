@@ -1,5 +1,5 @@
-# Restore Cartridge Spine Asset
+# Unify Card Design
 
-- [ ] Update `CodexGridCard.tsx` to use the `codex_cartridge_spine-FRQgHyfCgopKrtm3CwhgBC.webp` image.
-- [ ] Adjust the CSS to ensure the image is positioned correctly (face view/spine view as per screenshot).
-- [ ] Verify the visual matches the user's screenshot.
+- [ ] Update `Codex.tsx` to replace the "Priority Transmission" text-only cards with `CodexGridCard` components.
+- [ ] Ensure the "Main Grid" also uses `CodexGridCard` components.
+- [ ] Verify that all cards display the Black Cassette Tape visual.
