@@ -56,3 +56,10 @@
 - [ ] Update `CodexShell.tsx` to pull the content area upwards (negative margin if needed).
 - [ ] Check `CodexTopBar.tsx` for unnecessary top spacing.
 - [ ] Ensure the grid is immediately visible below the deck without scrolling.
+
+# Build Modular Tape Rack
+
+- [ ] Create `CodexSpine.tsx` component using the high-res spine asset.
+- [ ] Refactor `CodexGrid.tsx` to use a vertical rack/stack layout.
+- [ ] Implement hover (slide-out) and click (chunk) interactions.
+- [ ] Ensure the new components are modular and type-safe.
