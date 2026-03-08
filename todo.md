@@ -29,3 +29,11 @@
     - Layer 2: Yellow Label Strip (Overlay), positioned in the recessed slot.
     - Layer 3: Protocol Title and ID, printed on the Yellow Label area.
 - [ ] Verify the visual alignment and text placement.
+
+# Safe Refactor & Component Isolation
+
+- [ ] Analyze `Codex.tsx` to identify clean break points for component extraction.
+- [ ] Create `CodexControls.tsx` to isolate the search and filter bar.
+- [ ] Create `CodexGrid.tsx` to isolate the card rendering logic.
+- [ ] Update `Codex.tsx` to use these new components, removing the inline rendering logic.
+- [ ] Verify that the refactor has not introduced any regressions.
