@@ -352,37 +352,23 @@ export default function Codex() {
               key={entry.id}
               onClick={() => handleLoad(entry)}
               className={cn(
-                "group relative border border-[#222] bg-[#0a0a0a] hover:bg-[#111] transition-all cursor-pointer overflow-hidden h-48 flex flex-col justify-between p-5 hover:border-amber-900/40",
+                "group relative border border-[#222] bg-[#0a0a0a] hover:bg-[#111] transition-all cursor-pointer overflow-hidden h-32 flex flex-col justify-between p-4 hover:border-amber-900/40",
                 loadedEntry?.id === entry.id ? "border-amber-500/50 bg-amber-900/10" : ""
               )}
             >
-              {/* Tape / Preview Image */}
-              <div className="absolute top-0 right-0 w-24 h-full opacity-20 group-hover:opacity-30 transition-opacity pointer-events-none mix-blend-screen">
-                 <img 
-                   src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_punchcard_header-JtB8WXchbX2yc6P7JMTyZr.webp"
-                   alt="Tape"
-                   className="h-full w-full object-cover grayscale"
-                 />
-              </div>
-
-              <div className="relative z-10">
-                <div className="flex justify-between items-start mb-2">
-                   <span className="font-pixel text-[8px] text-[#444] group-hover:text-[#666] tracking-widest">
-                      {entry.id.split("_")[1]}
-                   </span>
-                   <span className="font-mono text-[10px] text-[#444] group-hover:text-[#666] uppercase tracking-widest">
-                      {entry.id.split("_")[2] || "GEN"}
-                   </span>
-                </div>
+              <div className="flex justify-between items-start">
                 <h4 className={cn(
-                  "font-serif text-xl leading-tight transition-colors pr-8",
+                  "font-serif text-lg leading-tight transition-colors",
                   loadedEntry?.id === entry.id ? "text-amber-400" : "text-[#888] group-hover:text-[#ccc]"
                 )}>
                   {entry.title}
                 </h4>
+                <span className="font-pixel text-[8px] text-[#444] group-hover:text-[#666] tracking-widest">
+                  {entry.id.split("_")[1]}
+                </span>
               </div>
 
-              <div className="relative z-10 flex justify-between items-end">
+              <div className="flex justify-between items-end">
                  <span className="font-mono text-[10px] text-[#444] group-hover:text-[#666] uppercase tracking-widest">
                     {entry.category} // {entry.time_commitment}
                  </span>

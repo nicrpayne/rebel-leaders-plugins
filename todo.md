@@ -1,5 +1,5 @@
-# Restore Codex Visuals
+# Revert Codex Visuals
 
-- [ ] Restore the "Tape" / Preview Image rendering in `Codex.tsx` grid cards.
-- [ ] Re-implement the "Calibration Required" empty state for users without Gravity Check results.
-- [ ] Ensure the "Handoff" notification style is preserved.
+- [ ] Revert the `Codex.tsx` grid card rendering to the previous stable state (no "tape" overlay, clean amber archive style).
+- [ ] Ensure the "Calibration Required" state is preserved.
+- [ ] Verify that the new v1 data logic (filtering, recommendations) is still functional.
