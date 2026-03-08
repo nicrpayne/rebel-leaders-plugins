@@ -63,3 +63,16 @@
 - [ ] Refactor `CodexGrid.tsx` to use a vertical rack/stack layout.
 - [ ] Implement hover (slide-out) and click (chunk) interactions.
 - [ ] Ensure the new components are modular and type-safe.
+
+# Prototype Horizontal Shelf Layout
+
+- [ ] Generate a "shelf" background asset (industrial/retro-tech).
+- [ ] Generate atmospheric "knick-knack" assets (tools, wires, etc.).
+- [ ] Refactor `CodexGrid.tsx` to arrange spines horizontally on these shelves.
+- [ ] Ensure the layout is responsive and maintains the "physical" feel.
+
+# Prototype Straight-On Shelf Layout
+
+- [ ] Generate a straight-on, tileable shelf beam asset (metal/industrial).
+- [ ] Refactor `CodexGrid.tsx` to stack these beams and place spines on them.
+- [ ] Ensure the layout is responsive and maintains the "flat" perspective.
