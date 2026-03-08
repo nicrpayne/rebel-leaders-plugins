@@ -43,3 +43,9 @@
 - [ ] Add a state variable `isBannerDismissed` to `Codex.tsx`.
 - [ ] Add a close button (X icon) to the "Calibration Required" banner.
 - [ ] Implement the dismissal logic to hide the banner when the button is clicked.
+
+# Tighten Visual Spacing
+
+- [ ] Analyze `CodexShell.tsx` to identify the padding/margin causing the gap.
+- [ ] Reduce the vertical spacing between the header (Deck) and the content area (Grid).
+- [ ] Ensure the layout remains responsive and doesn't feel cramped.

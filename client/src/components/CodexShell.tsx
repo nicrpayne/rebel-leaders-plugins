@@ -113,7 +113,7 @@ export default function CodexShell({
         <div className="p-0 bg-[#050505] relative min-h-[600px] z-10 flex flex-col">
           
           {/* Content - The "Data Grid" */}
-          <div className="flex-1 relative bg-[#080808] p-6 md:p-10 overflow-hidden">
+          <div className="flex-1 relative bg-[#080808] p-4 md:p-6 pt-2 md:pt-4 overflow-hidden">
              {/* Background Grid */}
              <div className="absolute inset-0 bg-[linear-gradient(rgba(20,20,20,0.5)_1px,transparent_1px),linear-gradient(90deg,rgba(20,20,20,0.5)_1px,transparent_1px)] bg-[length:40px_40px] opacity-20 pointer-events-none" />
              
