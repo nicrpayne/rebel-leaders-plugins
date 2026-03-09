@@ -116,3 +116,15 @@ This generates a static `dist/` folder ready for deployment to Vercel, Netlify, 
 
 **Rebel Leaders Plugin Suite**
 *Tools for the Resistance.*
+
+
+## 📦 Source Assets
+
+High-quality source assets (images > 1MB) are available separately.
+
+These files are **excluded from the build** to prevent deployment timeouts on static hosting platforms. The live application uses optimized CDN versions of these assets.
+
+If you wish to self-host or modify these assets:
+1.  Download the source assets (or re-download from the CDN URLs in the code).
+2.  Place them in `client/public/assets/`.
+3.  Update the code references in `client/src/components/` to point to the local paths (e.g., `/assets/filename.png`) instead of the CDN URLs.

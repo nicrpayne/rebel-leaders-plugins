@@ -85,3 +85,11 @@
     - Step-by-step protocol with progress indicator.
     - Clear "Complete Step" interaction.
 - [ ] Ensure styling remains "Amber/Archive/Data-bank" (no design changes).
+
+# Localize Assets & Update References
+- [ ] Create client/public/assets directory
+- [ ] Copy generated assets from /home/ubuntu/webdev-static-assets/ to client/public/assets/
+- [ ] Update CodexGrid.tsx to use local asset paths
+- [ ] Update CodexGridCard.tsx to use local asset paths
+- [ ] Update ReaderDrawer.tsx to use local asset paths
+- [ ] Push changes to GitHub

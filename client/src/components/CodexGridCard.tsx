@@ -19,7 +19,7 @@ export default function CodexGridCard({ entry, isActive, onClick }: CodexGridCar
       {/* Layer 1: Black Cartridge Body (Base) */}
       <div className="absolute inset-0 z-0 flex items-center justify-center bg-black">
          <img 
-           src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_body_5224ef43.png"
+           src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_body-ZG8BxnnKoGhVsGqXr3P6PG.png"
            alt="Cartridge Body"
            className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity scale-110"
            style={{ objectPosition: 'center' }}
@@ -30,7 +30,7 @@ export default function CodexGridCard({ entry, isActive, onClick }: CodexGridCar
       <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
          <div className="relative w-[90%] h-[50%] transform translate-y-[10%]">
             <img 
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_label_strip_47bfb435.png"
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_label_strip-PafJwKwKtmKnhwpPDbNKMe.png"
               alt="Label Strip"
               className="absolute inset-0 w-full h-full object-contain drop-shadow-md"
             />
