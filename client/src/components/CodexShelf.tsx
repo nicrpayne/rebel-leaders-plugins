@@ -178,10 +178,40 @@ function ShelfFilterBar({
           backgroundImage: "url('/assets/trim_bar_texture.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
+          boxShadow: [
+            "0 4px 12px rgba(0,0,0,0.5)",          // cast shadow below onto shelf
+            "0 8px 24px rgba(0,0,0,0.3)",           // softer, wider shadow spread
+            "inset 0 2px 4px rgba(0,0,0,0.3)",      // top inner shadow (recessed top edge)
+            "inset 0 -1px 3px rgba(0,0,0,0.2)",     // bottom inner shadow
+          ].join(", "),
         }}
       >
         {/* Darken overlay to ensure text readability */}
         <div className="absolute inset-0 bg-black/20 pointer-events-none z-0" />
+
+        {/* Top edge fade — softens the hard pixel boundary into darkness above */}
+        <div
+          className="absolute top-0 left-0 right-0 h-[6px] pointer-events-none z-[2]"
+          style={{
+            background: "linear-gradient(to bottom, rgba(15,10,6,0.6) 0%, transparent 100%)",
+          }}
+        />
+
+        {/* Bottom highlight line — warm light catching the bottom lip of the molding */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-[1px] pointer-events-none z-[2]"
+          style={{
+            background: "linear-gradient(to right, transparent 3%, rgba(140,110,65,0.25) 15%, rgba(160,130,80,0.35) 50%, rgba(140,110,65,0.25) 85%, transparent 97%)",
+          }}
+        />
+
+        {/* Bottom edge fade — softens the hard pixel boundary into the shelf below */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-[5px] pointer-events-none z-[2]"
+          style={{
+            background: "linear-gradient(to top, rgba(10,7,4,0.4) 0%, transparent 100%)",
+          }}
+        />
 
         {FILTER_TABS.map((tab, idx) => {
           const isActive = activeCategory === tab.key;
