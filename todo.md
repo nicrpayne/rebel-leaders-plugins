@@ -93,3 +93,8 @@
 - [ ] Update CodexGridCard.tsx to use local asset paths
 - [ ] Update ReaderDrawer.tsx to use local asset paths
 - [ ] Push changes to GitHub
+
+# Generate Collector's Sword Asset
+- [ ] Generate "Collector's Edition Truth Sword" (8-bit, glowing, on stand)
+- [ ] Localize asset to project
+- [ ] Push to GitHub
