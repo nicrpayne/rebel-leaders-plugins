@@ -242,12 +242,20 @@ function ShelfFilterBar({
                       background: "radial-gradient(ellipse 50% 80% at 50% 55%, rgba(245,180,50,0.18) 0%, transparent 60%)",
                     }}
                   />
-                  {/* Bottom light strip — warm light spilling downward onto shelf below */}
+                  {/* Bottom light spill — soft warm glow, not a hard line */}
                   <div
-                    className="absolute bottom-0 left-[10%] right-[10%] h-[3px] rounded-full pointer-events-none"
+                    className="absolute -bottom-[2px] left-[8%] right-[8%] h-[8px] rounded-full pointer-events-none"
                     style={{
-                      background: "linear-gradient(to right, transparent, rgba(235,165,40,0.7) 30%, rgba(245,180,50,0.9) 50%, rgba(235,165,40,0.7) 70%, transparent)",
-                      boxShadow: "0 0 12px rgba(235,165,40,0.5), 0 2px 20px rgba(235,165,40,0.3), 0 4px 30px rgba(200,140,20,0.15)",
+                      background: "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(220,160,45,0.35) 0%, rgba(200,140,30,0.15) 50%, transparent 100%)",
+                      filter: "blur(2px)",
+                    }}
+                  />
+                  {/* Secondary deeper glow — spreads warmth further down */}
+                  <div
+                    className="absolute -bottom-[6px] left-[15%] right-[15%] h-[14px] rounded-full pointer-events-none"
+                    style={{
+                      background: "radial-gradient(ellipse 80% 100% at 50% 0%, rgba(200,145,35,0.12) 0%, transparent 80%)",
+                      filter: "blur(4px)",
                     }}
                   />
                   {/* Top edge warm reflection — light bouncing off the bevel above */}
