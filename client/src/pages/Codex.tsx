@@ -252,33 +252,13 @@ export default function Codex() {
           </div>
         )}
 
-        {/* ── CATEGORY FILTER TABS ── */}
-        <div className={cn(
-          "flex gap-1.5 overflow-x-auto pb-2 scrollbar-hide transition-opacity duration-500",
-          loadedEntry ? "opacity-30 pointer-events-none" : "opacity-100"
-        )}>
-          {["ALL", "IDENTITY", "RELATIONSHIP", "VISION", "CULTURE"].map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={cn(
-                "px-3 py-1.5 text-[9px] font-pixel tracking-widest border transition-all whitespace-nowrap rounded-sm",
-                activeCategory === cat
-                  ? "bg-amber-500/10 text-amber-500 border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.1)]"
-                  : "bg-transparent text-amber-900/60 border-transparent hover:text-amber-400 hover:border-amber-900/30"
-              )}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* ── THE SHELF ── */}
+        {/* ── THE SHELF (filter tabs are now built into the shelf trim) ── */}
         <CodexShelf
           entries={CODEX_ENTRIES}
           loadedEntryId={loadedEntry?.id || null}
           onLoad={handleLoad}
           activeCategory={activeCategory}
+          onCategoryChange={setActiveCategory}
           recentEntryIds={recentEntryIds}
         />
       </div>

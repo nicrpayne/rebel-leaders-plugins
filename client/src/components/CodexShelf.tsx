@@ -193,15 +193,93 @@ function ShelfRail() {
 }
 
 /* ─────────────────────────────────────────────
+   SHELF FILTER BAR (Built into the shelf trim)
+   Backlit category tabs integrated into the
+   wood/metal trim — warm amber glow when active
+   ───────────────────────────────────────────── */
+const FILTER_TABS = [
+  { key: "ALL",          label: "ALL" },
+  { key: "IDENTITY",     label: "IDENTITY" },
+  { key: "RELATIONSHIP", label: "RELATIONSHIP" },
+  { key: "VISION",       label: "VISION" },
+  { key: "CULTURE",      label: "CULTURE" },
+];
+
+function ShelfFilterBar({
+  activeCategory,
+  onCategoryChange,
+}: {
+  activeCategory: string;
+  onCategoryChange: (cat: string) => void;
+}) {
+  return (
+    <div className="relative w-full">
+      {/* Dark metal/wood trim background */}
+      <div className="relative flex items-stretch justify-center gap-0 bg-gradient-to-b from-[#2a1f14] via-[#1e1610] to-[#16110c] border-y border-[#3d2e1e]/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.6),0_2px_6px_rgba(0,0,0,0.4)]">
+        {/* Subtle top edge highlight */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#8d6e63]/20 to-transparent" />
+
+        {FILTER_TABS.map((tab) => {
+          const isActive = activeCategory === tab.key;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => onCategoryChange(tab.key)}
+              className={cn(
+                "relative flex-1 py-2.5 md:py-3 font-pixel text-[9px] md:text-[10px] lg:text-[11px] tracking-[0.18em] uppercase transition-all duration-300 cursor-pointer",
+                "border-x border-[#3d2e1e]/30 first:border-l-0 last:border-r-0",
+                isActive
+                  ? "text-amber-400 z-10"
+                  : "text-[#6b5a48]/70 hover:text-amber-600/90"
+              )}
+            >
+              {/* Active: warm backlit glow */}
+              {isActive && (
+                <>
+                  {/* Broad ambient glow behind the text */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-amber-500/10 via-amber-600/15 to-amber-700/5 pointer-events-none" />
+                  {/* Concentrated glow at center */}
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.20)_0%,transparent_70%)] pointer-events-none" />
+                  {/* Bottom edge light strip — like a backlit label */}
+                  <div className="absolute bottom-0 left-[15%] right-[15%] h-[2px] bg-gradient-to-r from-transparent via-amber-500/80 to-transparent rounded-full shadow-[0_0_8px_rgba(245,158,11,0.6),0_0_20px_rgba(245,158,11,0.3)]" />
+                  {/* Top edge warm reflection */}
+                  <div className="absolute top-0 left-[20%] right-[20%] h-[1px] bg-gradient-to-r from-transparent via-amber-600/30 to-transparent" />
+                </>
+              )}
+
+              {/* Inactive: very subtle warmth so the bar doesn't feel dead */}
+              {!isActive && (
+                <div className="absolute inset-0 bg-gradient-to-b from-amber-900/3 via-transparent to-amber-900/2 pointer-events-none" />
+              )}
+
+              {/* Label text */}
+              <span className={cn(
+                "relative z-10",
+                isActive && "drop-shadow-[0_0_8px_rgba(245,158,11,0.6)] drop-shadow-[0_0_16px_rgba(245,158,11,0.3)]"
+              )}>
+                {tab.label}
+              </span>
+            </button>
+          );
+        })}
+
+        {/* Bottom edge highlight */}
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#5d4037]/30 to-transparent" />
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
    MAIN SHELF COMPONENT
-   Category tabs are handled by the parent page.
-   This component only renders the physical shelf.
+   Filter tabs are now built into the shelf trim.
    ───────────────────────────────────────────── */
 interface CodexShelfProps {
   entries: CodexEntry[];
   loadedEntryId: string | null;
   onLoad: (entry: CodexEntry) => void;
   activeCategory: string;
+  onCategoryChange: (cat: string) => void;
   recentEntryIds?: string[];
 }
 
@@ -210,6 +288,7 @@ export default function CodexShelf({
   loadedEntryId,
   onLoad,
   activeCategory,
+  onCategoryChange,
   recentEntryIds = [],
 }: CodexShelfProps) {
   const grouped = groupByFlywheel(entries);
@@ -261,9 +340,16 @@ export default function CodexShelf({
       <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
 
       {/* Content Container */}
-      <div className="relative z-[2] flex flex-col pt-3 pr-3 pb-3 pl-4 md:pt-5 md:pr-5 md:pb-5 md:pl-5 lg:pt-6 lg:pr-6 lg:pb-6 lg:pl-6">
+      <div className="relative z-[2] flex flex-col">
+
+        {/* ── INTEGRATED FILTER BAR (built into shelf trim) ── */}
+        <ShelfFilterBar
+          activeCategory={activeCategory}
+          onCategoryChange={onCategoryChange}
+        />
 
         {/* ── TOP SHELF: All cartridges grouped by flywheel category ── */}
+        <div className="pt-3 pr-3 pb-3 pl-4 md:pt-5 md:pr-5 md:pb-5 md:pl-5 lg:pt-6 lg:pr-6 lg:pb-6 lg:pl-6">
         <div
           ref={scrollRef}
           className="flex items-end gap-0 overflow-x-auto pb-0 pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth min-h-[220px] md:min-h-[260px] lg:min-h-[300px]"
@@ -304,6 +390,7 @@ export default function CodexShelf({
               tilt={0}
             />
           )}
+        </div>
         </div>
       </div>
     </div>
