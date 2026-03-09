@@ -1,61 +1,118 @@
-# Gravity Check — Rebel OS Plugin
+# Rebel Leaders Plugins: Gravity Check & The Codex
 
-An interactive culture diagnostic tool for the Rebel Leaders platform. This plugin allows leaders to assess their team's "gravity" across four dimensions: Identity, Relationship, Vision, and Culture.
+**Version:** 1.0.0 (Coaching Pack Integration)
+**Project:** Rebel OS Plugin Suite
 
-## Features
+---
 
-- **15-Question Diagnostic:** A mix of slider-based "signal checks" and scenario-based "mechanism checks."
-- **Scoring Engine:** Calculates a 4-axis flywheel score and determines one of 5 orbit archetypes (e.g., Shattered Moon, Friction Belt).
-- **Leak Detection:** Identifies the primary energy leak (e.g., Silence Tax, Role Fog) based on the lowest scoring dimension.
-- **Visual Results:** A dynamic radar chart visualizing the team's gravity shape.
-- **PDF Debrief:** Generates a beautiful, on-brand PDF report on the fly.
-- **Local Storage:** Saves results to the browser for future "side-chaining" with other plugins.
+## 1. Overview
 
-## Tech Stack
+This repository contains the source code, assets, and design documentation for the **Rebel Leaders Plugin Suite**, specifically focusing on two core modules:
 
-- **Framework:** React 19 + Vite
-- **Styling:** Tailwind CSS 4 + shadcn/ui
-- **Charts:** Recharts
-- **PDF Generation:** jsPDF
-- **Routing:** Wouter
+1.  **Gravity Check:** An interactive diagnostic tool that assesses team health across four dimensions: *Identity, Relationship, Vision, and Conflict*. It uses a visual "orbital mechanics" interface to engage users.
+2.  **The Codex:** A digital archive of leadership protocols, "moves," and coaching scripts. It features a retro-futuristic "Archivist's Cabinet" aesthetic and includes a "Run Mode" for guiding users through real-time execution of these protocols.
 
-## Project Structure
+The project is built as a **static React application** (Vite + React + Tailwind CSS) designed for easy deployment and fast performance.
+
+---
+
+## 2. Key Features
+
+### Gravity Check (Diagnostic)
+*   **Visual Interface:** Interactive orbital map where users drag "planets" (team members) to represent distance and alignment.
+*   **Scoring Engine:** Calculates a "Gravity Score" based on user input, identifying the primary bottleneck (e.g., "Low Psychological Safety").
+*   **Recommendation Logic:** Automatically suggests specific Codex protocols based on the lowest-scoring dimension.
+
+### The Codex (Knowledge Base)
+*   **Archivist's Cabinet UI:** A highly stylized, immersive interface resembling a physical cabinet of data tapes and journals.
+*   **Coaching Pack Integration:** Includes 24+ protocols, with a dedicated **"COACHING"** filter for leadership development tools.
+*   **Reader Drawer:** A tactical "slide-out" panel for reading protocols, featuring:
+    *   **Briefing Mode:** Mission objective, "Use When," and "Avoid" guidance.
+    *   **Script Mode:** Verbatim scripts for difficult conversations.
+    *   **Coaching Sequence (Run Mode):** An interactive checklist to guide leaders through a protocol step-by-step.
+*   **Search & Filter:** Real-time filtering by category (Conflict, Vision, Alignment, Culture, Coaching) and keyword search.
+
+---
+
+## 3. User Journey & Testing Path
+
+To fully experience the application as a user would, follow this path:
+
+### Phase 1: The Diagnostic (Gravity Check)
+1.  **Start:** Navigate to the home page (`/`).
+2.  **Initiate:** Click **"INITIATE GRAVITY CHECK"**.
+3.  **Input:** Drag the orbital nodes to represent your team's current state across the 4 dimensions.
+4.  **Result:** View your **Gravity Score** and the identified **Bottleneck** (e.g., "Identity Drift").
+5.  **Transition:** Click **"ACCESS PROTOCOLS"** to move to the Codex. *Note: The system will simulate a "signal transmission" and auto-load a recommended protocol.*
+
+### Phase 2: The Archive (The Codex)
+1.  **Arrival:** You enter the **Codex**. If coming from Gravity Check, a "SIGNAL RECEIVED" overlay will appear, and the recommended protocol will auto-open.
+2.  **Browse:** Close the drawer to see the **Archivist's Cabinet**.
+    *   Hover over cartridges to see their labels.
+    *   Use the **"COACHING"** tab in the top bar to filter for coaching-specific tools.
+3.  **Select:** Click on a protocol (e.g., *"3 Coaching Questions"* or *"Truth Weather"*).
+4.  **Read:** The **Reader Drawer** opens. Review the **Briefing** (Objective, Use When).
+5.  **Execute:** Click **"INITIATE COACHING SEQUENCE"** (or "RUN MODE").
+    *   Follow the interactive checklist.
+    *   Click items to mark them as complete.
+    *   Finish the sequence to see the completion message.
+
+---
+
+## 4. Project Structure
 
 ```
-client/src/
-├── components/
-│   ├── PluginShell.tsx       # The reusable frame for all plugins
-│   └── ui/                   # shadcn/ui primitives
-├── lib/
-│   ├── scoring.ts            # The core logic for archetypes and leaks
-│   └── pdf.ts                # PDF generation engine
-├── pages/
-│   ├── Home.tsx              # The "Armory" (Plugin Library)
-│   ├── GravityCheck.tsx      # The diagnostic flow
-│   └── Results.tsx           # The analysis and visualization
-└── index.css                 # Global styles and 8-bit theme variables
+/client
+  /public           # Static assets (favicons, robots.txt)
+  /src
+    /components     # React components
+      Codex.tsx     # Main Codex page logic
+      CodexGrid.tsx # The "Cabinet" layout grid
+      ReaderDrawer.tsx # The slide-out reading panel
+      ...
+    /lib
+      codex-data.ts # The database of all protocols (JSON format)
+      codex-schema.ts # TypeScript definitions for data
+    /pages          # Route pages (Home, Codex, etc.)
+    /assets         # Local images (if any)
+    index.css       # Global styles & Tailwind directives
+/server             # (Placeholder for future backend)
+/shared             # Shared types/constants
 ```
 
-## Design System
+---
 
-The project uses a unique "Rebel OS" aesthetic:
-- **Colors:** Forest Deep (#0a120a), Gold (#c5a059), Wood (#5d4037)
-- **Fonts:** Press Start 2P (Headers), Cormorant Garamond (Body), Outfit (UI)
-- **Motifs:** Scanlines, 8-bit borders, stained glass metaphors
+## 5. Development & Deployment
 
-## Development
+### Prerequisites
+*   Node.js (v18+)
+*   pnpm (recommended) or npm
 
-1. Install dependencies:
-   ```bash
-   pnpm install
-   ```
+### Installation
+```bash
+pnpm install
+```
 
-2. Start the dev server:
-   ```bash
-   pnpm dev
-   ```
+### Local Development
+```bash
+pnpm dev
+```
+Access the app at `http://localhost:5173`.
 
-3. Build for production:
-   ```bash
-   pnpm build
-   ```
+### Building for Production
+```bash
+pnpm build
+```
+This generates a static `dist/` folder ready for deployment to Vercel, Netlify, or any static host.
+
+---
+
+## 6. Asset Credits
+*   **Icons:** Lucide React
+*   **Fonts:** Inter (sans), Space Mono (monospace), Pixelify Sans (retro headers)
+*   **Images:** Generated via AI (Midjourney/DALL-E) and processed for the "Archivist" aesthetic.
+
+---
+
+**Rebel Leaders Plugin Suite**
+*Tools for the Resistance.*
