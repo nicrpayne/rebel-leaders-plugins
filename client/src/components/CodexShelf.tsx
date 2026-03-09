@@ -189,51 +189,18 @@ function ShelfFilterBar({
         {/* Darken overlay to ensure text readability */}
         <div className="absolute inset-0 bg-black/20 pointer-events-none z-0" />
 
-        {/* ── TOP GOLD ACCENT STRIP — worn brass inlay ── */}
-        {/* Dark recess above the gold line */}
+        {/* ── TOP EDGE: dark recess ── */}
         <div
           className="absolute top-0 left-0 right-0 h-[3px] pointer-events-none z-[2]"
           style={{
             background: "linear-gradient(to bottom, rgba(10,7,4,0.7) 0%, rgba(15,10,6,0.3) 100%)",
           }}
         />
-        {/* The gold strip itself — warm, slightly uneven */}
-        <div
-          className="absolute top-[3px] left-0 right-0 h-[2px] pointer-events-none z-[2]"
-          style={{
-            background: "linear-gradient(to right, rgba(120,90,40,0.15) 0%, rgba(180,140,60,0.4) 8%, rgba(200,160,70,0.5) 20%, rgba(170,130,55,0.35) 35%, rgba(195,155,65,0.5) 50%, rgba(175,135,55,0.4) 65%, rgba(200,160,70,0.5) 80%, rgba(180,140,60,0.4) 92%, rgba(120,90,40,0.15) 100%)",
-          }}
-        />
-        {/* Warm glow bleeding from the top gold strip */}
-        <div
-          className="absolute top-[3px] left-[5%] right-[5%] h-[6px] pointer-events-none z-[1]"
-          style={{
-            background: "linear-gradient(to right, transparent, rgba(200,155,55,0.08) 20%, rgba(210,165,60,0.1) 50%, rgba(200,155,55,0.08) 80%, transparent)",
-            filter: "blur(2px)",
-          }}
-        />
-
-        {/* ── BOTTOM GOLD ACCENT STRIP — worn brass inlay ── */}
-        {/* The gold strip itself — warm, slightly uneven */}
-        <div
-          className="absolute bottom-[3px] left-0 right-0 h-[2px] pointer-events-none z-[2]"
-          style={{
-            background: "linear-gradient(to right, rgba(120,90,40,0.15) 0%, rgba(175,135,55,0.35) 10%, rgba(195,155,65,0.5) 25%, rgba(180,140,60,0.4) 40%, rgba(200,160,70,0.5) 55%, rgba(175,135,55,0.35) 70%, rgba(195,155,65,0.5) 85%, rgba(175,135,55,0.35) 95%, rgba(120,90,40,0.15) 100%)",
-          }}
-        />
-        {/* Dark recess below the gold line */}
+        {/* ── BOTTOM EDGE: dark recess ── */}
         <div
           className="absolute bottom-0 left-0 right-0 h-[3px] pointer-events-none z-[2]"
           style={{
             background: "linear-gradient(to top, rgba(10,7,4,0.7) 0%, rgba(15,10,6,0.3) 100%)",
-          }}
-        />
-        {/* Warm glow bleeding from the bottom gold strip */}
-        <div
-          className="absolute bottom-[1px] left-[5%] right-[5%] h-[6px] pointer-events-none z-[1]"
-          style={{
-            background: "linear-gradient(to right, transparent, rgba(200,155,55,0.06) 20%, rgba(210,165,60,0.08) 50%, rgba(200,155,55,0.06) 80%, transparent)",
-            filter: "blur(3px)",
           }}
         />
 
@@ -249,36 +216,69 @@ function ShelfFilterBar({
                 isActive ? "z-10" : ""
               )}
             >
-              {/* ── ACTIVE STATE: text-centric warm glow ── */}
+              {/* ── PER-TAB GOLD STRIPS: top and bottom brass inlay that catches the light ── */}
+              {/* Top gold strip segment */}
+              <div
+                className="absolute top-[3px] left-0 right-0 h-[2px] pointer-events-none z-[3] transition-all duration-500"
+                style={{
+                  background: isActive
+                    ? "linear-gradient(to right, rgba(160,110,40,0.3) 0%, rgba(210,150,50,0.7) 25%, rgba(225,165,55,0.8) 50%, rgba(210,150,50,0.7) 75%, rgba(160,110,40,0.3) 100%)"
+                    : "linear-gradient(to right, rgba(120,85,35,0.12) 0%, rgba(165,120,45,0.3) 30%, rgba(175,130,50,0.35) 50%, rgba(165,120,45,0.3) 70%, rgba(120,85,35,0.12) 100%)",
+                }}
+              />
+              {/* Top gold strip glow (only when active) */}
+              {isActive && (
+                <div
+                  className="absolute top-[2px] left-[10%] right-[10%] h-[6px] pointer-events-none z-[2]"
+                  style={{
+                    background: "radial-gradient(ellipse 80% 100% at 50% 100%, rgba(210,148,45,0.15) 0%, transparent 100%)",
+                    filter: "blur(2px)",
+                  }}
+                />
+              )}
+              {/* Bottom gold strip segment */}
+              <div
+                className="absolute bottom-[3px] left-0 right-0 h-[2px] pointer-events-none z-[3] transition-all duration-500"
+                style={{
+                  background: isActive
+                    ? "linear-gradient(to right, rgba(160,110,40,0.3) 0%, rgba(210,150,50,0.7) 25%, rgba(225,165,55,0.8) 50%, rgba(210,150,50,0.7) 75%, rgba(160,110,40,0.3) 100%)"
+                    : "linear-gradient(to right, rgba(120,85,35,0.12) 0%, rgba(165,120,45,0.3) 30%, rgba(175,130,50,0.35) 50%, rgba(165,120,45,0.3) 70%, rgba(120,85,35,0.12) 100%)",
+                }}
+              />
+              {/* Bottom gold strip glow (only when active) */}
+              {isActive && (
+                <div
+                  className="absolute bottom-[2px] left-[10%] right-[10%] h-[6px] pointer-events-none z-[2]"
+                  style={{
+                    background: "radial-gradient(ellipse 80% 100% at 50% 0%, rgba(210,148,45,0.1) 0%, transparent 100%)",
+                    filter: "blur(3px)",
+                  }}
+                />
+              )}
+
+              {/* ── ACTIVE STATE: text-centric warm glow (amber/copper tones) ── */}
               {isActive && (
                 <>
                   {/* Tight glow hugging the text — the text is the light source */}
                   <div
                     className="absolute inset-0 pointer-events-none"
                     style={{
-                      background: "radial-gradient(ellipse 35% 50% at 50% 50%, rgba(220,165,50,0.14) 0%, transparent 100%)",
+                      background: "radial-gradient(ellipse 35% 50% at 50% 50%, rgba(210,145,40,0.14) 0%, transparent 100%)",
                     }}
                   />
-                  {/* Very subtle ambient warmth — just enough to tint the metal, not wash it out */}
+                  {/* Very subtle ambient warmth */}
                   <div
                     className="absolute inset-0 pointer-events-none"
                     style={{
-                      background: "radial-gradient(ellipse 60% 70% at 50% 50%, rgba(200,150,40,0.06) 0%, transparent 100%)",
+                      background: "radial-gradient(ellipse 60% 70% at 50% 50%, rgba(195,130,35,0.06) 0%, transparent 100%)",
                     }}
                   />
-                  {/* Bottom light spill — soft warm glow seeping down */}
+                  {/* Bottom light spill */}
                   <div
                     className="absolute -bottom-[2px] left-[15%] right-[15%] h-[6px] rounded-full pointer-events-none"
                     style={{
-                      background: "radial-gradient(ellipse 70% 100% at 50% 0%, rgba(210,155,40,0.2) 0%, transparent 100%)",
+                      background: "radial-gradient(ellipse 70% 100% at 50% 0%, rgba(200,138,35,0.2) 0%, transparent 100%)",
                       filter: "blur(3px)",
-                    }}
-                  />
-                  {/* Top edge subtle reflection */}
-                  <div
-                    className="absolute top-[1px] left-[20%] right-[20%] h-[1px] pointer-events-none"
-                    style={{
-                      background: "linear-gradient(to right, transparent, rgba(200,160,50,0.15) 30%, rgba(220,170,60,0.2) 50%, rgba(200,160,50,0.15) 70%, transparent)",
                     }}
                   />
                 </>
@@ -289,7 +289,7 @@ function ShelfFilterBar({
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
-                    background: "radial-gradient(ellipse at 50% 50%, rgba(120,90,40,0.04) 0%, transparent 70%)",
+                    background: "radial-gradient(ellipse at 50% 50%, rgba(110,80,35,0.04) 0%, transparent 70%)",
                   }}
                 />
               )}
@@ -311,14 +311,14 @@ function ShelfFilterBar({
                   "text-[9px] md:text-[10px] lg:text-[11px]",
                 )}
                 style={isActive ? {
-                  // Active: bright gold text — THE brightest element, light radiates from here
-                  color: "#f0d264",
+                  // Active: warm amber/copper text — THE brightest element, light radiates from here
+                  color: "#e8b84a",
                   textShadow: [
-                    "0 0 6px rgba(240,200,60,0.8)",    // tight hot glow right on the letters
-                    "0 0 14px rgba(230,175,50,0.5)",   // medium spread
-                    "0 0 30px rgba(210,155,40,0.2)",   // soft outer halo
+                    "0 0 6px rgba(225,170,45,0.8)",    // tight hot glow right on the letters
+                    "0 0 14px rgba(210,148,40,0.5)",   // medium spread
+                    "0 0 30px rgba(195,130,30,0.2)",   // soft outer halo
                     "0 1px 0 rgba(0,0,0,0.6)",         // depth shadow below (engraved)
-                    "0 -1px 0 rgba(255,230,150,0.2)",  // top highlight catch
+                    "0 -1px 0 rgba(240,200,120,0.2)",  // top highlight catch
                   ].join(", "),
                 } : {
                   // Inactive: dim engraved text — recessed into the metal
