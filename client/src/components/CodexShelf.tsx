@@ -372,9 +372,7 @@ export default function CodexShelf({
   const topVisible = getVisibleSections(TOP_SHELF_SECTIONS);
   const bottomVisible = getVisibleSections(BOTTOM_SHELF_SECTIONS);
 
-  // Check if a shelf should show at all based on filter
-  const showTopShelf = activeCategory === "ALL" || activeCategory === "IDENTITY" || activeCategory === "RELATIONSHIP";
-  const showBottomShelf = activeCategory === "ALL" || activeCategory === "VISION" || activeCategory === "CULTURE";
+  // Shelf structure is always visible — only contents change with filter
 
   return (
     <div className="relative w-full overflow-hidden rounded-sm">
@@ -400,66 +398,62 @@ export default function CodexShelf({
           onCategoryChange={onCategoryChange}
         />
 
-        {/* ── TOP SHELF: Identity + Relationship cartridges ── */}
-        {showTopShelf && (
-          <div className="px-4 md:px-5 lg:px-6 pt-2">
-            <div
-              ref={scrollRefTop}
-              className="flex items-end gap-0 overflow-x-auto pb-0 pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth min-h-[220px] md:min-h-[260px] lg:min-h-[300px]"
-            >
-              {topVisible.map((section) => {
-                const sectionEntries = grouped[section.key];
-                if (sectionEntries.length === 0) return null;
-                return (
-                  <div key={section.key} className="flex items-end gap-0">
-                    {sectionEntries.map((entry) => (
-                      <CartridgeSpine
-                        key={entry.id}
-                        entry={entry}
-                        isLoaded={loadedEntryId === entry.id}
-                        onClick={() => onLoad(entry)}
-                        tilt={0}
-                        offsetY={0}
-                      />
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
+        {/* ── TOP SHELF: Identity + Relationship cartridges (always rendered) ── */}
+        <div className="px-4 md:px-5 lg:px-6 pt-2">
+          <div
+            ref={scrollRefTop}
+            className="flex items-end gap-0 overflow-x-auto pb-0 pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth min-h-[220px] md:min-h-[260px] lg:min-h-[300px]"
+          >
+            {topVisible.map((section) => {
+              const sectionEntries = grouped[section.key];
+              if (sectionEntries.length === 0) return null;
+              return (
+                <div key={section.key} className="flex items-end gap-0">
+                  {sectionEntries.map((entry) => (
+                    <CartridgeSpine
+                      key={entry.id}
+                      entry={entry}
+                      isLoaded={loadedEntryId === entry.id}
+                      onClick={() => onLoad(entry)}
+                      tilt={0}
+                      offsetY={0}
+                    />
+                  ))}
+                </div>
+              );
+            })}
           </div>
-        )}
+        </div>
 
         {/* ── SHELF RAIL between top and bottom ── */}
         <ShelfRail />
 
-        {/* ── BOTTOM SHELF: Vision + Culture cartridges ── */}
-        {showBottomShelf && (
-          <div className="px-4 md:px-5 lg:px-6 pb-2">
-            <div
-              ref={scrollRefBottom}
-              className="flex items-end gap-0 overflow-x-auto pb-0 pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth min-h-[220px] md:min-h-[260px] lg:min-h-[300px]"
-            >
-              {bottomVisible.map((section) => {
-                const sectionEntries = grouped[section.key];
-                if (sectionEntries.length === 0) return null;
-                return (
-                  <div key={section.key} className="flex items-end gap-0">
-                    {sectionEntries.map((entry) => (
-                      <CartridgeSpine
-                        key={entry.id}
-                        entry={entry}
-                        isLoaded={loadedEntryId === entry.id}
-                        onClick={() => onLoad(entry)}
-                        tilt={0}
-                        offsetY={0}
-                      />
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
+        {/* ── BOTTOM SHELF: Vision + Culture cartridges (always rendered) ── */}
+        <div className="px-4 md:px-5 lg:px-6 pb-2">
+          <div
+            ref={scrollRefBottom}
+            className="flex items-end gap-0 overflow-x-auto pb-0 pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth min-h-[220px] md:min-h-[260px] lg:min-h-[300px]"
+          >
+            {bottomVisible.map((section) => {
+              const sectionEntries = grouped[section.key];
+              if (sectionEntries.length === 0) return null;
+              return (
+                <div key={section.key} className="flex items-end gap-0">
+                  {sectionEntries.map((entry) => (
+                    <CartridgeSpine
+                      key={entry.id}
+                      entry={entry}
+                      isLoaded={loadedEntryId === entry.id}
+                      onClick={() => onLoad(entry)}
+                      tilt={0}
+                      offsetY={0}
+                    />
+                  ))}
+                </div>
+              );
+            })}
           </div>
-        )}
+        </div>
 
         {/* ── BOTTOM RAIL (closes the cabinet) ── */}
         <ShelfRail />
