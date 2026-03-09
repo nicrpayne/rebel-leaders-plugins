@@ -154,12 +154,41 @@ function CartridgeFlat({ entry, isLoaded, onClick, tilt = 0 }: FlatSpineProps) {
    Uses generated bronze/wood trim texture image
    Embossed text with warm amber light bleed
    ───────────────────────────────────────────── */
+/* ── Per-tab "lighting personality" ──
+   Each tab has unique imperfections — like old backlit labels
+   where each bulb has aged differently, some bezels are more
+   worn, some reflectors sit slightly off-center.              */
 const FILTER_TABS = [
-  { key: "ALL",          label: "ALL" },
-  { key: "IDENTITY",     label: "IDENTITY" },
-  { key: "RELATIONSHIP", label: "RELATIONSHIP" },
-  { key: "VISION",       label: "VISION" },
-  { key: "CULTURE",      label: "CULTURE" },
+  { key: "ALL",          label: "ALL",
+    glow: { cx: 48, cy: 48, rx: 32, ry: 45, op: 0.13, ambRx: 55, ambOp: 0.055 },
+    strip: { topOp: 0.75, botOp: 0.85, topShift: 48, botShift: 52 },
+    spill: { left: 18, right: 12, op: 0.18, blur: 3 },
+    text: { hotOp: 0.85, midOp: 0.5, outerOp: 0.22 },
+  },
+  { key: "IDENTITY",     label: "IDENTITY",
+    glow: { cx: 52, cy: 46, rx: 38, ry: 52, op: 0.16, ambRx: 62, ambOp: 0.065 },
+    strip: { topOp: 0.82, botOp: 0.7, topShift: 53, botShift: 47 },
+    spill: { left: 12, right: 18, op: 0.22, blur: 4 },
+    text: { hotOp: 0.9, midOp: 0.55, outerOp: 0.18 },
+  },
+  { key: "RELATIONSHIP", label: "RELATIONSHIP",
+    glow: { cx: 47, cy: 52, rx: 30, ry: 48, op: 0.12, ambRx: 52, ambOp: 0.05 },
+    strip: { topOp: 0.68, botOp: 0.78, topShift: 45, botShift: 50 },
+    spill: { left: 16, right: 14, op: 0.16, blur: 3 },
+    text: { hotOp: 0.78, midOp: 0.45, outerOp: 0.2 },
+  },
+  { key: "VISION",       label: "VISION",
+    glow: { cx: 54, cy: 50, rx: 36, ry: 55, op: 0.15, ambRx: 58, ambOp: 0.06 },
+    strip: { topOp: 0.88, botOp: 0.65, topShift: 55, botShift: 44 },
+    spill: { left: 10, right: 20, op: 0.2, blur: 4 },
+    text: { hotOp: 0.82, midOp: 0.52, outerOp: 0.24 },
+  },
+  { key: "CULTURE",      label: "CULTURE",
+    glow: { cx: 46, cy: 47, rx: 34, ry: 50, op: 0.14, ambRx: 56, ambOp: 0.058 },
+    strip: { topOp: 0.72, botOp: 0.82, topShift: 50, botShift: 55 },
+    spill: { left: 20, right: 10, op: 0.19, blur: 3 },
+    text: { hotOp: 0.88, midOp: 0.48, outerOp: 0.16 },
+  },
 ];
 
 function ShelfFilterBar({
@@ -206,119 +235,120 @@ function ShelfFilterBar({
 
         {FILTER_TABS.map((tab, idx) => {
           const isActive = activeCategory === tab.key;
+          const g = tab.glow;   // per-tab glow personality
+          const s = tab.strip;  // per-tab gold strip personality
+          const sp = tab.spill; // per-tab bottom spill personality
+          const t = tab.text;   // per-tab text glow personality
           return (
             <button
               key={tab.key}
               onClick={() => onCategoryChange(tab.key)}
               className={cn(
                 "relative flex-1 py-3 md:py-3.5 lg:py-4 cursor-pointer transition-all duration-500 z-[1]",
-                // No borders — divisions are implied by light and shadow
                 isActive ? "z-10" : ""
               )}
             >
-              {/* ── PER-TAB GOLD STRIPS: top and bottom brass inlay that catches the light ── */}
-              {/* Top gold strip segment — fades at edges so no hard seams between tabs */}
+              {/* ── PER-TAB GOLD STRIPS with unique wear/brightness ── */}
+              {/* Top gold strip — unique opacity & center per tab */}
               <div
                 className="absolute top-[3px] left-[-2px] right-[-2px] h-[2px] pointer-events-none z-[3] transition-all duration-500"
                 style={{
                   background: isActive
-                    ? "linear-gradient(to right, transparent 0%, rgba(210,150,50,0.5) 15%, rgba(225,165,55,0.8) 50%, rgba(210,150,50,0.5) 85%, transparent 100%)"
-                    : "linear-gradient(to right, transparent 0%, rgba(165,120,45,0.2) 20%, rgba(175,130,50,0.3) 50%, rgba(165,120,45,0.2) 80%, transparent 100%)",
+                    ? `linear-gradient(to right, transparent 0%, rgba(210,150,50,${s.topOp * 0.6}) 15%, rgba(225,165,55,${s.topOp}) ${s.topShift}%, rgba(210,150,50,${s.topOp * 0.6}) 85%, transparent 100%)`
+                    : `linear-gradient(to right, transparent 0%, rgba(165,120,45,${s.topOp * 0.25}) 20%, rgba(175,130,50,${s.topOp * 0.38}) ${s.topShift}%, rgba(165,120,45,${s.topOp * 0.25}) 80%, transparent 100%)`,
                 }}
               />
-              {/* Top gold strip glow (only when active) */}
+              {/* Top gold strip glow — unique position */}
               {isActive && (
                 <div
-                  className="absolute top-[2px] left-[10%] right-[10%] h-[6px] pointer-events-none z-[2]"
+                  className="absolute top-[2px] left-[8%] right-[8%] h-[6px] pointer-events-none z-[2]"
                   style={{
-                    background: "radial-gradient(ellipse 80% 100% at 50% 100%, rgba(210,148,45,0.15) 0%, transparent 100%)",
+                    background: `radial-gradient(ellipse 80% 100% at ${s.topShift}% 100%, rgba(210,148,45,${s.topOp * 0.18}) 0%, transparent 100%)`,
                     filter: "blur(2px)",
                   }}
                 />
               )}
-              {/* Bottom gold strip segment — fades at edges so no hard seams between tabs */}
+              {/* Bottom gold strip — unique opacity & center per tab */}
               <div
                 className="absolute bottom-[3px] left-[-2px] right-[-2px] h-[2px] pointer-events-none z-[3] transition-all duration-500"
                 style={{
                   background: isActive
-                    ? "linear-gradient(to right, transparent 0%, rgba(210,150,50,0.5) 15%, rgba(225,165,55,0.8) 50%, rgba(210,150,50,0.5) 85%, transparent 100%)"
-                    : "linear-gradient(to right, transparent 0%, rgba(165,120,45,0.2) 20%, rgba(175,130,50,0.3) 50%, rgba(165,120,45,0.2) 80%, transparent 100%)",
+                    ? `linear-gradient(to right, transparent 0%, rgba(210,150,50,${s.botOp * 0.6}) 15%, rgba(225,165,55,${s.botOp}) ${s.botShift}%, rgba(210,150,50,${s.botOp * 0.6}) 85%, transparent 100%)`
+                    : `linear-gradient(to right, transparent 0%, rgba(165,120,45,${s.botOp * 0.25}) 20%, rgba(175,130,50,${s.botOp * 0.38}) ${s.botShift}%, rgba(165,120,45,${s.botOp * 0.25}) 80%, transparent 100%)`,
                 }}
               />
-              {/* Bottom gold strip glow (only when active) */}
+              {/* Bottom gold strip glow — unique position */}
               {isActive && (
                 <div
-                  className="absolute bottom-[2px] left-[10%] right-[10%] h-[6px] pointer-events-none z-[2]"
+                  className="absolute bottom-[2px] left-[8%] right-[8%] h-[6px] pointer-events-none z-[2]"
                   style={{
-                    background: "radial-gradient(ellipse 80% 100% at 50% 0%, rgba(210,148,45,0.1) 0%, transparent 100%)",
+                    background: `radial-gradient(ellipse 80% 100% at ${s.botShift}% 0%, rgba(210,148,45,${s.botOp * 0.12}) 0%, transparent 100%)`,
                     filter: "blur(3px)",
                   }}
                 />
               )}
 
-              {/* ── ACTIVE STATE: text-centric warm glow (amber/copper tones) ── */}
+              {/* ── ACTIVE STATE: unique glow shape per tab ── */}
               {isActive && (
                 <>
-                  {/* Tight glow hugging the text — the text is the light source */}
+                  {/* Tight glow — unique size, position, opacity */}
                   <div
                     className="absolute inset-0 pointer-events-none"
                     style={{
-                      background: "radial-gradient(ellipse 35% 50% at 50% 50%, rgba(210,145,40,0.14) 0%, transparent 100%)",
+                      background: `radial-gradient(ellipse ${g.rx}% ${g.ry}% at ${g.cx}% ${g.cy}%, rgba(210,145,40,${g.op}) 0%, transparent 100%)`,
                     }}
                   />
-                  {/* Very subtle ambient warmth */}
+                  {/* Ambient warmth — unique spread */}
                   <div
                     className="absolute inset-0 pointer-events-none"
                     style={{
-                      background: "radial-gradient(ellipse 60% 70% at 50% 50%, rgba(195,130,35,0.06) 0%, transparent 100%)",
+                      background: `radial-gradient(ellipse ${g.ambRx}% 70% at ${g.cx}% ${g.cy}%, rgba(195,130,35,${g.ambOp}) 0%, transparent 100%)`,
                     }}
                   />
-                  {/* Bottom light spill */}
+                  {/* Bottom light spill — unique asymmetric spread */}
                   <div
-                    className="absolute -bottom-[2px] left-[15%] right-[15%] h-[6px] rounded-full pointer-events-none"
+                    className="absolute -bottom-[2px] h-[6px] rounded-full pointer-events-none"
                     style={{
-                      background: "radial-gradient(ellipse 70% 100% at 50% 0%, rgba(200,138,35,0.2) 0%, transparent 100%)",
-                      filter: "blur(3px)",
+                      left: `${sp.left}%`,
+                      right: `${sp.right}%`,
+                      background: `radial-gradient(ellipse 70% 100% at ${g.cx}% 0%, rgba(200,138,35,${sp.op}) 0%, transparent 100%)`,
+                      filter: `blur(${sp.blur}px)`,
                     }}
                   />
                 </>
               )}
 
-              {/* ── INACTIVE STATE: very subtle warmth ── */}
+              {/* ── INACTIVE STATE: subtle warmth — also slightly unique ── */}
               {!isActive && (
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
-                    background: "radial-gradient(ellipse at 50% 50%, rgba(110,80,35,0.04) 0%, transparent 70%)",
+                    background: `radial-gradient(ellipse at ${g.cx}% ${g.cy}%, rgba(110,80,35,0.04) 0%, transparent 70%)`,
                   }}
                 />
               )}
 
-              {/* Tab dividers removed — divisions implied by light only */}
-
-              {/* ── LABEL TEXT: embossed/engraved into metal ── */}
+              {/* ── LABEL TEXT: embossed/engraved with unique glow intensity ── */}
               <span
                 className={cn(
                   "relative z-10 font-pixel tracking-[0.18em] uppercase transition-all duration-500",
                   "text-[9px] md:text-[10px] lg:text-[11px]",
                 )}
                 style={isActive ? {
-                  // Active: warm amber/copper text — THE brightest element, light radiates from here
                   color: "#e8b84a",
                   textShadow: [
-                    "0 0 6px rgba(225,170,45,0.8)",    // tight hot glow right on the letters
-                    "0 0 14px rgba(210,148,40,0.5)",   // medium spread
-                    "0 0 30px rgba(195,130,30,0.2)",   // soft outer halo
-                    "0 1px 0 rgba(0,0,0,0.6)",         // depth shadow below (engraved)
-                    "0 -1px 0 rgba(240,200,120,0.2)",  // top highlight catch
+                    `0 0 6px rgba(225,170,45,${t.hotOp})`,     // tight hot glow — unique intensity
+                    `0 0 14px rgba(210,148,40,${t.midOp})`,    // medium spread — unique
+                    `0 0 30px rgba(195,130,30,${t.outerOp})`,  // soft outer halo — unique
+                    "0 1px 0 rgba(0,0,0,0.6)",                // depth shadow (engraved)
+                    "0 -1px 0 rgba(240,200,120,0.2)",         // top highlight catch
                   ].join(", "),
                 } : {
-                  // Inactive: dim engraved text — recessed into the metal
                   color: "#6b5a42",
                   textShadow: [
-                    "0 1px 0 rgba(80,65,40,0.3)",     // subtle bevel highlight below
-                    "0 -1px 0 rgba(0,0,0,0.4)",       // shadow above (recessed)
-                    "0 0 4px rgba(100,80,50,0.1)",     // very faint warmth
+                    "0 1px 0 rgba(80,65,40,0.3)",
+                    "0 -1px 0 rgba(0,0,0,0.4)",
+                    "0 0 4px rgba(100,80,50,0.1)",
                   ].join(", "),
                 }}
               >
