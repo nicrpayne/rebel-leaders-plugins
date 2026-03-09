@@ -1,5 +1,7 @@
 import { cn } from "@/lib/utils";
 
+const CATEGORIES = ["ALL", "IDENTITY", "RELATIONSHIP", "VISION", "CULTURE"] as const;
+
 interface CodexTopBarProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
@@ -17,7 +19,7 @@ export default function CodexTopBar({
 }: CodexTopBarProps) {
   return (
     <div className={cn(
-      "flex flex-col md:flex-row gap-4 items-center justify-between border-b border-amber-900/20 pb-6 sticky top-0 bg-[#080808]/95 backdrop-blur z-30 pt-2 transition-opacity duration-500",
+      "flex flex-col md:flex-row gap-4 items-center justify-between border-b border-amber-900/20 pb-4 sticky top-0 bg-[#080808]/95 backdrop-blur z-30 pt-2 transition-opacity duration-500",
       isDimmed ? "opacity-30 pointer-events-none" : "opacity-100"
     )}>
       {/* Search Input - "Data Query" */}
@@ -37,9 +39,9 @@ export default function CodexTopBar({
         </div>
       </div>
 
-      {/* Category Tabs - "Sector Select" */}
+      {/* Category Tabs - Flywheel Nodes */}
       <div className="flex gap-1 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide">
-        {["ALL", "COACHING", "CONFLICT", "VISION", "ALIGNMENT", "CULTURE"].map((cat) => (
+        {CATEGORIES.map((cat) => (
           <button
             key={cat}
             onClick={() => onCategoryChange(cat)}

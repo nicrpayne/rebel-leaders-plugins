@@ -204,43 +204,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Fixed HUD - Bottom Right */}
-      <div className="fixed bottom-6 right-6 z-50 hidden md:block">
-        <div className="border border-[#8a6d3b]/50 bg-[#050a05]/90 p-3 w-64 backdrop-blur-md shadow-2xl">
-          {/* Corner flourishes */}
-          <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-[#c5a059]" />
-          <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-[#c5a059]" />
-          <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-[#c5a059]" />
-          <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-[#c5a059]" />
-          
-          <div className="flex justify-between items-center mb-2 border-b border-[#8a6d3b]/20 pb-1">
-            <span className="font-pixel text-[8px] text-[#c5a059] tracking-widest">REBEL HUD</span>
-            <span className="font-pixel text-[8px] text-[#8a6d3b]">▼</span>
-          </div>
-          
-          <div className="space-y-2">
-            <div>
-              <div className="flex justify-between text-[8px] font-pixel text-[#8a6d3b] mb-1">
-                <span>XP</span>
-                <span>50%</span>
-              </div>
-              <div className="h-1 bg-[#1a2e1a] w-full border border-[#8a6d3b]/30">
-                <div className="h-full bg-[#c5a059] w-1/2" />
-              </div>
-            </div>
-            
-            <div className="flex justify-between text-[8px] font-pixel text-[#8a6d3b]">
-              <span>PAGES 6/9</span>
-              <span>SECRETS 0/5</span>
-            </div>
-            
-            <div className="flex justify-between text-[8px] font-pixel text-[#8a6d3b]">
-              <span>TIME IN REBELLION</span>
-              <span>13m</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Rebel HUD removed — handled by main site */}
     </div>
   );
 }
