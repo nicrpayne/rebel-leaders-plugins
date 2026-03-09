@@ -189,27 +189,51 @@ function ShelfFilterBar({
         {/* Darken overlay to ensure text readability */}
         <div className="absolute inset-0 bg-black/20 pointer-events-none z-0" />
 
-        {/* Top edge fade — softens the hard pixel boundary into darkness above */}
+        {/* ── TOP GOLD ACCENT STRIP — worn brass inlay ── */}
+        {/* Dark recess above the gold line */}
         <div
-          className="absolute top-0 left-0 right-0 h-[6px] pointer-events-none z-[2]"
+          className="absolute top-0 left-0 right-0 h-[3px] pointer-events-none z-[2]"
           style={{
-            background: "linear-gradient(to bottom, rgba(15,10,6,0.6) 0%, transparent 100%)",
+            background: "linear-gradient(to bottom, rgba(10,7,4,0.7) 0%, rgba(15,10,6,0.3) 100%)",
+          }}
+        />
+        {/* The gold strip itself — warm, slightly uneven */}
+        <div
+          className="absolute top-[3px] left-0 right-0 h-[2px] pointer-events-none z-[2]"
+          style={{
+            background: "linear-gradient(to right, rgba(120,90,40,0.15) 0%, rgba(180,140,60,0.4) 8%, rgba(200,160,70,0.5) 20%, rgba(170,130,55,0.35) 35%, rgba(195,155,65,0.5) 50%, rgba(175,135,55,0.4) 65%, rgba(200,160,70,0.5) 80%, rgba(180,140,60,0.4) 92%, rgba(120,90,40,0.15) 100%)",
+          }}
+        />
+        {/* Warm glow bleeding from the top gold strip */}
+        <div
+          className="absolute top-[3px] left-[5%] right-[5%] h-[6px] pointer-events-none z-[1]"
+          style={{
+            background: "linear-gradient(to right, transparent, rgba(200,155,55,0.08) 20%, rgba(210,165,60,0.1) 50%, rgba(200,155,55,0.08) 80%, transparent)",
+            filter: "blur(2px)",
           }}
         />
 
-        {/* Bottom highlight line — warm light catching the bottom lip of the molding */}
+        {/* ── BOTTOM GOLD ACCENT STRIP — worn brass inlay ── */}
+        {/* The gold strip itself — warm, slightly uneven */}
         <div
-          className="absolute bottom-0 left-0 right-0 h-[1px] pointer-events-none z-[2]"
+          className="absolute bottom-[3px] left-0 right-0 h-[2px] pointer-events-none z-[2]"
           style={{
-            background: "linear-gradient(to right, transparent 3%, rgba(140,110,65,0.25) 15%, rgba(160,130,80,0.35) 50%, rgba(140,110,65,0.25) 85%, transparent 97%)",
+            background: "linear-gradient(to right, rgba(120,90,40,0.15) 0%, rgba(175,135,55,0.35) 10%, rgba(195,155,65,0.5) 25%, rgba(180,140,60,0.4) 40%, rgba(200,160,70,0.5) 55%, rgba(175,135,55,0.35) 70%, rgba(195,155,65,0.5) 85%, rgba(175,135,55,0.35) 95%, rgba(120,90,40,0.15) 100%)",
           }}
         />
-
-        {/* Bottom edge fade — softens the hard pixel boundary into the shelf below */}
+        {/* Dark recess below the gold line */}
         <div
-          className="absolute bottom-0 left-0 right-0 h-[5px] pointer-events-none z-[2]"
+          className="absolute bottom-0 left-0 right-0 h-[3px] pointer-events-none z-[2]"
           style={{
-            background: "linear-gradient(to top, rgba(10,7,4,0.4) 0%, transparent 100%)",
+            background: "linear-gradient(to top, rgba(10,7,4,0.7) 0%, rgba(15,10,6,0.3) 100%)",
+          }}
+        />
+        {/* Warm glow bleeding from the bottom gold strip */}
+        <div
+          className="absolute bottom-[1px] left-[5%] right-[5%] h-[6px] pointer-events-none z-[1]"
+          style={{
+            background: "linear-gradient(to right, transparent, rgba(200,155,55,0.06) 20%, rgba(210,165,60,0.08) 50%, rgba(200,155,55,0.06) 80%, transparent)",
+            filter: "blur(3px)",
           }}
         />
 
