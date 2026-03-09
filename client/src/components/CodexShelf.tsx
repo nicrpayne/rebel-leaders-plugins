@@ -217,13 +217,13 @@ function ShelfFilterBar({
               )}
             >
               {/* ── PER-TAB GOLD STRIPS: top and bottom brass inlay that catches the light ── */}
-              {/* Top gold strip segment */}
+              {/* Top gold strip segment — fades at edges so no hard seams between tabs */}
               <div
-                className="absolute top-[3px] left-0 right-0 h-[2px] pointer-events-none z-[3] transition-all duration-500"
+                className="absolute top-[3px] left-[-2px] right-[-2px] h-[2px] pointer-events-none z-[3] transition-all duration-500"
                 style={{
                   background: isActive
-                    ? "linear-gradient(to right, rgba(160,110,40,0.3) 0%, rgba(210,150,50,0.7) 25%, rgba(225,165,55,0.8) 50%, rgba(210,150,50,0.7) 75%, rgba(160,110,40,0.3) 100%)"
-                    : "linear-gradient(to right, rgba(120,85,35,0.12) 0%, rgba(165,120,45,0.3) 30%, rgba(175,130,50,0.35) 50%, rgba(165,120,45,0.3) 70%, rgba(120,85,35,0.12) 100%)",
+                    ? "linear-gradient(to right, transparent 0%, rgba(210,150,50,0.5) 15%, rgba(225,165,55,0.8) 50%, rgba(210,150,50,0.5) 85%, transparent 100%)"
+                    : "linear-gradient(to right, transparent 0%, rgba(165,120,45,0.2) 20%, rgba(175,130,50,0.3) 50%, rgba(165,120,45,0.2) 80%, transparent 100%)",
                 }}
               />
               {/* Top gold strip glow (only when active) */}
@@ -236,13 +236,13 @@ function ShelfFilterBar({
                   }}
                 />
               )}
-              {/* Bottom gold strip segment */}
+              {/* Bottom gold strip segment — fades at edges so no hard seams between tabs */}
               <div
-                className="absolute bottom-[3px] left-0 right-0 h-[2px] pointer-events-none z-[3] transition-all duration-500"
+                className="absolute bottom-[3px] left-[-2px] right-[-2px] h-[2px] pointer-events-none z-[3] transition-all duration-500"
                 style={{
                   background: isActive
-                    ? "linear-gradient(to right, rgba(160,110,40,0.3) 0%, rgba(210,150,50,0.7) 25%, rgba(225,165,55,0.8) 50%, rgba(210,150,50,0.7) 75%, rgba(160,110,40,0.3) 100%)"
-                    : "linear-gradient(to right, rgba(120,85,35,0.12) 0%, rgba(165,120,45,0.3) 30%, rgba(175,130,50,0.35) 50%, rgba(165,120,45,0.3) 70%, rgba(120,85,35,0.12) 100%)",
+                    ? "linear-gradient(to right, transparent 0%, rgba(210,150,50,0.5) 15%, rgba(225,165,55,0.8) 50%, rgba(210,150,50,0.5) 85%, transparent 100%)"
+                    : "linear-gradient(to right, transparent 0%, rgba(165,120,45,0.2) 20%, rgba(175,130,50,0.3) 50%, rgba(165,120,45,0.2) 80%, transparent 100%)",
                 }}
               />
               {/* Bottom gold strip glow (only when active) */}
@@ -294,15 +294,7 @@ function ShelfFilterBar({
                 />
               )}
 
-              {/* ── TAB DIVIDERS: subtle shadow lines between tabs (not borders) ── */}
-              {idx > 0 && (
-                <div
-                  className="absolute left-0 top-[15%] bottom-[15%] w-[1px] pointer-events-none"
-                  style={{
-                    background: "linear-gradient(to bottom, transparent, rgba(0,0,0,0.3) 30%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.3) 70%, transparent)",
-                  }}
-                />
-              )}
+              {/* Tab dividers removed — divisions implied by light only */}
 
               {/* ── LABEL TEXT: embossed/engraved into metal ── */}
               <span
