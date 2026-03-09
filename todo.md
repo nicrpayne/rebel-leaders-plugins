@@ -98,3 +98,19 @@
 - [ ] Generate "Collector's Edition Truth Sword" (8-bit, glowing, on stand)
 - [ ] Localize asset to project
 - [ ] Push to GitHub
+
+# Generate Battle-Worn Sword Asset
+- [ ] Generate "Battle-Worn Truth Sword" (glowing with heat, set down after battle)
+
+# Generate Hi-Bit Sword Variations
+- [ ] Generate "Desk Relic" Sword (resting on desk, warm lighting)
+- [ ] Generate "Wall Mount" Sword (displayed on brick wall)
+- [ ] Generate "Tech Artifact" Sword (leaning against retro tech)
+
+# Final Asset Localization & Push
+- [ ] Download "Battle-Worn Truth Sword" to source assets
+- [ ] Download "Desk Relic" Sword to source assets
+- [ ] Download "Wall Mount" Sword to source assets
+- [ ] Download "Tech Artifact" Sword to source assets
+- [ ] Update README.md with clear "User Journey" and "Developer Flow" sections
+- [ ] Push all changes to GitHub

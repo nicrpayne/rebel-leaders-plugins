@@ -1,15 +1,15 @@
 # Rebel Leaders Plugins: Gravity Check & The Codex
 
-**Version:** 1.0.0 (Coaching Pack Integration)
+**Version:** 1.1.0 (Coaching Pack & Collector's Assets)
 **Project:** Rebel OS Plugin Suite
 
 ---
 
 ## 1. Overview
 
-This repository contains the source code, assets, and design documentation for the **Rebel Leaders Plugin Suite**, specifically focusing on two core modules:
+This repository contains the source code, assets, and design documentation for the **Rebel Leaders Plugin Suite**, a set of interactive tools for leadership development. The suite currently includes two core modules:
 
-1.  **Gravity Check:** An interactive diagnostic tool that assesses team health across four dimensions: *Identity, Relationship, Vision, and Conflict*. It uses a visual "orbital mechanics" interface to engage users.
+1.  **Gravity Check:** An interactive diagnostic tool that assesses team health across four dimensions: *Identity, Relationship, Vision, and Conflict*. It uses a visual "orbital mechanics" interface to engage users in a tactile assessment.
 2.  **The Codex:** A digital archive of leadership protocols, "moves," and coaching scripts. It features a retro-futuristic "Archivist's Cabinet" aesthetic and includes a "Run Mode" for guiding users through real-time execution of these protocols.
 
 The project is built as a **static React application** (Vite + React + Tailwind CSS) designed for easy deployment and fast performance.
@@ -76,6 +76,7 @@ To fully experience the application as a user would, follow this path:
     /pages          # Route pages (Home, Codex, etc.)
     /assets         # Local images (if any)
     index.css       # Global styles & Tailwind directives
+/_source_assets     # High-quality source files (excluded from build)
 /server             # (Placeholder for future backend)
 /shared             # Shared types/constants
 ```
@@ -107,24 +108,29 @@ This generates a static `dist/` folder ready for deployment to Vercel, Netlify, 
 
 ---
 
-## 6. Asset Credits
-*   **Icons:** Lucide React
-*   **Fonts:** Inter (sans), Space Mono (monospace), Pixelify Sans (retro headers)
-*   **Images:** Generated via AI (Midjourney/DALL-E) and processed for the "Archivist" aesthetic.
+## 6. Asset Management
+
+### Live Assets (CDN)
+To ensure fast load times and successful deployment on static hosts (which often have file size limits), the live application uses **optimized CDN URLs** for large assets like the cabinet frame, journals, and swords.
+
+### Source Assets (Local)
+The high-quality, original source files (>1MB) are stored in the `_source_assets/` directory in this repository. These files are **excluded from the build** but are preserved here for your ownership and future use.
+
+**Included Source Assets:**
+*   `cabinet_frame.png` (The heavy industrial border)
+*   `worn_journals.png` (The stack of research notes)
+*   `truth_sword_collector.png` (The "Collector's Edition" prop)
+*   `truth_sword_battle_worn.png` (The "Battle-Worn" variant)
+*   `truth_sword_desk_relic.png` (The "Desk Relic" variant)
+*   `truth_sword_wall_mount.png` (The "Wall Mount" variant)
+*   `truth_sword_tech_artifact.png` (The "Tech Artifact" variant)
+
+**How to Use Source Assets:**
+If you wish to self-host or modify these assets:
+1.  Copy the desired file from `_source_assets/` to `client/public/assets/`.
+2.  Update the code references in `client/src/components/` to point to the local path (e.g., `/assets/truth_sword_collector.png`) instead of the CDN URL.
 
 ---
 
 **Rebel Leaders Plugin Suite**
 *Tools for the Resistance.*
-
-
-## 📦 Source Assets
-
-High-quality source assets (images > 1MB) are available separately.
-
-These files are **excluded from the build** to prevent deployment timeouts on static hosting platforms. The live application uses optimized CDN versions of these assets.
-
-If you wish to self-host or modify these assets:
-1.  Download the source assets (or re-download from the CDN URLs in the code).
-2.  Place them in `client/public/assets/`.
-3.  Update the code references in `client/src/components/` to point to the local paths (e.g., `/assets/filename.png`) instead of the CDN URLs.
