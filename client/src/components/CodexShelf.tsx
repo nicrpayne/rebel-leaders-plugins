@@ -225,51 +225,36 @@ function ShelfFilterBar({
                 isActive ? "z-10" : ""
               )}
             >
-              {/* ── ACTIVE STATE: warm light bleed ── */}
+              {/* ── ACTIVE STATE: text-centric warm glow ── */}
               {isActive && (
                 <>
-                  {/* Broad warm ambient glow — like light leaking from behind the plate */}
+                  {/* Tight glow hugging the text — the text is the light source */}
                   <div
                     className="absolute inset-0 pointer-events-none"
                     style={{
-                      background: "radial-gradient(ellipse 80% 120% at 50% 60%, rgba(217,158,56,0.25) 0%, rgba(180,120,30,0.12) 40%, transparent 75%)",
+                      background: "radial-gradient(ellipse 35% 50% at 50% 50%, rgba(220,165,50,0.14) 0%, transparent 100%)",
                     }}
                   />
-                  {/* Tighter hot center glow */}
+                  {/* Very subtle ambient warmth — just enough to tint the metal, not wash it out */}
                   <div
                     className="absolute inset-0 pointer-events-none"
                     style={{
-                      background: "radial-gradient(ellipse 50% 80% at 50% 55%, rgba(245,180,50,0.18) 0%, transparent 60%)",
+                      background: "radial-gradient(ellipse 60% 70% at 50% 50%, rgba(200,150,40,0.06) 0%, transparent 100%)",
                     }}
                   />
-                  {/* Bottom light spill — soft warm glow, not a hard line */}
+                  {/* Bottom light spill — soft warm glow seeping down */}
                   <div
-                    className="absolute -bottom-[2px] left-[8%] right-[8%] h-[8px] rounded-full pointer-events-none"
+                    className="absolute -bottom-[2px] left-[15%] right-[15%] h-[6px] rounded-full pointer-events-none"
                     style={{
-                      background: "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(220,160,45,0.35) 0%, rgba(200,140,30,0.15) 50%, transparent 100%)",
-                      filter: "blur(2px)",
+                      background: "radial-gradient(ellipse 70% 100% at 50% 0%, rgba(210,155,40,0.2) 0%, transparent 100%)",
+                      filter: "blur(3px)",
                     }}
                   />
-                  {/* Secondary deeper glow — spreads warmth further down */}
+                  {/* Top edge subtle reflection */}
                   <div
-                    className="absolute -bottom-[6px] left-[15%] right-[15%] h-[14px] rounded-full pointer-events-none"
+                    className="absolute top-[1px] left-[20%] right-[20%] h-[1px] pointer-events-none"
                     style={{
-                      background: "radial-gradient(ellipse 80% 100% at 50% 0%, rgba(200,145,35,0.12) 0%, transparent 80%)",
-                      filter: "blur(4px)",
-                    }}
-                  />
-                  {/* Top edge warm reflection — light bouncing off the bevel above */}
-                  <div
-                    className="absolute top-[2px] left-[15%] right-[15%] h-[1px] pointer-events-none"
-                    style={{
-                      background: "linear-gradient(to right, transparent, rgba(220,170,60,0.3) 30%, rgba(235,180,50,0.4) 50%, rgba(220,170,60,0.3) 70%, transparent)",
-                    }}
-                  />
-                  {/* Upward light spill — glow bleeds above the trim */}
-                  <div
-                    className="absolute -top-[8px] left-[20%] right-[20%] h-[10px] pointer-events-none"
-                    style={{
-                      background: "radial-gradient(ellipse at 50% 100%, rgba(220,160,40,0.12) 0%, transparent 80%)",
+                      background: "linear-gradient(to right, transparent, rgba(200,160,50,0.15) 30%, rgba(220,170,60,0.2) 50%, rgba(200,160,50,0.15) 70%, transparent)",
                     }}
                   />
                 </>
@@ -302,14 +287,14 @@ function ShelfFilterBar({
                   "text-[9px] md:text-[10px] lg:text-[11px]",
                 )}
                 style={isActive ? {
-                  // Active: warm glowing gold text — light catching engraved letters
-                  color: "#e8c55a",
+                  // Active: bright gold text — THE brightest element, light radiates from here
+                  color: "#f0d264",
                   textShadow: [
-                    "0 0 10px rgba(235,175,50,0.7)",
-                    "0 0 25px rgba(220,160,40,0.4)",
-                    "0 0 50px rgba(200,140,20,0.2)",
-                    "0 1px 0 rgba(0,0,0,0.5)",        // depth shadow below
-                    "0 -1px 0 rgba(255,220,130,0.15)", // top highlight catch
+                    "0 0 6px rgba(240,200,60,0.8)",    // tight hot glow right on the letters
+                    "0 0 14px rgba(230,175,50,0.5)",   // medium spread
+                    "0 0 30px rgba(210,155,40,0.2)",   // soft outer halo
+                    "0 1px 0 rgba(0,0,0,0.6)",         // depth shadow below (engraved)
+                    "0 -1px 0 rgba(255,230,150,0.2)",  // top highlight catch
                   ].join(", "),
                 } : {
                   // Inactive: dim engraved text — recessed into the metal
