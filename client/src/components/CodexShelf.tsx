@@ -5,14 +5,20 @@ import { FlywheelNode } from "@/lib/codex-schema";
 
 /* ─────────────────────────────────────────────
    SHELF CATEGORY CONFIG
-   Maps flywheel nodes to display order & colors
+   Top shelf: Identity + Relationship
+   Bottom shelf: Vision + Culture
    ───────────────────────────────────────────── */
-const SHELF_SECTIONS: { key: FlywheelNode; label: string }[] = [
+const TOP_SHELF_SECTIONS: { key: FlywheelNode; label: string }[] = [
   { key: "Identity",     label: "IDENTITY" },
   { key: "Relationship", label: "RELATIONSHIP" },
-  { key: "Vision",       label: "VISION" },
-  { key: "Culture",      label: "CULTURE" },
 ];
+
+const BOTTOM_SHELF_SECTIONS: { key: FlywheelNode; label: string }[] = [
+  { key: "Vision",  label: "VISION" },
+  { key: "Culture", label: "CULTURE" },
+];
+
+const ALL_SECTIONS = [...TOP_SHELF_SECTIONS, ...BOTTOM_SHELF_SECTIONS];
 
 /* ─────────────────────────────────────────────
    HELPER: Group entries by primary flywheel node
@@ -46,28 +52,16 @@ interface SpineProps {
 }
 
 function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0 }: SpineProps) {
-  // The spine image is naturally horizontal (1920x1072, ~1.79:1).
-  // In the deck (LoadBay), it renders horizontally with object-fill.
-  // On the shelf, we want it standing VERTICAL like a book spine.
-  // Strategy: Create a horizontal inner container matching the image aspect ratio,
-  // then rotate the entire inner container 90° so it stands upright.
-  // The outer button is portrait-shaped to hold the rotated result.
-
-  // Outer dimensions: portrait container that holds the rotated spine
-  // Inner (pre-rotation): a horizontal rectangle matching the deck proportions
-  // After 90° rotation: width becomes height and vice versa
-
   return (
     <button
       onClick={onClick}
       disabled={isLoaded}
       className={cn(
         "relative flex-shrink-0 group transition-all duration-300 ease-out cursor-pointer",
-        // Portrait outer container: larger for label readability
         "w-[63px] md:w-[74px] lg:w-[80px] h-[205px] md:h-[238px] lg:h-[272px]",
         // Pull up so it sits ON TOP of the shelf ledge, ledge visible below
-        "mb-[74px] md:mb-[80px] lg:mb-[84px]",
-        // Negative horizontal margin to pack spines tightly (outer container is wider than visible spine)
+        "mb-[80px] md:mb-[86px] lg:mb-[90px]",
+        // Negative horizontal margin to pack spines tightly
         "-mx-[18px] md:-mx-[20px] lg:-mx-[22px]",
         isLoaded
           ? "opacity-0 pointer-events-none scale-95"
@@ -79,26 +73,20 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0 }: Spi
       }}
       title={entry.title}
     >
-      {/* Rotated inner container: starts horizontal (matching spine aspect), then rotated 90° */}
       <div
         className="absolute top-1/2 left-1/2 overflow-hidden rounded-[3px]"
         style={{
-          // Pre-rotation dimensions: horizontal rectangle
-          // Width = outer height, Height = outer width (they swap after rotation)
           width: "205px",
           height: "63px",
           transform: "translate(-50%, -50%) rotate(90deg)",
         }}
       >
-        {/* Spine image — rendered exactly like the deck: fill the container */}
         <img
           src={SPINE_CDN}
           alt={entry.title}
           className="absolute inset-0 w-full h-full object-fill drop-shadow-[2px_4px_8px_rgba(0,0,0,0.7)]"
           draggable={false}
         />
-
-        {/* Text overlay — same approach as the deck, NOT rotated (already inside rotated container) */}
         <div
           className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none"
           style={{ transform: "rotate(-0.5deg)" }}
@@ -127,9 +115,6 @@ interface FlatSpineProps {
 }
 
 function CartridgeFlat({ entry, isLoaded, onClick, tilt = 0 }: FlatSpineProps) {
-  // Same physical object as CartridgeSpine, just not rotated (laid flat on its side)
-  // The spine image is naturally horizontal, so we render it at the same dimensions
-  // as the inner rotated container of CartridgeSpine: w=205, h=63 (at base size)
   return (
     <button
       onClick={onClick}
@@ -152,7 +137,6 @@ function CartridgeFlat({ entry, isLoaded, onClick, tilt = 0 }: FlatSpineProps) {
           draggable={false}
         />
       </div>
-
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none">
         <span className="font-serif text-[#1a120a] text-[8px] md:text-[9px] lg:text-[10px] font-black uppercase leading-tight tracking-wider px-2 drop-shadow-[0_0_3px_rgba(230,220,195,1)] drop-shadow-[0_1px_0_rgba(255,255,255,0.6)] line-clamp-1">
           {entry.title}
@@ -166,36 +150,9 @@ function CartridgeFlat({ entry, isLoaded, onClick, tilt = 0 }: FlatSpineProps) {
 }
 
 /* ─────────────────────────────────────────────
-   SHELF SECTION LABEL (Category divider on shelf)
-   ───────────────────────────────────────────── */
-function ShelfLabel({ label }: { label: string }) {
-  return (
-    <div className="flex items-center justify-center px-2 py-1.5 bg-[#1a1208]/90 border border-amber-900/40 rounded-[2px] shadow-[inset_0_1px_3px_rgba(0,0,0,0.5)] min-w-fit">
-      <span className="font-pixel text-[7px] md:text-[8px] text-amber-600/80 tracking-[0.15em] uppercase whitespace-nowrap">
-        {label}
-      </span>
-    </div>
-  );
-}
-
-/* ─────────────────────────────────────────────
-   WOOD SHELF RAIL (Horizontal divider)
-   ───────────────────────────────────────────── */
-function ShelfRail() {
-  return (
-    <div className="relative w-full h-[8px] my-1">
-      {/* Main rail */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#5d4037] via-[#4e342e] to-[#3e2723] rounded-[1px] shadow-[0_2px_4px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.08)]" />
-      {/* Top highlight */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#8d6e63]/40 to-transparent" />
-    </div>
-  );
-}
-
-/* ─────────────────────────────────────────────
    SHELF FILTER BAR (Built into the shelf trim)
-   Backlit category tabs integrated into the
-   wood/metal trim — warm amber glow when active
+   Uses generated bronze/wood trim texture image
+   Embossed text with warm amber light bleed
    ───────────────────────────────────────────── */
 const FILTER_TABS = [
   { key: "ALL",          label: "ALL" },
@@ -214,65 +171,176 @@ function ShelfFilterBar({
 }) {
   return (
     <div className="relative w-full">
-      {/* Dark metal/wood trim background */}
-      <div className="relative flex items-stretch justify-center gap-0 bg-gradient-to-b from-[#2a1f14] via-[#1e1610] to-[#16110c] border-y border-[#3d2e1e]/60 shadow-[inset_0_1px_3px_rgba(0,0,0,0.6),0_2px_6px_rgba(0,0,0,0.4)]">
-        {/* Subtle top edge highlight */}
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#8d6e63]/20 to-transparent" />
+      {/* Trim texture background — the physical molding strip */}
+      <div
+        className="relative flex items-stretch justify-center gap-0 overflow-hidden"
+        style={{
+          backgroundImage: "url('/assets/trim_bar_texture.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        {/* Darken overlay to ensure text readability */}
+        <div className="absolute inset-0 bg-black/20 pointer-events-none z-0" />
 
-        {FILTER_TABS.map((tab) => {
+        {FILTER_TABS.map((tab, idx) => {
           const isActive = activeCategory === tab.key;
           return (
             <button
               key={tab.key}
               onClick={() => onCategoryChange(tab.key)}
               className={cn(
-                "relative flex-1 py-2.5 md:py-3 font-pixel text-[9px] md:text-[10px] lg:text-[11px] tracking-[0.18em] uppercase transition-all duration-300 cursor-pointer",
-                "border-x border-[#3d2e1e]/30 first:border-l-0 last:border-r-0",
-                isActive
-                  ? "text-amber-400 z-10"
-                  : "text-[#6b5a48]/70 hover:text-amber-600/90"
+                "relative flex-1 py-3 md:py-3.5 lg:py-4 cursor-pointer transition-all duration-500 z-[1]",
+                // No borders — divisions are implied by light and shadow
+                isActive ? "z-10" : ""
               )}
             >
-              {/* Active: warm backlit glow */}
+              {/* ── ACTIVE STATE: warm light bleed ── */}
               {isActive && (
                 <>
-                  {/* Broad ambient glow behind the text */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-amber-500/10 via-amber-600/15 to-amber-700/5 pointer-events-none" />
-                  {/* Concentrated glow at center */}
-                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.20)_0%,transparent_70%)] pointer-events-none" />
-                  {/* Bottom edge light strip — like a backlit label */}
-                  <div className="absolute bottom-0 left-[15%] right-[15%] h-[2px] bg-gradient-to-r from-transparent via-amber-500/80 to-transparent rounded-full shadow-[0_0_8px_rgba(245,158,11,0.6),0_0_20px_rgba(245,158,11,0.3)]" />
-                  {/* Top edge warm reflection */}
-                  <div className="absolute top-0 left-[20%] right-[20%] h-[1px] bg-gradient-to-r from-transparent via-amber-600/30 to-transparent" />
+                  {/* Broad warm ambient glow — like light leaking from behind the plate */}
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background: "radial-gradient(ellipse 80% 120% at 50% 60%, rgba(217,158,56,0.25) 0%, rgba(180,120,30,0.12) 40%, transparent 75%)",
+                    }}
+                  />
+                  {/* Tighter hot center glow */}
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background: "radial-gradient(ellipse 50% 80% at 50% 55%, rgba(245,180,50,0.18) 0%, transparent 60%)",
+                    }}
+                  />
+                  {/* Bottom light strip — warm light spilling downward onto shelf below */}
+                  <div
+                    className="absolute bottom-0 left-[10%] right-[10%] h-[3px] rounded-full pointer-events-none"
+                    style={{
+                      background: "linear-gradient(to right, transparent, rgba(235,165,40,0.7) 30%, rgba(245,180,50,0.9) 50%, rgba(235,165,40,0.7) 70%, transparent)",
+                      boxShadow: "0 0 12px rgba(235,165,40,0.5), 0 2px 20px rgba(235,165,40,0.3), 0 4px 30px rgba(200,140,20,0.15)",
+                    }}
+                  />
+                  {/* Top edge warm reflection — light bouncing off the bevel above */}
+                  <div
+                    className="absolute top-[2px] left-[15%] right-[15%] h-[1px] pointer-events-none"
+                    style={{
+                      background: "linear-gradient(to right, transparent, rgba(220,170,60,0.3) 30%, rgba(235,180,50,0.4) 50%, rgba(220,170,60,0.3) 70%, transparent)",
+                    }}
+                  />
+                  {/* Upward light spill — glow bleeds above the trim */}
+                  <div
+                    className="absolute -top-[8px] left-[20%] right-[20%] h-[10px] pointer-events-none"
+                    style={{
+                      background: "radial-gradient(ellipse at 50% 100%, rgba(220,160,40,0.12) 0%, transparent 80%)",
+                    }}
+                  />
                 </>
               )}
 
-              {/* Inactive: very subtle warmth so the bar doesn't feel dead */}
+              {/* ── INACTIVE STATE: very subtle warmth ── */}
               {!isActive && (
-                <div className="absolute inset-0 bg-gradient-to-b from-amber-900/3 via-transparent to-amber-900/2 pointer-events-none" />
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background: "radial-gradient(ellipse at 50% 50%, rgba(120,90,40,0.04) 0%, transparent 70%)",
+                  }}
+                />
               )}
 
-              {/* Label text */}
-              <span className={cn(
-                "relative z-10",
-                isActive && "drop-shadow-[0_0_8px_rgba(245,158,11,0.6)] drop-shadow-[0_0_16px_rgba(245,158,11,0.3)]"
-              )}>
+              {/* ── TAB DIVIDERS: subtle shadow lines between tabs (not borders) ── */}
+              {idx > 0 && (
+                <div
+                  className="absolute left-0 top-[15%] bottom-[15%] w-[1px] pointer-events-none"
+                  style={{
+                    background: "linear-gradient(to bottom, transparent, rgba(0,0,0,0.3) 30%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.3) 70%, transparent)",
+                  }}
+                />
+              )}
+
+              {/* ── LABEL TEXT: embossed/engraved into metal ── */}
+              <span
+                className={cn(
+                  "relative z-10 font-pixel tracking-[0.18em] uppercase transition-all duration-500",
+                  "text-[9px] md:text-[10px] lg:text-[11px]",
+                )}
+                style={isActive ? {
+                  // Active: warm glowing gold text — light catching engraved letters
+                  color: "#e8c55a",
+                  textShadow: [
+                    "0 0 10px rgba(235,175,50,0.7)",
+                    "0 0 25px rgba(220,160,40,0.4)",
+                    "0 0 50px rgba(200,140,20,0.2)",
+                    "0 1px 0 rgba(0,0,0,0.5)",        // depth shadow below
+                    "0 -1px 0 rgba(255,220,130,0.15)", // top highlight catch
+                  ].join(", "),
+                } : {
+                  // Inactive: dim engraved text — recessed into the metal
+                  color: "#6b5a42",
+                  textShadow: [
+                    "0 1px 0 rgba(80,65,40,0.3)",     // subtle bevel highlight below
+                    "0 -1px 0 rgba(0,0,0,0.4)",       // shadow above (recessed)
+                    "0 0 4px rgba(100,80,50,0.1)",     // very faint warmth
+                  ].join(", "),
+                }}
+              >
                 {tab.label}
               </span>
             </button>
           );
         })}
-
-        {/* Bottom edge highlight */}
-        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#5d4037]/30 to-transparent" />
       </div>
     </div>
   );
 }
 
 /* ─────────────────────────────────────────────
+   SHELF RAIL (Front edge / lip of the shelf plank)
+   Uses the generated wood rail texture but blends
+   its top and bottom edges into the surrounding
+   shelf wood so it reads as one continuous piece.
+   ───────────────────────────────────────────── */
+function ShelfRail() {
+  return (
+    <div className="relative w-full h-[22px] md:h-[26px] lg:h-[30px] z-[3]">
+      {/* Texture layer — the real wood rail image */}
+      <div
+        className="absolute inset-0 overflow-hidden"
+        style={{
+          backgroundImage: "url('/assets/shelf_rail_texture.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center 45%",
+        }}
+      />
+      {/* Top edge blend — fades the texture into the shelf above */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[6px] md:h-[8px] pointer-events-none"
+        style={{
+          background: "linear-gradient(to bottom, rgba(30,22,14,0.7) 0%, transparent 100%)",
+        }}
+      />
+      {/* Top highlight — warm light catching the rounded lip */}
+      <div
+        className="absolute top-[2px] left-0 right-0 h-[1px] pointer-events-none"
+        style={{
+          background: "linear-gradient(to right, transparent 5%, rgba(160,130,80,0.35) 20%, rgba(180,145,90,0.4) 50%, rgba(160,130,80,0.35) 80%, transparent 95%)",
+        }}
+      />
+      {/* Bottom edge blend — fades the texture into the shelf below */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-[6px] md:h-[8px] pointer-events-none"
+        style={{
+          background: "linear-gradient(to top, rgba(10,8,5,0.8) 0%, rgba(20,15,10,0.4) 50%, transparent 100%)",
+        }}
+      />
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
    MAIN SHELF COMPONENT
-   Filter tabs are now built into the shelf trim.
+   Two shelves: Top (Identity + Relationship standing)
+                Bottom (Vision + Culture standing)
+   Filter bar integrated into the trim above top shelf
    ───────────────────────────────────────────── */
 interface CodexShelfProps {
   entries: CodexEntry[];
@@ -292,40 +360,24 @@ export default function CodexShelf({
   recentEntryIds = [],
 }: CodexShelfProps) {
   const grouped = groupByFlywheel(entries);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollRefTop = useRef<HTMLDivElement>(null);
+  const scrollRefBottom = useRef<HTMLDivElement>(null);
 
-  // Deterministic "random" tilts per entry for the imperfect shelf feel
-  const getTilt = (id: string, range: number) => {
-    const hash = id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-    return ((hash % (range * 20)) - range * 10) / 10;
-  };
-  const getOffsetY = (id: string) => {
-    const hash = id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-    return (hash % 8) - 4;
+  // Determine which sections are visible based on active filter
+  const getVisibleSections = (shelfSections: typeof TOP_SHELF_SECTIONS) => {
+    if (activeCategory === "ALL") return shelfSections;
+    return shelfSections.filter((s) => s.key.toUpperCase() === activeCategory);
   };
 
-  // Filter sections based on active category
-  const visibleSections =
-    activeCategory === "ALL"
-      ? SHELF_SECTIONS
-      : SHELF_SECTIONS.filter((s) => s.key.toUpperCase() === activeCategory);
+  const topVisible = getVisibleSections(TOP_SHELF_SECTIONS);
+  const bottomVisible = getVisibleSections(BOTTOM_SHELF_SECTIONS);
 
-  // Build the "recently used" / flat stack entries
-  const flatEntries: CodexEntry[] = [];
-  if (recentEntryIds.length > 0) {
-    recentEntryIds.forEach((id) => {
-      const found = entries.find((e) => e.id === id);
-      if (found) flatEntries.push(found);
-    });
-  }
-  if (flatEntries.length < 3) {
-    const remaining = entries.filter((e) => !flatEntries.find((f) => f.id === e.id));
-    const picks = remaining.slice(0, 3 - flatEntries.length);
-    flatEntries.push(...picks);
-  }
+  // Check if a shelf should show at all based on filter
+  const showTopShelf = activeCategory === "ALL" || activeCategory === "IDENTITY" || activeCategory === "RELATIONSHIP";
+  const showBottomShelf = activeCategory === "ALL" || activeCategory === "VISION" || activeCategory === "CULTURE";
 
   return (
-    <div className="relative w-full overflow-hidden rounded-sm border border-[#2a1d10]/50">
+    <div className="relative w-full overflow-hidden rounded-sm">
       {/* Shelf Background Image — full coverage */}
       <div
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
@@ -335,63 +387,82 @@ export default function CodexShelf({
         }}
       />
 
-      {/* Dark vignette overlay */}
-      <div className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.5)_100%)] pointer-events-none" />
-      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
+      {/* Dark vignette overlay — organic, not uniform */}
+      <div className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.5)_100%)] pointer-events-none" />
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/25 via-transparent to-black/40 pointer-events-none" />
 
       {/* Content Container */}
       <div className="relative z-[2] flex flex-col">
 
-        {/* ── INTEGRATED FILTER BAR (built into shelf trim) ── */}
+        {/* ── INTEGRATED FILTER BAR (bronze trim with backlit tabs) ── */}
         <ShelfFilterBar
           activeCategory={activeCategory}
           onCategoryChange={onCategoryChange}
         />
 
-        {/* ── TOP SHELF: All cartridges grouped by flywheel category ── */}
-        <div className="pt-3 pr-3 pb-3 pl-4 md:pt-5 md:pr-5 md:pb-5 md:pl-5 lg:pt-6 lg:pr-6 lg:pb-6 lg:pl-6">
-        <div
-          ref={scrollRef}
-          className="flex items-end gap-0 overflow-x-auto pb-0 pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth min-h-[220px] md:min-h-[260px] lg:min-h-[300px]"
-        >
-          {visibleSections.map((section, sIdx) => {
-            const sectionEntries = grouped[section.key];
-            if (sectionEntries.length === 0) return null;
-            return (
-              <div key={section.key} className="flex items-end gap-0">
-                {/* Category divider labels removed from inline — shown on shelf rail instead */}
-                {/* Cartridge spines */}
-                {sectionEntries.map((entry) => (
-                  <CartridgeSpine
-                    key={entry.id}
-                    entry={entry}
-                    isLoaded={loadedEntryId === entry.id}
-                    onClick={() => onLoad(entry)}
-                    tilt={0}
-                    offsetY={0}
-                  />
-                ))}
-              </div>
-            );
-          })}
-        </div>
+        {/* ── TOP SHELF: Identity + Relationship cartridges ── */}
+        {showTopShelf && (
+          <div className="px-4 md:px-5 lg:px-6 pt-2">
+            <div
+              ref={scrollRefTop}
+              className="flex items-end gap-0 overflow-x-auto pb-0 pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth min-h-[220px] md:min-h-[260px] lg:min-h-[300px]"
+            >
+              {topVisible.map((section) => {
+                const sectionEntries = grouped[section.key];
+                if (sectionEntries.length === 0) return null;
+                return (
+                  <div key={section.key} className="flex items-end gap-0">
+                    {sectionEntries.map((entry) => (
+                      <CartridgeSpine
+                        key={entry.id}
+                        entry={entry}
+                        isLoaded={loadedEntryId === entry.id}
+                        onClick={() => onLoad(entry)}
+                        tilt={0}
+                        offsetY={0}
+                      />
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
-        {/* ── SHELF RAIL ── */}
+        {/* ── SHELF RAIL between top and bottom ── */}
         <ShelfRail />
 
-        {/* ── BOTTOM SHELF: Recommended + Recent stacks ── */}
-        <div className="flex items-end gap-6 md:gap-8 px-8 md:px-10 lg:px-12 py-3 min-h-[80px] md:min-h-[100px]">
-          {/* Single flat cartridge test — first entry */}
-          {entries.length > 0 && (
-            <CartridgeFlat
-              entry={entries[0]}
-              isLoaded={loadedEntryId === entries[0].id}
-              onClick={() => onLoad(entries[0])}
-              tilt={0}
-            />
-          )}
-        </div>
-        </div>
+        {/* ── BOTTOM SHELF: Vision + Culture cartridges ── */}
+        {showBottomShelf && (
+          <div className="px-4 md:px-5 lg:px-6 pb-2">
+            <div
+              ref={scrollRefBottom}
+              className="flex items-end gap-0 overflow-x-auto pb-0 pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth min-h-[220px] md:min-h-[260px] lg:min-h-[300px]"
+            >
+              {bottomVisible.map((section) => {
+                const sectionEntries = grouped[section.key];
+                if (sectionEntries.length === 0) return null;
+                return (
+                  <div key={section.key} className="flex items-end gap-0">
+                    {sectionEntries.map((entry) => (
+                      <CartridgeSpine
+                        key={entry.id}
+                        entry={entry}
+                        isLoaded={loadedEntryId === entry.id}
+                        onClick={() => onLoad(entry)}
+                        tilt={0}
+                        offsetY={0}
+                      />
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ── BOTTOM RAIL (closes the cabinet) ── */}
+        <ShelfRail />
       </div>
     </div>
   );
