@@ -178,12 +178,12 @@ const TOP_SHELF_ARRANGEMENT: Record<string, { tilt: number; offsetY: number; ext
   MOVE_MINORITY_REPORT:        { tilt: 0,    offsetY: 0,  extraMarginLeft: 0 },
   // 7. Fridge Rights Audit — straight, nudged forward
   MOVE_FRIDGE_RIGHTS_AUDIT:    { tilt: 0,    offsetY: 4,  extraMarginLeft: 0 },
-  // 8. The Mirror Move — slight lean right
-  MOVE_THE_MIRROR:             { tilt: 1.5,  offsetY: 1,  extraMarginLeft: 0 },
-  // 9. Trust Micro-Deposit — leans left onto #8
-  MOVE_TRUST_MICRO_DEPOSIT:    { tilt: -1.8, offsetY: 2,  extraMarginLeft: 0 },
-  // 10. 3 Coaching Questions — small gap, straight
-  MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  extraMarginLeft: 5 },
+  // 8. The Mirror Move — domino lean right onto #9/#10
+  MOVE_THE_MIRROR:             { tilt: 3.5,  offsetY: -1,  extraMarginLeft: 0 },
+  // 9. Trust Micro-Deposit — domino lean right onto #10, steeper
+  MOVE_TRUST_MICRO_DEPOSIT:    { tilt: 4.5,  offsetY: -2,  extraMarginLeft: -3 },
+  // 10. 3 Coaching Questions — the backstop, straight and sturdy
+  MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  extraMarginLeft: -2 },
   // 11. SBI Feedback — straight
   MOVE_FEEDBACK_SBI:           { tilt: 0.3,  offsetY: 0,  extraMarginLeft: 0 },
   // 12. Accountability With Care — slight lean
