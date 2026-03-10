@@ -70,6 +70,7 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, extra
       )}
       style={{
         transform: isLoaded ? undefined : `rotate(${tilt}deg) translateY(${offsetY}px)`,
+        transformOrigin: tilt !== 0 ? "bottom center" : undefined,
         transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
         marginLeft: extraMarginLeft ? `${extraMarginLeft}px` : undefined,
       }}
@@ -168,7 +169,7 @@ const TOP_SHELF_ARRANGEMENT: Record<string, { tilt: number; offsetY: number; ext
   // 3. Feedforward — straight, the one #4 leans on
   MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 0,  extraMarginLeft: 0 },
   // 4. No With a Clean Yes — leaning left onto #3
-  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -3.5, offsetY: 3,  extraMarginLeft: -4 },
+  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -4.5, offsetY: 3,  extraMarginLeft: -4 },
 
   // === RELATIONSHIP SECTION (positions 5-13) ===
   // 5. Repair in 48 Hours — small gap, mostly straight
