@@ -49,10 +49,11 @@ interface SpineProps {
   onClick: () => void;
   tilt?: number;
   offsetY?: number;
-  extraMarginLeft?: number;
+  offsetX?: number;      // visual-only horizontal shift (translateX) — does NOT affect neighbors
+  gapBefore?: number;    // real layout gap (marginLeft override) — DOES push neighbors
 }
 
-function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, extraMarginLeft = 0 }: SpineProps) {
+function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offsetX = 0, gapBefore }: SpineProps) {
   return (
     <button
       onClick={onClick}
@@ -69,10 +70,10 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, extra
           : "opacity-100 hover:translate-y-[-8px] hover:brightness-125 active:scale-95"
       )}
       style={{
-        transform: isLoaded ? undefined : `rotate(${tilt}deg) translateY(${offsetY}px)`,
+        transform: isLoaded ? undefined : `translateX(${offsetX}px) rotate(${tilt}deg) translateY(${offsetY}px)`,
         transformOrigin: tilt !== 0 ? "bottom center" : undefined,
         transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-        marginLeft: extraMarginLeft ? `${extraMarginLeft}px` : undefined,
+        ...(gapBefore !== undefined ? { marginLeft: `${gapBefore}px` } : {}),
       }}
       title={entry.title}
     >
@@ -156,40 +157,48 @@ function CartridgeFlat({ entry, isLoaded, onClick, tilt = 0 }: FlatSpineProps) {
    TOP SHELF ARRANGEMENT — per-cartridge personality
    Subtle tilts, vertical offsets, and spacing gaps
    to create a lived-in, organic look.
-   tilt: degrees of rotation (+ = lean right, - = lean left)
-   offsetY: vertical shift in px (+ = down, - = up)
-   extraMarginLeft: additional left margin in px for gaps
+   tilt:      degrees of rotation (+ = lean right, - = lean left)
+   offsetY:   vertical shift in px (+ = down, - = up)
+   offsetX:   visual-only horizontal shift via translateX — does NOT affect neighbors
+   gapBefore: real layout spacing via marginLeft — DOES push/pull neighbors
    ───────────────────────────────────────────── */
-const TOP_SHELF_ARRANGEMENT: Record<string, { tilt: number; offsetY: number; extraMarginLeft: number }> = {
+interface CartridgeArrangement {
+  tilt: number;
+  offsetY: number;
+  offsetX: number;       // translateX — visual only, no layout impact
+  gapBefore?: number;    // marginLeft override — layout impact, pushes neighbors
+}
+
+const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   // === IDENTITY SECTION (positions 1-4) ===
   // 1. Name the Cost — straight, anchoring the left wall, nudged forward
-  MOVE_NAME_THE_COST:          { tilt: 0,    offsetY: 4,  extraMarginLeft: 0 },
+  MOVE_NAME_THE_COST:          { tilt: 0,    offsetY: 4,  offsetX: 0 },
   // 2. Clarity Contract — straight, nudged forward
-  MOVE_CLARITY_CONTRACT:       { tilt: 0,    offsetY: 4,  extraMarginLeft: 0 },
+  MOVE_CLARITY_CONTRACT:       { tilt: 0,    offsetY: 4,  offsetX: 0 },
   // 3. Feedforward — slight tilt, nudged forward, the one #4 leans on
-  MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 4,  extraMarginLeft: 0 },
-  // 4. No With a Clean Yes — leaning left onto #3, pushed back on shelf
-  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -4.5, offsetY: -2,  extraMarginLeft: -4 },
+  MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 4,  offsetX: 0 },
+  // 4. No With a Clean Yes — leaning left onto #3, slid left to nestle against it
+  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -13, offsetY: -2, offsetX: 50 },
 
   // === RELATIONSHIP SECTION (positions 5-13) ===
-  // 5. Repair in 48 Hours — small gap, mostly straight
-  MOVE_REPAIR_48H:             { tilt: 0.2,  offsetY: 0,  extraMarginLeft: 6 },
+  // 5. Repair in 48 Hours — small real gap before it (section break), mostly straight
+  MOVE_REPAIR_48H:             { tilt: 0.2,  offsetY: 0,  offsetX: 30, gapBefore: 6 },
   // 6. Minority Report — straight
-  MOVE_MINORITY_REPORT:        { tilt: 0,    offsetY: 0,  extraMarginLeft: 0 },
+  MOVE_MINORITY_REPORT:        { tilt: 0,    offsetY: 0,  offsetX: 30 },
   // 7. Fridge Rights Audit — straight, nudged forward
-  MOVE_FRIDGE_RIGHTS_AUDIT:    { tilt: 0,    offsetY: 4,  extraMarginLeft: 0 },
-  // 8. The Mirror Move — domino lean right onto #9/#10
-  MOVE_THE_MIRROR:             { tilt: 18,   offsetY: -1,  extraMarginLeft: -5 },
-  // 9. Trust Micro-Deposit — domino lean right onto #10, dramatic
-  MOVE_TRUST_MICRO_DEPOSIT:    { tilt: 14,   offsetY: -3,  extraMarginLeft: -20 },
+  MOVE_FRIDGE_RIGHTS_AUDIT:    { tilt: 0,    offsetY: 4,  offsetX: 30 },
+  // 8. The Mirror Move — domino lean right, slid right to close gap with #9
+  MOVE_THE_MIRROR:             { tilt: 18,   offsetY: -1, offsetX: 30 },
+  // 9. Trust Micro-Deposit — domino lean right, slid right to lean into #10
+  MOVE_TRUST_MICRO_DEPOSIT:    { tilt: 20,   offsetY: -3, offsetX: 30 },
   // 10. 3 Coaching Questions — the backstop, straight and sturdy
-  MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  extraMarginLeft: 36 },
+  MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  offsetX: 100 },
   // 11. SBI Feedback — straight
-  MOVE_FEEDBACK_SBI:           { tilt: 0.3,  offsetY: 0,  extraMarginLeft: 0 },
+  MOVE_FEEDBACK_SBI:           { tilt: 0.3,  offsetY: 0,  offsetX: 100 },
   // 12. Accountability With Care — slight lean
-  MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -1.0, offsetY: 1, extraMarginLeft: 0 },
+  MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -1.0, offsetY: 1, offsetX: 100 },
   // 13. Recover After You Missed It — end of row, slight lean right (resting against nothing)
-  MOVE_RECOVER_AFTER_MISS:     { tilt: 1.2,  offsetY: 0,  extraMarginLeft: 0 },
+  MOVE_RECOVER_AFTER_MISS:     { tilt: 1.2,  offsetY: 0,  offsetX: 100 },
 };
 
 /* ─────────────────────────────────────────────
@@ -527,7 +536,7 @@ export default function CodexShelf({
         <div className="relative pl-0 pr-4 md:pr-5 lg:pr-6 pt-0">
           <div
             ref={scrollRefTop}
-            className="flex items-end gap-0 overflow-x-auto pb-0 pt-0 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth h-[225px] md:h-[265px] lg:h-[305px]"
+            className="flex items-end gap-0 overflow-visible pb-0 pt-0 h-[225px] md:h-[265px] lg:h-[305px]"
           >
             {topVisible.map((section) => {
               const sectionEntries = grouped[section.key];
@@ -535,7 +544,7 @@ export default function CodexShelf({
               return (
                 <div key={section.key} className="flex items-end gap-0">
                   {sectionEntries.map((entry) => {
-                    const arrangement = TOP_SHELF_ARRANGEMENT[entry.id] || { tilt: 0, offsetY: 0, extraMarginLeft: 0 };
+                    const arrangement = TOP_SHELF_ARRANGEMENT[entry.id] || { tilt: 0, offsetY: 0, offsetX: 0 };
                     return (
                       <CartridgeSpine
                         key={entry.id}
@@ -544,7 +553,8 @@ export default function CodexShelf({
                         onClick={() => onLoad(entry)}
                         tilt={arrangement.tilt}
                         offsetY={arrangement.offsetY}
-                        extraMarginLeft={arrangement.extraMarginLeft}
+                        offsetX={arrangement.offsetX}
+                        gapBefore={arrangement.gapBefore}
                       />
                     );
                   })}
