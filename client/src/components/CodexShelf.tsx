@@ -51,9 +51,10 @@ interface SpineProps {
   offsetY?: number;
   offsetX?: number;      // visual-only horizontal shift (translateX) — does NOT affect neighbors
   gapBefore?: number;    // real layout gap (marginLeft override) — DOES push neighbors
+  useCenter?: boolean;   // use center center transform origin (for flat/laid cartridges)
 }
 
-function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offsetX = 0, gapBefore }: SpineProps) {
+function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offsetX = 0, gapBefore, useCenter = false }: SpineProps) {
   return (
     <button
       onClick={onClick}
@@ -70,8 +71,8 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
           : "opacity-100 hover:translate-y-[-8px] hover:brightness-125 active:scale-95"
       )}
       style={{
-        transform: isLoaded ? undefined : `rotate(${tilt}deg) translateY(${offsetY}px)`,
-        transformOrigin: tilt !== 0 ? "bottom center" : undefined,
+        transform: isLoaded ? undefined : `translateY(${offsetY}px) rotate(${tilt}deg)`,
+        transformOrigin: tilt !== 0 ? (useCenter ? "center center" : "bottom center") : undefined,
         transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
         left: offsetX ? `${offsetX}px` : undefined,
         ...(gapBefore !== undefined ? { marginLeft: `${gapBefore}px` } : {}),
@@ -168,6 +169,7 @@ interface CartridgeArrangement {
   offsetY: number;
   offsetX: number;       // translateX — visual only, no layout impact
   gapBefore?: number;    // marginLeft override — layout impact, pushes neighbors
+  useCenter?: boolean;   // use center center transform origin (for flat/laid cartridges)
 }
 
 const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
@@ -200,6 +202,29 @@ const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -1.0, offsetY: 1, offsetX: 100 },
   // 13. Recover After You Missed It — end of row, slight lean right (resting against nothing)
   MOVE_RECOVER_AFTER_MISS:     { tilt: 1.2,  offsetY: 0,  offsetX: 100 },
+};
+
+/* ─────────────────────────────────────────────
+   BOTTOM SHELF ARRANGEMENT — per-cartridge personality
+   Same system as top shelf: tilt, offsetX, offsetY, gapBefore
+   ───────────────────────────────────────────── */
+const BOTTOM_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
+  // === VISION SECTION ===
+  MOVE_DECISION_RIGHTS_MAP:    { tilt: -90, offsetY: 63, offsetX: 78, useCenter: true },
+  MOVE_STOP_LIST:              { tilt: 0, offsetY: 0, offsetX: 200 },
+  MOVE_DISAGREE_AND_COMMIT:    { tilt: 0, offsetY: 0, offsetX: 200 },
+  MOVE_THE_ONE_THING:          { tilt: 0, offsetY: 0, offsetX: 200 },
+  MOVE_NORTH_STAR_SENTENCE:    { tilt: 0, offsetY: 0, offsetX: 200 },
+  MOVE_KILL_THE_GHOST_GOAL:    { tilt: 0, offsetY: 0, offsetX: 200 },
+  MOVE_WIN_CONDITION:          { tilt: 0, offsetY: 0, offsetX: 200 },
+  MOVE_TRADEOFF_TALK:          { tilt: 0, offsetY: 0, offsetX: 200 },
+  // === CULTURE SECTION ===
+  MOVE_TRUTH_WEATHER:          { tilt: 0, offsetY: 0, offsetX: 200 },
+  MOVE_MEETING_REWRITE:        { tilt: 0, offsetY: 0, offsetX: 200 },
+  MOVE_PERMISSION_SLIP:        { tilt: 0, offsetY: 0, offsetX: 200 },
+  MOVE_SHADOW_NORMS:           { tilt: 0, offsetY: 0, offsetX: 200 },
+  MOVE_ENERGY_LEAK_CHECK:      { tilt: 0, offsetY: 0, offsetX: 200 },
+  MOVE_SAFE_TO_SAY:            { tilt: 0, offsetY: 0, offsetX: 200 },
 };
 
 /* ─────────────────────────────────────────────
@@ -556,6 +581,7 @@ export default function CodexShelf({
                         offsetY={arrangement.offsetY}
                         offsetX={arrangement.offsetX}
                         gapBefore={arrangement.gapBefore}
+                        useCenter={arrangement.useCenter}
                       />
                     );
                   })}
@@ -572,23 +598,29 @@ export default function CodexShelf({
         <div className="relative pl-0 pr-4 md:pr-5 lg:pr-6 pb-0">
           <div
             ref={scrollRefBottom}
-            className="flex items-end gap-0 overflow-x-auto pb-0 pt-0 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth h-[220px] md:h-[260px] lg:h-[300px]"
+            className="flex items-end gap-0 overflow-visible pb-0 pt-0 h-[220px] md:h-[260px] lg:h-[300px]"
           >
             {bottomVisible.map((section) => {
               const sectionEntries = grouped[section.key];
               if (sectionEntries.length === 0) return null;
               return (
                 <div key={section.key} className="flex items-end gap-0">
-                  {sectionEntries.map((entry) => (
-                    <CartridgeSpine
-                      key={entry.id}
-                      entry={entry}
-                      isLoaded={loadedEntryId === entry.id}
-                      onClick={() => onLoad(entry)}
-                      tilt={0}
-                      offsetY={0}
-                    />
-                  ))}
+                  {sectionEntries.map((entry) => {
+                    const arrangement = BOTTOM_SHELF_ARRANGEMENT[entry.id] || { tilt: 0, offsetY: 0, offsetX: 0 };
+                    return (
+                      <CartridgeSpine
+                        key={entry.id}
+                        entry={entry}
+                        isLoaded={loadedEntryId === entry.id}
+                        onClick={() => onLoad(entry)}
+                        tilt={arrangement.tilt}
+                        offsetY={arrangement.offsetY}
+                        offsetX={arrangement.offsetX}
+                        gapBefore={arrangement.gapBefore}
+                        useCenter={arrangement.useCenter}
+                      />
+                    );
+                  })}
                 </div>
               );
             })}
