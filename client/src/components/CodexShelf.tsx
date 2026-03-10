@@ -211,8 +211,8 @@ const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
 const BOTTOM_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   // === VISION SECTION ===
   MOVE_DECISION_RIGHTS_MAP:    { tilt: -90, offsetY: 63, offsetX: 78, useCenter: true },
-  MOVE_STOP_LIST:              { tilt: 0, offsetY: 0, offsetX: 200 },
-  MOVE_DISAGREE_AND_COMMIT:    { tilt: 0, offsetY: 0, offsetX: 200 },
+  MOVE_STOP_LIST:              { tilt: -90, offsetY: 29, offsetX: 49, useCenter: true },
+  MOVE_DISAGREE_AND_COMMIT:    { tilt: -90, offsetY: -7, offsetX: 52, useCenter: true },
   MOVE_THE_ONE_THING:          { tilt: 0, offsetY: 0, offsetX: 200 },
   MOVE_NORTH_STAR_SENTENCE:    { tilt: 0, offsetY: 0, offsetX: 200 },
   MOVE_KILL_THE_GHOST_GOAL:    { tilt: 0, offsetY: 0, offsetX: 200 },
