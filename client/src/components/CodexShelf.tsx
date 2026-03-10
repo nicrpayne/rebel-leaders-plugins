@@ -481,10 +481,10 @@ export default function CodexShelf({
         />
 
         {/* ── TOP SHELF: Identity + Relationship cartridges (always rendered) ── */}
-        <div className="relative pl-1 md:pl-2 lg:pl-2 pr-4 md:pr-5 lg:pr-6 pt-2">
+        <div className="relative pl-0 pr-4 md:pr-5 lg:pr-6 pt-2">
           <div
             ref={scrollRefTop}
-            className="flex items-end gap-0 overflow-x-auto pb-0 pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth h-[220px] md:h-[260px] lg:h-[300px]"
+            className="flex items-end gap-0 overflow-x-auto pb-[22px] pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth h-[220px] md:h-[260px] lg:h-[300px]"
           >
             {topVisible.map((section) => {
               const sectionEntries = grouped[section.key];
@@ -511,10 +511,10 @@ export default function CodexShelf({
         {/* <ShelfRail /> */}
 
         {/* ── BOTTOM SHELF: Vision + Culture cartridges (always rendered) ── */}
-        <div className="relative pl-1 md:pl-2 lg:pl-2 pr-4 md:pr-5 lg:pr-6 pb-2">
+        <div className="relative pl-0 pr-4 md:pr-5 lg:pr-6 pb-2">
           <div
             ref={scrollRefBottom}
-            className="flex items-end gap-0 overflow-x-auto pb-0 pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth h-[220px] md:h-[260px] lg:h-[300px]"
+            className="flex items-end gap-0 overflow-x-auto pb-[22px] pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth h-[220px] md:h-[260px] lg:h-[300px]"
           >
             {bottomVisible.map((section) => {
               const sectionEntries = grouped[section.key];
