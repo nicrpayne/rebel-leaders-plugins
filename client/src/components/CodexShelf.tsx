@@ -484,7 +484,7 @@ export default function CodexShelf({
         <div className="relative pl-0 pr-4 md:pr-5 lg:pr-6 pt-0">
           <div
             ref={scrollRefTop}
-            className="flex items-end gap-0 overflow-x-auto pb-0 pt-0 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth h-[275px] md:h-[315px] lg:h-[355px]"
+            className="flex items-end gap-0 overflow-x-auto pb-0 pt-0 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth h-[280px] md:h-[320px] lg:h-[360px]"
           >
             {topVisible.map((section) => {
               const sectionEntries = grouped[section.key];
@@ -514,7 +514,7 @@ export default function CodexShelf({
         <div className="relative pl-0 pr-4 md:pr-5 lg:pr-6 pb-0">
           <div
             ref={scrollRefBottom}
-            className="flex items-end gap-0 overflow-x-auto pb-0 pt-0 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth h-[275px] md:h-[315px] lg:h-[355px]"
+            className="flex items-end gap-0 overflow-x-auto pb-0 pt-0 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth h-[220px] md:h-[260px] lg:h-[300px]"
           >
             {bottomVisible.map((section) => {
               const sectionEntries = grouped[section.key];
