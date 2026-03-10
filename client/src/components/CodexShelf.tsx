@@ -183,7 +183,7 @@ const TOP_SHELF_ARRANGEMENT: Record<string, { tilt: number; offsetY: number; ext
   // 9. Trust Micro-Deposit — domino lean right onto #10, dramatic
   MOVE_TRUST_MICRO_DEPOSIT:    { tilt: 10,   offsetY: -3,  extraMarginLeft: -20 },
   // 10. 3 Coaching Questions — the backstop, straight and sturdy
-  MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  extraMarginLeft: 18 },
+  MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  extraMarginLeft: 36 },
   // 11. SBI Feedback — straight
   MOVE_FEEDBACK_SBI:           { tilt: 0.3,  offsetY: 0,  extraMarginLeft: 0 },
   // 12. Accountability With Care — slight lean
