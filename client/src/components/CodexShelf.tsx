@@ -70,9 +70,10 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
           : "opacity-100 hover:translate-y-[-8px] hover:brightness-125 active:scale-95"
       )}
       style={{
-        transform: isLoaded ? undefined : `translateX(${offsetX}px) rotate(${tilt}deg) translateY(${offsetY}px)`,
+        transform: isLoaded ? undefined : `rotate(${tilt}deg) translateY(${offsetY}px)`,
         transformOrigin: tilt !== 0 ? "bottom center" : undefined,
         transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        left: offsetX ? `${offsetX}px` : undefined,
         ...(gapBefore !== undefined ? { marginLeft: `${gapBefore}px` } : {}),
       }}
       title={entry.title}
