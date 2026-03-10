@@ -168,16 +168,16 @@ const TOP_SHELF_ARRANGEMENT: Record<string, { tilt: number; offsetY: number; ext
   MOVE_CLARITY_CONTRACT:       { tilt: 0,    offsetY: 4,  extraMarginLeft: 0 },
   // 3. Feedforward — slight tilt, nudged forward, the one #4 leans on
   MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 4,  extraMarginLeft: 0 },
-  // 4. No With a Clean Yes — leaning left onto #3
-  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -4.5, offsetY: 3,  extraMarginLeft: -4 },
+  // 4. No With a Clean Yes — leaning left onto #3, pushed back on shelf
+  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -4.5, offsetY: -2,  extraMarginLeft: -4 },
 
   // === RELATIONSHIP SECTION (positions 5-13) ===
   // 5. Repair in 48 Hours — small gap, mostly straight
   MOVE_REPAIR_48H:             { tilt: 0.2,  offsetY: 0,  extraMarginLeft: 6 },
   // 6. Minority Report — straight
   MOVE_MINORITY_REPORT:        { tilt: 0,    offsetY: 0,  extraMarginLeft: 0 },
-  // 7. Fridge Rights Audit — straight
-  MOVE_FRIDGE_RIGHTS_AUDIT:    { tilt: 0,    offsetY: 0,  extraMarginLeft: 0 },
+  // 7. Fridge Rights Audit — straight, nudged forward
+  MOVE_FRIDGE_RIGHTS_AUDIT:    { tilt: 0,    offsetY: 4,  extraMarginLeft: 0 },
   // 8. The Mirror Move — slight lean right
   MOVE_THE_MIRROR:             { tilt: 1.5,  offsetY: 1,  extraMarginLeft: 0 },
   // 9. Trust Micro-Deposit — leans left onto #8
