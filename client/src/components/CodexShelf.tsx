@@ -60,7 +60,7 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0 }: Spi
         "relative flex-shrink-0 group transition-all duration-300 ease-out cursor-pointer",
         "w-[63px] md:w-[74px] lg:w-[80px] h-[205px] md:h-[238px] lg:h-[272px]",
         // Sits on the shelf surface, behind the metal guard rail
-        "mb-[18px] md:mb-[22px] lg:mb-[26px]",
+        "mb-[4px] md:mb-[5px] lg:mb-[6px]",
         // Negative horizontal margin to pack spines tightly
         "-mx-[18px] md:-mx-[20px] lg:-mx-[22px]",
         isLoaded
