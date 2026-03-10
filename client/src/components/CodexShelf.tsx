@@ -505,13 +505,6 @@ export default function CodexShelf({
               );
             })}
           </div>
-          {/* Metal guard rail overlay — sits in front of cartridges */}
-          <div
-            className="absolute bottom-0 left-0 right-0 h-[40px] md:h-[48px] lg:h-[54px] z-[5] pointer-events-none"
-            style={{
-              background: "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 100%)",
-            }}
-          />
         </div>
 
         {/* ── SHELF RAIL between top and bottom ── */}
@@ -542,16 +535,6 @@ export default function CodexShelf({
               );
             })}
           </div>
-          {/* Metal guard rail overlay — bottom shelf */}
-          <div
-            className="absolute bottom-0 left-0 w-[75%] h-[28px] md:h-[34px] lg:h-[40px] z-[5] pointer-events-none"
-            style={{
-              backgroundImage: "url('/assets/shelf_guard_rail.png')",
-              backgroundSize: '100% 100%',
-              backgroundRepeat: 'no-repeat',
-              filter: 'brightness(0.85)',
-            }}
-          />
         </div>
 
         {/* ── BOTTOM RAIL (closes the cabinet) ── */}
