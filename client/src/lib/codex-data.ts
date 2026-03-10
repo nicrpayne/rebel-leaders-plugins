@@ -702,5 +702,413 @@ export const CODEX_ENTRIES: CodexEntry[] = [
     ],
     why_it_works: "Owning a miss builds more trust than hiding it. It shows you value the standard more than your ego.",
     context_tags: ["integrity", "resilience", "trust"]
+  },
+  {
+    id: "MOVE_NORTH_STAR_SENTENCE",
+    pack: "Core Protocols v1",
+    title: "North Star Sentence",
+    category: "Vision",
+    flywheel_node: ["Vision"],
+    leak_types: ["diffuse-focus", "blurred-priorities", "noise"],
+    dominant_forces: ["ambiguity", "noise", "speed"],
+    time_commitment: "10–20 min",
+    briefing: {
+      objective: "Create a shared sentence of success so the team can align effort without constant retranslation.",
+      use_when: [
+        "People describe the goal in different words.",
+        "The team is busy but not obviously moving toward the same outcome.",
+        "A project has energy but lacks a crisp center."
+      ],
+      avoid: [
+        "Writing a slogan instead of a real aim.",
+        "Trying to include every stakeholder preference in one sentence."
+      ],
+      outcome: "Gives the team a portable definition of success that reduces drift and improves day-to-day alignment."
+    },
+    difficulty: 2,
+    keys_primary: ["Leading"],
+    keys_secondary: ["Technical Proficiency"],
+    keys_notes: "Creates a shared sentence of success so the team can align effort without constant retranslation.",
+    script: "\u201CBefore we keep moving, I want us to get painfully clear. If this goes well, what is the one sentence we want to be true at the end? My draft is: ______. What needs to change so we can all stand behind it?\u201D",
+    protocol: [
+      "Draft a first sentence before the meeting (do not start from a blank page).",
+      "Read it out loud and ask for edits toward clarity, not inclusivity theater.",
+      "Pressure-test it with one question: \u201CWould this help us choose what to do this week?\u201D",
+      "Finalize one sentence and remove extra qualifiers.",
+      "Repeat it in planning, updates, and decisions for the next 2 weeks."
+    ],
+    why_it_works: "Teams often drift because the goal lives as vibes, not language. A single sentence creates shared meaning, lowers interpretation error, and gives decisions a reference point.",
+    proof: {
+      research: [
+        "Goal-setting research consistently shows that specific, shared goals improve effort, persistence, and performance compared with vague aspirations.",
+        "Teams coordinate better when they can anchor choices to a common mental model. Clear language reduces interpretation error and rework."
+      ],
+      books: [
+        { title: "Measure What Matters", author: "John Doerr" },
+        { title: "The 4 Disciplines of Execution", author: "Chris McChesney, Sean Covey, and Jim Huling" }
+      ],
+      field_notes: [
+        "Ancient wisdom named the power of speech to make reality social; modern teams still move at the speed of shared language.",
+        "A North Star sentence is not branding. It is a compression tool for collective attention."
+      ]
+    },
+    context_tags: ["planning", "clarity", "focus"]
+  },
+  {
+    id: "MOVE_KILL_THE_GHOST_GOAL",
+    pack: "Core Protocols v1",
+    title: "Kill the Ghost Goal",
+    category: "Vision",
+    flywheel_node: ["Vision"],
+    leak_types: ["drift", "rework", "blurred-priorities"],
+    dominant_forces: ["history", "avoidance", "ambiguity"],
+    time_commitment: "15–25 min",
+    briefing: {
+      objective: "Retire outdated goals so the team stops serving a mission that no longer deserves its energy.",
+      use_when: [
+        "People keep optimizing for an old target after the context changed.",
+        "You hear conflicting definitions of what still matters.",
+        "A previous priority is still haunting decisions, metrics, or meetings."
+      ],
+      avoid: [
+        "Quietly changing direction without saying what is ending.",
+        "Shaming people for following yesterday's instructions."
+      ],
+      outcome: "Releases hidden drag by replacing unspoken legacy priorities with present-tense clarity."
+    },
+    difficulty: 3,
+    keys_primary: ["Leading"],
+    keys_secondary: ["Emotional"],
+    keys_notes: "Retires outdated goals so the team stops serving a mission that no longer deserves its energy.",
+    script: "\u201CI think we have a ghost goal in the system \u2014 something that used to matter, and people are still serving it because we never buried it out loud. The old goal was ______. It made sense then. It is not the goal now. What do we need to stop doing so our behavior matches reality?\u201D",
+    protocol: [
+      "Name the old goal explicitly and give it context without mocking it.",
+      "State what changed: market, strategy, timing, ownership, or learning.",
+      "List 2\u20133 behaviors or rituals still serving the ghost goal.",
+      "Retire those behaviors publicly and assign replacements.",
+      "Repeat the new priority in the next planning cycle so the burial sticks."
+    ],
+    why_it_works: "Teams rarely waste effort because they are lazy; they waste effort because old priorities remain emotionally or politically alive. Naming and retiring the ghost goal clears legacy drag without blaming the people who carried it.",
+    proof: {
+      research: [
+        "Strategic drift often persists because legacy goals remain embedded in habits, incentives, and meeting structures long after leadership has moved on.",
+        "Sensemaking research suggests that teams need explicit narrative updates when context changes; otherwise they continue acting from stale assumptions."
+      ],
+      books: [
+        { title: "Leading Change", author: "John P. Kotter" },
+        { title: "Good Strategy/Bad Strategy", author: "Richard Rumelt" }
+      ],
+      field_notes: [
+        "Humans keep serving what was once sacred until someone marks the season change.",
+        "Many execution problems are not failures of effort but failures of burial."
+      ]
+    },
+    context_tags: ["planning", "clarity", "execution"]
+  },
+  {
+    id: "MOVE_WIN_CONDITION",
+    pack: "Core Protocols v1",
+    title: "Win Condition",
+    category: "Vision",
+    flywheel_node: ["Vision"],
+    leak_types: ["low-leverage-work", "diffuse-focus", "misunderstanding"],
+    dominant_forces: ["ambiguity", "busyness", "noise"],
+    time_commitment: "10–15 min",
+    briefing: {
+      objective: "Define the concrete condition of success so effort can be judged against what actually matters.",
+      use_when: [
+        "The team is working hard but 'done' feels subjective.",
+        "A project update sounds active but not directional.",
+        "People disagree about what success would look like."
+      ],
+      avoid: [
+        "Confusing activity with evidence.",
+        "Defining success in a way nobody can observe."
+      ],
+      outcome: "Turns motion into measurable direction and helps the team distinguish progress from performance theater."
+    },
+    difficulty: 2,
+    keys_primary: ["Leading"],
+    keys_secondary: ["Technical Proficiency"],
+    keys_notes: "Defines the concrete condition of success so effort can be judged against what actually matters.",
+    script: "\u201CLet's stop talking about effort for a second. What would have to be true for us to call this a real win \u2014 not 'busy,' not 'in progress,' but a win? I want one observable condition: ______.\u201D",
+    protocol: [
+      "Ask for one observable condition that would prove success.",
+      "Strip out vague words like better, aligned, improved, or underway.",
+      "Test it with: \u201CWould an outsider know if we achieved this?\u201D",
+      "Write the win condition in the work tracker or project brief.",
+      "Use it to judge scope changes and weekly progress."
+    ],
+    why_it_works: "People over-index on visible effort when the definition of success is fuzzy. A win condition shifts attention from activity to evidence and improves prioritization, accountability, and learning.",
+    proof: {
+      research: [
+        "Teams perform better when goals are specific and outcomes can be observed. Clear success criteria improve attention, feedback loops, and execution quality.",
+        "Implementation quality improves when people know what evidence to look for rather than merely what tasks to complete."
+      ],
+      books: [
+        { title: "Measure What Matters", author: "John Doerr" },
+        { title: "The Checklist Manifesto", author: "Atul Gawande" }
+      ],
+      field_notes: [
+        "A win condition is the difference between a mission and a mood.",
+        "Clarity becomes compassionate when people can tell whether they are succeeding without reading the leader's face."
+      ]
+    },
+    context_tags: ["planning", "execution", "clarity"]
+  },
+  {
+    id: "MOVE_TRADEOFF_TALK",
+    pack: "Core Protocols v1",
+    title: "Tradeoff Talk",
+    category: "Alignment",
+    flywheel_node: ["Vision"],
+    leak_types: ["overcommitment", "blurred-priorities", "burnout"],
+    dominant_forces: ["scarcity", "approval", "avoidance"],
+    time_commitment: "10–20 min",
+    briefing: {
+      objective: "Force honest choice-making by naming what this priority will cost and what it will displace.",
+      use_when: [
+        "A new priority is being added as if it has no cost.",
+        "People say yes in meetings and panic afterward.",
+        "The team keeps absorbing scope without removing anything."
+      ],
+      avoid: [
+        "Pretending capacity is elastic.",
+        "Letting the conversation stay at the level of aspiration."
+      ],
+      outcome: "Restores integrity by linking every yes to a real no and making capacity visible."
+    },
+    difficulty: 3,
+    keys_primary: ["Leading"],
+    keys_secondary: ["Emotional"],
+    keys_notes: "Forces honest choice-making by naming what this priority will cost and what it will displace.",
+    script: "\u201CBefore we say yes, I want the tradeoff out loud. If we choose ______, what are we not choosing? What gets slower, smaller, or later? I don't want a fantasy yes \u2014 I want a real one.\u201D",
+    protocol: [
+      "Name the proposed yes in one sentence.",
+      "Ask: \u201CWhat does this push, pause, shrink, or kill?\u201D",
+      "Write the tradeoffs where everyone can see them.",
+      "Decide only after the cost is spoken in plain language.",
+      "Message the downstream changes to affected people within 24 hours."
+    ],
+    why_it_works: "Teams lose trust when leaders make costless promises in a costly world. Tradeoff Talk reconnects strategy to capacity and helps people experience clarity as honesty, not control.",
+    proof: {
+      research: [
+        "Research on workload and role stress shows that overload and conflicting demands increase burnout, errors, and disengagement when priorities are not pruned.",
+        "Strategic focus improves when leaders make tradeoffs explicit. Good strategy is often defined more by what is excluded than by what is admired."
+      ],
+      books: [
+        { title: "Good Strategy/Bad Strategy", author: "Richard Rumelt" },
+        { title: "Essentialism", author: "Greg McKeown" }
+      ],
+      field_notes: [
+        "Every yes is a kingdom decision: it reveals what rules and what serves.",
+        "Tradeoffs feel harsh only in cultures addicted to imaginary abundance."
+      ]
+    },
+    context_tags: ["planning", "prioritization", "burnout"]
+  },
+  {
+    id: "MOVE_PERMISSION_SLIP",
+    pack: "Core Protocols v1",
+    title: "Permission Slip",
+    category: "Culture",
+    flywheel_node: ["Culture"],
+    leak_types: ["silence", "low-agency", "performative-harmony"],
+    dominant_forces: ["fear", "status", "approval"],
+    time_commitment: "5–10 min",
+    briefing: {
+      objective: "Lower hesitation by explicitly authorizing the behavior the culture claims to want.",
+      use_when: [
+        "People are waiting for invisible approval before acting honestly or proactively.",
+        "The stated value is clear but behavior stays cautious.",
+        "A team is polite, compliant, and slower than it needs to be."
+      ],
+      avoid: [
+        "Giving permission without protection.",
+        "Saying 'be candid' while rewarding image management."
+      ],
+      outcome: "Converts vague cultural aspiration into explicit social permission, which increases agency and reduces performative caution."
+    },
+    difficulty: 2,
+    keys_primary: ["Emotional"],
+    keys_secondary: ["Leading"],
+    keys_notes: "Lowers hesitation by explicitly authorizing the behavior the culture claims to want.",
+    script: "\u201CI'm going to make this easier to do, not harder. You have permission to ______ here. If you see a risk, say it. If you need clarity, ask for it. If something feels off, name it. I would rather have clean truth than polished hesitation.\u201D",
+    protocol: [
+      "Name the exact behavior you are authorizing.",
+      "Tie it to a real scenario people face this week.",
+      "State how you will respond when someone uses that permission.",
+      "Invite one small use of it immediately in the room.",
+      "Reinforce it publicly the first time someone actually does it."
+    ],
+    why_it_works: "Many teams do not lack values; they lack usable permission. Explicit authorization lowers social uncertainty and helps people act before safety is fully felt.",
+    proof: {
+      research: [
+        "Psychological safety increases speaking-up behavior when leaders signal that candor is welcome and will not be punished.",
+        "Behavior change strengthens when desired actions are made specific, visible, and socially reinforced rather than merely praised in principle."
+      ],
+      books: [
+        { title: "The Fearless Organization", author: "Amy C. Edmondson" },
+        { title: "Turn the Ship Around!", author: "L. David Marquet" }
+      ],
+      field_notes: [
+        "Cultures often preach courage while withholding permission.",
+        "A permission slip is not softness; it is a release of trapped agency."
+      ]
+    },
+    context_tags: ["culture", "safety", "communication"]
+  },
+  {
+    id: "MOVE_SHADOW_NORMS",
+    pack: "Core Protocols v1",
+    title: "Shadow Norms",
+    category: "Culture",
+    flywheel_node: ["Culture"],
+    leak_types: ["performative-harmony", "silence", "drift"],
+    dominant_forces: ["status", "fear", "default-behavior"],
+    time_commitment: "15–25 min",
+    briefing: {
+      objective: "Surface the unwritten rules actually governing behavior so the team can choose culture on purpose.",
+      use_when: [
+        "The official values sound good but daily behavior tells a different story.",
+        "People know how to survive here but not how to say it out loud.",
+        "A team keeps repeating the same pattern without owning the rule underneath it."
+      ],
+      avoid: [
+        "Using the exercise to shame the team.",
+        "Stopping at naming without changing one norm in practice."
+      ],
+      outcome: "Exposes the hidden operating system so culture becomes discussable, not mystical."
+    },
+    difficulty: 3,
+    keys_primary: ["Leading"],
+    keys_secondary: ["Emotional"],
+    keys_notes: "Surfaces the unwritten rules actually governing behavior so the team can choose culture on purpose.",
+    script: "\u201CLet's name the shadow norms \u2014 the unwritten rules people actually have to follow to survive here. Finish the sentence: 'Around here, you get rewarded for ______ and you get punished for ______.' I want the real answers, not the brochure.\u201D",
+    protocol: [
+      "Ask people to complete the sentence privately first.",
+      "Cluster the responses into repeated unwritten rules.",
+      "Circle one shadow norm causing the most distortion.",
+      "Name one visible behavior that would contradict it this week.",
+      "Have the leader model that contradiction publicly."
+    ],
+    why_it_works: "Culture is shaped less by stated values than by rewarded behaviors and tolerated violations. Naming shadow norms turns an invisible social field into something leaders can interrupt and redesign.",
+    proof: {
+      research: [
+        "Organizational culture research shows that informal norms and incentive patterns often drive behavior more strongly than official values statements.",
+        "People adapt quickly to perceived reward and punishment signals, even when those signals contradict stated expectations."
+      ],
+      books: [
+        { title: "Diagnosing and Changing Organizational Culture", author: "Kim S. Cameron and Robert E. Quinn" },
+        { title: "The Culture Code", author: "Daniel Coyle" }
+      ],
+      field_notes: [
+        "Every culture has a catechism and a shadow catechism. The second one usually wins.",
+        "When people finally name the real rules, shame often drops and agency begins."
+      ]
+    },
+    context_tags: ["culture", "audit", "safety"]
+  },
+  {
+    id: "MOVE_ENERGY_LEAK_CHECK",
+    pack: "Core Protocols v1",
+    title: "Energy Leak Check",
+    category: "Culture",
+    flywheel_node: ["Culture"],
+    leak_types: ["fatigue", "burnout", "noise"],
+    dominant_forces: ["busyness", "default-behavior", "avoidance"],
+    time_commitment: "10–20 min",
+    briefing: {
+      objective: "Identify the recurring drains that quietly shrink people so the team can recover usable energy.",
+      use_when: [
+        "People leave meetings smaller, flatter, or more scattered than they entered.",
+        "Morale is low but the team can't name one obvious cause.",
+        "Output is slowing because energy is being bled off in too many small ways."
+      ],
+      avoid: [
+        "Treating exhaustion as a personal weakness problem.",
+        "Listing leaks without removing at least one."
+      ],
+      outcome: "Turns vague depletion into specific, fixable drains and helps the team protect energy as a leadership resource."
+    },
+    difficulty: 2,
+    keys_primary: ["Emotional"],
+    keys_secondary: ["Leading"],
+    keys_notes: "Identifies the recurring drains that quietly shrink people so the team can recover usable energy.",
+    script: "\u201CI don't want to normalize drain. What are the top three energy leaks on this team right now \u2014 the things that leave people smaller than they came in? Let's name them cleanly, then kill one.\u201D",
+    protocol: [
+      "Ask each person to list 1\u20133 recurring drains.",
+      "Group the answers into themes: meeting, tool, role, people, or process.",
+      "Vote on the leak costing the most energy for the least return.",
+      "Remove, reduce, or redesign one leak within 7 days.",
+      "Check back in 2 weeks: \u201CDid energy come back?\u201D"
+    ],
+    why_it_works: "Burnout is often cumulative, not dramatic. Naming energy leaks helps teams move from vague exhaustion to targeted redesign, which increases both morale and execution capacity.",
+    proof: {
+      research: [
+        "Burnout research points to workload, control, fairness, and value incongruence as recurring drivers of depletion in teams and organizations.",
+        "Small friction costs compound. Repeated interruptions, unclear expectations, and low-value meetings steadily erode cognitive bandwidth and motivation."
+      ],
+      books: [
+        { title: "Burnout", author: "Emily Nagoski and Amelia Nagoski" },
+        { title: "Dying for a Paycheck", author: "Jeffrey Pfeffer" }
+      ],
+      field_notes: [
+        "People usually do not burn out from one fire; they leak out through a hundred tiny cracks.",
+        "Energy is not a soft metric. It is the carrying capacity of leadership."
+      ]
+    },
+    context_tags: ["burnout", "culture", "efficiency"]
+  },
+  {
+    id: "MOVE_SAFE_TO_SAY",
+    pack: "Core Protocols v1",
+    title: "Safe to Say",
+    category: "Culture",
+    flywheel_node: ["Culture"],
+    leak_types: ["silence", "guardedness", "backchanneling"],
+    dominant_forces: ["fear", "status", "conflict-avoidance"],
+    time_commitment: "8–15 min",
+    briefing: {
+      objective: "Create a repeatable sentence frame that lowers the social risk of speaking honestly in real time.",
+      use_when: [
+        "People save the real conversation for after the meeting.",
+        "A team needs honesty but does not yet have the nerve for free-form candor.",
+        "You want a reusable way to interrupt politeness without creating chaos."
+      ],
+      avoid: [
+        "Using the frame as a weapon.",
+        "Inviting honesty and then punishing the first person who uses it."
+      ],
+      outcome: "Gives the team a shared linguistic handle for candor, making honesty easier to access under pressure."
+    },
+    difficulty: 2,
+    keys_primary: ["Emotional"],
+    keys_secondary: ["Leading"],
+    keys_notes: "Creates a repeatable sentence frame that lowers the social risk of speaking honestly in real time.",
+    script: "\u201CI want to give us a phrase we can use when something needs to be said without making it dramatic. Try this: 'I want to say something that might be uncomfortable, but I think it will help us.' If you use that sentence here, we stop and listen.\u201D",
+    protocol: [
+      "Introduce one sentence frame for respectful candor.",
+      "Explain what happens when someone uses it: pause, listen, no punishment.",
+      "Model it yourself once with a real example.",
+      "Invite the team to use the frame in the next live discussion.",
+      "Protect the first few uses so the phrase gains trust."
+    ],
+    why_it_works: "People often need language before they need bravery. A shared frame reduces the cognitive and social cost of initiating candor, especially in cultures trained toward politeness and deference.",
+    proof: {
+      research: [
+        "Speaking-up behavior increases when teams have clear conversational norms and predictable leader responses to dissent or discomfort.",
+        "Conversation design matters: scripts and sentence stems reduce initiation friction and help people engage in difficult dialogue more effectively."
+      ],
+      books: [
+        { title: "Crucial Conversations", author: "Kerry Patterson, Joseph Grenny, Ron McMillan, and Al Switzler" },
+        { title: "The Fearless Organization", author: "Amy C. Edmondson" }
+      ],
+      field_notes: [
+        "Truth Weather names the climate; Safe to Say gives people a door handle.",
+        "Sometimes the holiest thing a leader can give a room is a sentence people are allowed to stand inside."
+      ]
+    },
+    context_tags: ["communication", "safety", "meeting"]
   }
 ];
