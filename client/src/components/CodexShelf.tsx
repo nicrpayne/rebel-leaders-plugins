@@ -60,7 +60,7 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0 }: Spi
         "relative flex-shrink-0 group transition-all duration-300 ease-out cursor-pointer",
         "w-[63px] md:w-[74px] lg:w-[80px] h-[205px] md:h-[238px] lg:h-[272px]",
         // Sits on the shelf surface, behind the metal guard rail
-        "mb-[4px] md:mb-[5px] lg:mb-[6px]",
+        "mb-0",
         // Negative horizontal margin to pack spines tightly
         "-mx-[18px] md:-mx-[20px] lg:-mx-[22px]",
         isLoaded
@@ -481,7 +481,7 @@ export default function CodexShelf({
         />
 
         {/* ── TOP SHELF: Identity + Relationship cartridges (always rendered) ── */}
-        <div className="relative px-4 md:px-5 lg:px-6 pt-2">
+        <div className="relative pl-1 md:pl-2 lg:pl-2 pr-4 md:pr-5 lg:pr-6 pt-2">
           <div
             ref={scrollRefTop}
             className="flex items-end gap-0 overflow-x-auto pb-0 pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth h-[220px] md:h-[260px] lg:h-[300px]"
@@ -511,7 +511,7 @@ export default function CodexShelf({
         {/* <ShelfRail /> */}
 
         {/* ── BOTTOM SHELF: Vision + Culture cartridges (always rendered) ── */}
-        <div className="relative px-4 md:px-5 lg:px-6 pb-2">
+        <div className="relative pl-1 md:pl-2 lg:pl-2 pr-4 md:pr-5 lg:pr-6 pb-2">
           <div
             ref={scrollRefBottom}
             className="flex items-end gap-0 overflow-x-auto pb-0 pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth h-[220px] md:h-[260px] lg:h-[300px]"
