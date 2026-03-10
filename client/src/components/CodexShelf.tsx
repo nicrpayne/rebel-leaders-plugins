@@ -162,12 +162,12 @@ function CartridgeFlat({ entry, isLoaded, onClick, tilt = 0 }: FlatSpineProps) {
    ───────────────────────────────────────────── */
 const TOP_SHELF_ARRANGEMENT: Record<string, { tilt: number; offsetY: number; extraMarginLeft: number }> = {
   // === IDENTITY SECTION (positions 1-4) ===
-  // 1. Name the Cost — straight, anchoring the left wall
-  MOVE_NAME_THE_COST:          { tilt: 0,    offsetY: 0,  extraMarginLeft: 0 },
-  // 2. Clarity Contract — straight
-  MOVE_CLARITY_CONTRACT:       { tilt: 0,    offsetY: 0,  extraMarginLeft: 0 },
-  // 3. Feedforward — straight, the one #4 leans on
-  MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 0,  extraMarginLeft: 0 },
+  // 1. Name the Cost — straight, anchoring the left wall, nudged forward
+  MOVE_NAME_THE_COST:          { tilt: 0,    offsetY: 4,  extraMarginLeft: 0 },
+  // 2. Clarity Contract — straight, nudged forward
+  MOVE_CLARITY_CONTRACT:       { tilt: 0,    offsetY: 4,  extraMarginLeft: 0 },
+  // 3. Feedforward — slight tilt, nudged forward, the one #4 leans on
+  MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 4,  extraMarginLeft: 0 },
   // 4. No With a Clean Yes — leaning left onto #3
   MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -4.5, offsetY: 3,  extraMarginLeft: -4 },
 
