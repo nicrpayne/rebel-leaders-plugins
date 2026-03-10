@@ -59,8 +59,8 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0 }: Spi
       className={cn(
         "relative flex-shrink-0 group transition-all duration-300 ease-out cursor-pointer",
         "w-[63px] md:w-[74px] lg:w-[80px] h-[205px] md:h-[238px] lg:h-[272px]",
-        // Pull up so it sits ON TOP of the shelf ledge, ledge visible below
-        "mb-[80px] md:mb-[86px] lg:mb-[90px]",
+        // Sits on the shelf surface, behind the metal guard rail
+        "mb-[18px] md:mb-[22px] lg:mb-[26px]",
         // Negative horizontal margin to pack spines tightly
         "-mx-[18px] md:-mx-[20px] lg:-mx-[22px]",
         isLoaded
@@ -481,7 +481,7 @@ export default function CodexShelf({
         />
 
         {/* ── TOP SHELF: Identity + Relationship cartridges (always rendered) ── */}
-        <div className="px-4 md:px-5 lg:px-6 pt-2">
+        <div className="relative px-4 md:px-5 lg:px-6 pt-2">
           <div
             ref={scrollRefTop}
             className="flex items-end gap-0 overflow-x-auto pb-0 pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth h-[220px] md:h-[260px] lg:h-[300px]"
@@ -505,13 +505,20 @@ export default function CodexShelf({
               );
             })}
           </div>
+          {/* Metal guard rail overlay — sits in front of cartridges */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-[40px] md:h-[48px] lg:h-[54px] z-[5] pointer-events-none"
+            style={{
+              background: "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 100%)",
+            }}
+          />
         </div>
 
         {/* ── SHELF RAIL between top and bottom ── */}
         {/* <ShelfRail /> */}
 
         {/* ── BOTTOM SHELF: Vision + Culture cartridges (always rendered) ── */}
-        <div className="px-4 md:px-5 lg:px-6 pb-2">
+        <div className="relative px-4 md:px-5 lg:px-6 pb-2">
           <div
             ref={scrollRefBottom}
             className="flex items-end gap-0 overflow-x-auto pb-0 pt-2 scrollbar-thin scrollbar-thumb-amber-900/30 scrollbar-track-transparent scroll-smooth h-[220px] md:h-[260px] lg:h-[300px]"
@@ -535,6 +542,16 @@ export default function CodexShelf({
               );
             })}
           </div>
+          {/* Metal guard rail overlay — bottom shelf */}
+          <div
+            className="absolute bottom-0 left-0 w-[75%] h-[28px] md:h-[34px] lg:h-[40px] z-[5] pointer-events-none"
+            style={{
+              backgroundImage: "url('/assets/shelf_guard_rail.png')",
+              backgroundSize: '100% 100%',
+              backgroundRepeat: 'no-repeat',
+              filter: 'brightness(0.85)',
+            }}
+          />
         </div>
 
         {/* ── BOTTOM RAIL (closes the cabinet) ── */}
