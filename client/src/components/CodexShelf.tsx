@@ -181,7 +181,7 @@ const TOP_SHELF_ARRANGEMENT: Record<string, { tilt: number; offsetY: number; ext
   // 8. The Mirror Move — domino lean right onto #9/#10
   MOVE_THE_MIRROR:             { tilt: 6,    offsetY: -1,  extraMarginLeft: -3 },
   // 9. Trust Micro-Deposit — domino lean right onto #10, dramatic
-  MOVE_TRUST_MICRO_DEPOSIT:    { tilt: 10,   offsetY: -3,  extraMarginLeft: -10 },
+  MOVE_TRUST_MICRO_DEPOSIT:    { tilt: 10,   offsetY: -3,  extraMarginLeft: -20 },
   // 10. 3 Coaching Questions — the backstop, straight and sturdy
   MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  extraMarginLeft: -2 },
   // 11. SBI Feedback — straight
