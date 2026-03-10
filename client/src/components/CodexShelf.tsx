@@ -168,7 +168,7 @@ const TOP_SHELF_ARRANGEMENT: Record<string, { tilt: number; offsetY: number; ext
   // 3. Feedforward — straight, the one #4 leans on
   MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 0,  extraMarginLeft: 0 },
   // 4. No With a Clean Yes — leaning left onto #3
-  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -2.5, offsetY: 2,  extraMarginLeft: 0 },
+  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -3.5, offsetY: 3,  extraMarginLeft: -4 },
 
   // === RELATIONSHIP SECTION (positions 5-13) ===
   // 5. Repair in 48 Hours — small gap, mostly straight
