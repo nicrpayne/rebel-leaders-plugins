@@ -49,9 +49,10 @@ interface SpineProps {
   onClick: () => void;
   tilt?: number;
   offsetY?: number;
+  extraMarginLeft?: number;
 }
 
-function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0 }: SpineProps) {
+function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, extraMarginLeft = 0 }: SpineProps) {
   return (
     <button
       onClick={onClick}
@@ -70,6 +71,7 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0 }: Spi
       style={{
         transform: isLoaded ? undefined : `rotate(${tilt}deg) translateY(${offsetY}px)`,
         transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        marginLeft: extraMarginLeft ? `${extraMarginLeft}px` : undefined,
       }}
       title={entry.title}
     >
@@ -148,6 +150,46 @@ function CartridgeFlat({ entry, isLoaded, onClick, tilt = 0 }: FlatSpineProps) {
     </button>
   );
 }
+
+/* ─────────────────────────────────────────────
+   TOP SHELF ARRANGEMENT — per-cartridge personality
+   Subtle tilts, vertical offsets, and spacing gaps
+   to create a lived-in, organic look.
+   tilt: degrees of rotation (+ = lean right, - = lean left)
+   offsetY: vertical shift in px (+ = down, - = up)
+   extraMarginLeft: additional left margin in px for gaps
+   ───────────────────────────────────────────── */
+const TOP_SHELF_ARRANGEMENT: Record<string, { tilt: number; offsetY: number; extraMarginLeft: number }> = {
+  // === IDENTITY SECTION (positions 1-4) ===
+  // 1. Name the Cost — straight, anchoring the left wall
+  MOVE_NAME_THE_COST:          { tilt: 0,    offsetY: 0,  extraMarginLeft: 0 },
+  // 2. Clarity Contract — straight
+  MOVE_CLARITY_CONTRACT:       { tilt: 0,    offsetY: 0,  extraMarginLeft: 0 },
+  // 3. Feedforward — straight, the one #4 leans on
+  MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 0,  extraMarginLeft: 0 },
+  // 4. No With a Clean Yes — leaning left onto #3
+  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -2.5, offsetY: 2,  extraMarginLeft: 0 },
+
+  // === RELATIONSHIP SECTION (positions 5-13) ===
+  // 5. Repair in 48 Hours — small gap, mostly straight
+  MOVE_REPAIR_48H:             { tilt: 0.2,  offsetY: 0,  extraMarginLeft: 6 },
+  // 6. Minority Report — straight
+  MOVE_MINORITY_REPORT:        { tilt: 0,    offsetY: 0,  extraMarginLeft: 0 },
+  // 7. Fridge Rights Audit — straight
+  MOVE_FRIDGE_RIGHTS_AUDIT:    { tilt: 0,    offsetY: 0,  extraMarginLeft: 0 },
+  // 8. The Mirror Move — slight lean right
+  MOVE_THE_MIRROR:             { tilt: 1.5,  offsetY: 1,  extraMarginLeft: 0 },
+  // 9. Trust Micro-Deposit — leans left onto #8
+  MOVE_TRUST_MICRO_DEPOSIT:    { tilt: -1.8, offsetY: 2,  extraMarginLeft: 0 },
+  // 10. 3 Coaching Questions — small gap, straight
+  MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  extraMarginLeft: 5 },
+  // 11. SBI Feedback — straight
+  MOVE_FEEDBACK_SBI:           { tilt: 0.3,  offsetY: 0,  extraMarginLeft: 0 },
+  // 12. Accountability With Care — slight lean
+  MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -1.0, offsetY: 1, extraMarginLeft: 0 },
+  // 13. Recover After You Missed It — end of row, slight lean right (resting against nothing)
+  MOVE_RECOVER_AFTER_MISS:     { tilt: 1.2,  offsetY: 0,  extraMarginLeft: 0 },
+};
 
 /* ─────────────────────────────────────────────
    SHELF FILTER BAR (Built into the shelf trim)
@@ -491,16 +533,20 @@ export default function CodexShelf({
               if (sectionEntries.length === 0) return null;
               return (
                 <div key={section.key} className="flex items-end gap-0">
-                  {sectionEntries.map((entry) => (
-                    <CartridgeSpine
-                      key={entry.id}
-                      entry={entry}
-                      isLoaded={loadedEntryId === entry.id}
-                      onClick={() => onLoad(entry)}
-                      tilt={0}
-                      offsetY={0}
-                    />
-                  ))}
+                  {sectionEntries.map((entry) => {
+                    const arrangement = TOP_SHELF_ARRANGEMENT[entry.id] || { tilt: 0, offsetY: 0, extraMarginLeft: 0 };
+                    return (
+                      <CartridgeSpine
+                        key={entry.id}
+                        entry={entry}
+                        isLoaded={loadedEntryId === entry.id}
+                        onClick={() => onLoad(entry)}
+                        tilt={arrangement.tilt}
+                        offsetY={arrangement.offsetY}
+                        extraMarginLeft={arrangement.extraMarginLeft}
+                      />
+                    );
+                  })}
                 </div>
               );
             })}
