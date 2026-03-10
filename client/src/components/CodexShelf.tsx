@@ -371,36 +371,49 @@ function ShelfFilterBar({
 function ShelfRail() {
   return (
     <div className="relative w-full h-[22px] md:h-[26px] lg:h-[30px] z-[3]">
-      {/* Texture layer — the real wood rail image */}
+      {/* Rail container — clipped to match the shelf ledge width (~75%) */}
       <div
-        className="absolute inset-0 overflow-hidden"
-        style={{
-          backgroundImage: "url('/assets/shelf_rail_texture.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center 45%",
-        }}
-      />
-      {/* Top edge blend — fades the texture into the shelf above */}
-      <div
-        className="absolute top-0 left-0 right-0 h-[6px] md:h-[8px] pointer-events-none"
-        style={{
-          background: "linear-gradient(to bottom, rgba(30,22,14,0.7) 0%, transparent 100%)",
-        }}
-      />
-      {/* Top highlight — warm light catching the rounded lip */}
-      <div
-        className="absolute top-[2px] left-0 right-0 h-[1px] pointer-events-none"
-        style={{
-          background: "linear-gradient(to right, transparent 5%, rgba(160,130,80,0.35) 20%, rgba(180,145,90,0.4) 50%, rgba(160,130,80,0.35) 80%, transparent 95%)",
-        }}
-      />
-      {/* Bottom edge blend — fades the texture into the shelf below */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-[6px] md:h-[8px] pointer-events-none"
-        style={{
-          background: "linear-gradient(to top, rgba(10,8,5,0.8) 0%, rgba(20,15,10,0.4) 50%, transparent 100%)",
-        }}
-      />
+        className="relative h-full"
+        style={{ width: "75%" }}
+      >
+        {/* Texture layer — the real wood rail image */}
+        <div
+          className="absolute inset-0 overflow-hidden"
+          style={{
+            backgroundImage: "url('/assets/shelf_rail_texture.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center 45%",
+          }}
+        />
+        {/* Top edge blend — fades the texture into the shelf above */}
+        <div
+          className="absolute top-0 left-0 right-0 h-[6px] md:h-[8px] pointer-events-none"
+          style={{
+            background: "linear-gradient(to bottom, rgba(30,22,14,0.7) 0%, transparent 100%)",
+          }}
+        />
+        {/* Top highlight — warm light catching the rounded lip */}
+        <div
+          className="absolute top-[2px] left-0 right-0 h-[1px] pointer-events-none"
+          style={{
+            background: "linear-gradient(to right, transparent 5%, rgba(160,130,80,0.35) 20%, rgba(180,145,90,0.4) 50%, rgba(160,130,80,0.35) 80%, transparent 95%)",
+          }}
+        />
+        {/* Right edge fade — rail fades out at its endpoint */}
+        <div
+          className="absolute top-0 right-0 bottom-0 w-[20px] pointer-events-none"
+          style={{
+            background: "linear-gradient(to left, rgba(15,12,8,0.9) 0%, rgba(20,15,10,0.4) 40%, transparent 100%)",
+          }}
+        />
+        {/* Bottom edge blend — fades the texture into the shelf below */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-[6px] md:h-[8px] pointer-events-none"
+          style={{
+            background: "linear-gradient(to top, rgba(10,8,5,0.8) 0%, rgba(20,15,10,0.4) 50%, transparent 100%)",
+          }}
+        />
+      </div>
     </div>
   );
 }
