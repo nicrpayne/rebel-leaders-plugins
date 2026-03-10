@@ -179,7 +179,7 @@ const TOP_SHELF_ARRANGEMENT: Record<string, { tilt: number; offsetY: number; ext
   // 7. Fridge Rights Audit — straight, nudged forward
   MOVE_FRIDGE_RIGHTS_AUDIT:    { tilt: 0,    offsetY: 4,  extraMarginLeft: 0 },
   // 8. The Mirror Move — domino lean right onto #9/#10
-  MOVE_THE_MIRROR:             { tilt: 9,    offsetY: -1,  extraMarginLeft: -3 },
+  MOVE_THE_MIRROR:             { tilt: 18,   offsetY: -1,  extraMarginLeft: -3 },
   // 9. Trust Micro-Deposit — domino lean right onto #10, dramatic
   MOVE_TRUST_MICRO_DEPOSIT:    { tilt: 14,   offsetY: -3,  extraMarginLeft: -20 },
   // 10. 3 Coaching Questions — the backstop, straight and sturdy
