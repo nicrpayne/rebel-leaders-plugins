@@ -370,7 +370,7 @@ function ShelfFilterBar({
    ───────────────────────────────────────────── */
 function ShelfRail() {
   return (
-    <div className="relative w-full h-[22px] md:h-[26px] lg:h-[30px] z-[3]">
+    <div className="relative w-full h-[44px] md:h-[52px] lg:h-[60px] z-[3]">
       {/* Rail container — clipped to match the shelf ledge width (~75%) */}
       <div
         className="relative h-full"
