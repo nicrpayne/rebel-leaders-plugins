@@ -508,7 +508,7 @@ export default function CodexShelf({
         </div>
 
         {/* ── SHELF RAIL between top and bottom ── */}
-        <ShelfRail />
+        {/* <ShelfRail /> */}
 
         {/* ── BOTTOM SHELF: Vision + Culture cartridges (always rendered) ── */}
         <div className="px-4 md:px-5 lg:px-6 pb-2">
@@ -538,7 +538,7 @@ export default function CodexShelf({
         </div>
 
         {/* ── BOTTOM RAIL (closes the cabinet) ── */}
-        <ShelfRail />
+        {/* <ShelfRail /> */}
       </div>
     </div>
   );
