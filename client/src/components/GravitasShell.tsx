@@ -205,12 +205,12 @@ export default function GravitasShell({
             <div className="flex-1 relative z-10">{children}</div>
 
             {/* Calibration Readouts */}
-            <div className="flex items-center justify-center gap-5 pt-2.5 border-t border-white/[0.03] relative z-10">
+            <div className="flex items-center justify-center gap-5 pt-3 mt-2 border-t border-white/[0.03] relative z-10">
               <div className="flex flex-col items-center gap-[2px]">
                 <span className="text-[6px] tracking-[0.2em] text-[#3a3a44] uppercase">
                   Field Lock
                 </span>
-                <span className="text-[9px] tracking-[0.15em] text-green-400 drop-shadow-[0_0_4px_rgba(74,222,128,0.3)] opacity-80">
+                <span className="text-[9px] tracking-[0.15em] text-green-400 drop-shadow-[0_0_6px_rgba(74,222,128,0.5)] shadow-green-400">
                   ACQUIRED
                 </span>
               </div>
@@ -219,7 +219,7 @@ export default function GravitasShell({
                 <span className="text-[6px] tracking-[0.2em] text-[#3a3a44] uppercase">
                   Drift
                 </span>
-                <span className="text-[9px] tracking-[0.15em] text-amber-500 drop-shadow-[0_0_4px_rgba(212,160,68,0.3)] opacity-80">
+                <span className="text-[9px] tracking-[0.15em] text-amber-400 drop-shadow-[0_0_6px_rgba(212,160,68,0.5)]">
                   0.3&deg;
                 </span>
               </div>
@@ -228,7 +228,7 @@ export default function GravitasShell({
                 <span className="text-[6px] tracking-[0.2em] text-[#3a3a44] uppercase">
                   Coherence
                 </span>
-                <span className="text-[9px] tracking-[0.15em] text-green-400 drop-shadow-[0_0_4px_rgba(74,222,128,0.3)] opacity-80">
+                <span className="text-[9px] tracking-[0.15em] text-green-400 drop-shadow-[0_0_6px_rgba(74,222,128,0.5)]">
                   87%
                 </span>
               </div>
@@ -237,7 +237,7 @@ export default function GravitasShell({
                 <span className="text-[6px] tracking-[0.2em] text-[#3a3a44] uppercase">
                   Noise Floor
                 </span>
-                <span className="text-[9px] tracking-[0.15em] text-[#5a5a66] opacity-80">
+                <span className="text-[9px] tracking-[0.15em] text-[#8a8a96] drop-shadow-[0_0_4px_rgba(138,138,150,0.3)]">
                   -42dB
                 </span>
               </div>
@@ -246,7 +246,7 @@ export default function GravitasShell({
                 <span className="text-[6px] tracking-[0.2em] text-[#3a3a44] uppercase">
                   Gravity Bias
                 </span>
-                <span className="text-[9px] tracking-[0.15em] text-amber-500 drop-shadow-[0_0_4px_rgba(212,160,68,0.3)] opacity-80">
+                <span className="text-[9px] tracking-[0.15em] text-amber-400 drop-shadow-[0_0_6px_rgba(212,160,68,0.5)]">
                   {signalCategory}
                 </span>
               </div>
