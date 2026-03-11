@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRAVITAS — Concept Mockup</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --chassis-bg: #0c0c0e;
+    --panel-dark: #111114;
+    --panel-mid: #18181c;
+    --bezel: #1e1e24;
+    --border-subtle: #2a2a32;
+    --border-faint: #1a1a22;
+    --text-dim: #3a3a44;
+    --text-mid: #5a5a66;
+    --text-bright: #8a8a96;
+    --green-crt: #4ade80;
+    --green-dim: #166534;
+    --green-glow: rgba(74, 222, 128, 0.15);
+    --gold: #c5a059;
+    --gold-dim: rgba(197, 160, 89, 0.3);
+    --amber: #d4a044;
+    --amber-glow: rgba(212, 160, 68, 0.08);
+    --blue-accent: #4a8ab5;
+    --blue-glow: rgba(74, 138, 181, 0.1);
+    --red-warn: #ef4444;
+  }
+
+  body {
+    background: #030304;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Share Tech Mono', monospace;
+    padding: 40px 20px;
+    overflow-x: hidden;
+  }
+
+  /* ===== AMBIENT ENVIRONMENT ===== */
+  .environment {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .environment::before {
+    content: '';
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 600px;
+    background: radial-gradient(ellipse, rgba(74, 138, 181, 0.03) 0%, transparent 70%);
+  }
+  .environment::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(to top, rgba(197, 160, 89, 0.02), transparent);
+  }
+
+  /* Dust particles */
+  .dust-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    overflow: hidden;
+  }
+  .dust {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    animation: drift linear infinite;
+  }
+  @keyframes drift {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 0.08; }
+    90% { opacity: 0.08; }
+    100% { transform: translateY(-10vh) translateX(40px); opacity: 0; }
+  }
+
+  /* ===== OUTER CONSOLE HOUSING ===== */
+  .console-housing {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    z-index: 1;
+  }
+
+  /* The physical outer bezel — dark anodized aluminum */
+  .outer-bezel {
+    position: relative;
+    background: linear-gradient(170deg, #16161a 0%, #0e0e12 40%, #0a0a0e 100%);
+    border-radius: 6px;
+    padding: 6px;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.04),
+      0 2px 4px rgba(0,0,0,0.8),
+      0 8px 24px rgba(0,0,0,0.6),
+      0 24px 60px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+
+  /* Brushed metal texture overlay */
+  .outer-bezel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 1px,
+      rgba(255,255,255,0.008) 1px,
+      rgba(255,255,255,0.008) 2px
+    );
+    pointer-events: none;
+  }
+
+  /* Inner chassis */
+  .inner-chassis {
+    background: var(--chassis-bg);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--border-faint);
+    position: relative;
+  }
+
+  /* ===== CORNER FASTENERS ===== */
+  .fastener {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    z-index: 50;
+  }
+  .fastener::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #222228 0%, #111116 100%);
+    border: 1px solid #0a0a0e;
+    box-shadow: 
+      inset 0 1px 2px rgba(0,0,0,0.8),
+      0 1px 0 rgba(255,255,255,0.05);
+  }
+  .fastener::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 1px;
+    background: #0a0a0e;
+    transform: translate(-50%, -50%) rotate(var(--slot-angle, 30deg));
+  }
+  .fastener.tl { top: 12px; left: 12px; --slot-angle: 30deg; }
+  .fastener.tr { top: 12px; right: 12px; --slot-angle: -15deg; }
+  .fastener.bl { bottom: 12px; left: 12px; --slot-angle: 75deg; }
+  .fastener.br { bottom: 12px; right: 12px; --slot-angle: 45deg; }
+
+  /* ===== HEADER PANEL ===== */
+  .header-panel {
+    height: 64px;
+    background: linear-gradient(180deg, #0d0d10 0%, #0a0a0d 100%);
+    border-bottom: 1px solid var(--border-faint);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    position: relative;
+  }
+
+  /* Recessed channel line across header */
+  .header-panel::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03) 20%, rgba(255,255,255,0.03) 80%, transparent);
+  }
+
+  .title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .title-main {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-shadow: 0 0 12px var(--gold-dim), 0 0 30px rgba(197, 160, 89, 0.1);
+    text-transform: uppercase;
+  }
+  .title-sub {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .title-sub span {
+    color: var(--text-mid);
+  }
+
+  /* Status LEDs */
+  .status-cluster {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .led-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .led {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.5);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
+  }
+  .led.power {
+    background: #166534;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.5), 0 0 6px rgba(34, 197, 94, 0.3), 0 0 12px rgba(34, 197, 94, 0.1);
+  }
+  .led.clip { background: #7f1d1d; }
+  .led.signal {
+    background: var(--amber);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 0 6px rgba(212, 160, 68, 0.4), 0 0 12px rgba(212, 160, 68, 0.15);
+    animation: pulse-amber 2s ease-in-out infinite;
+  }
+  @keyframes pulse-amber {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+  }
+  .led-label {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* Serial plate */
+  .serial-plate {
+    background: linear-gradient(135deg, #1a1a20 0%, #141418 100%);
+    border: 1px solid var(--border-faint);
+    border-radius: 2px;
+    padding: 4px 12px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .serial-plate span {
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+  }
+
+  /* ===== MAIN INSTRUMENT AREA ===== */
+  .instrument-area {
+    padding: 32px 28px;
+    background: var(--chassis-bg);
+    position: relative;
+    min-height: 420px;
+  }
+
+  /* Ambient light from above — warm overhead lamp */
+  .instrument-area::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 120px;
+    background: radial-gradient(ellipse at top, rgba(197, 160, 89, 0.04) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  /* Subtle vignette */
+  .instrument-area::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 80px rgba(0,0,0,0.6);
+    pointer-events: none;
+  }
+
+  /* ===== SIGNAL INPUT BAR ===== */
+  .signal-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    position: relative;
+    z-index: 10;
+  }
+  .signal-left, .signal-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .signal-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .divider-v {
+    width: 1px;
+    height: 12px;
+    background: var(--border-subtle);
+  }
+  .signal-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--green-crt);
+    box-shadow: 0 0 6px rgba(74, 222, 128, 0.5), 0 0 12px rgba(74, 222, 128, 0.2);
+    animation: pulse-green 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-green {
+    0%, 100% { opacity: 0.7; box-shadow: 0 0 6px rgba(74, 222, 128, 0.3); }
+    50% { opacity: 1; box-shadow: 0 0 8px rgba(74, 222, 128, 0.6), 0 0 16px rgba(74, 222, 128, 0.2); }
+  }
+  .signal-category {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    text-shadow: 0 0 8px var(--gold-dim);
+  }
+
+  /* Level meter bar */
+  .level-bar {
+    display: flex;
+    gap: 1px;
+    background: #0a0a0e;
+    padding: 2px;
+    border: 1px solid var(--border-faint);
+    border-radius: 1px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .level-segment {
+    width: 4px;
+    height: 10px;
+    border-radius: 1px;
+    background: #111;
+    transition: all 0.3s;
+  }
+  .level-segment.active {
+    background: var(--green-crt);
+    box-shadow: 0 0 4px rgba(74, 222, 128, 0.4);
+  }
+
+  /* ===== INSTRUMENT CLUSTER (3-column) ===== */
+  .instrument-cluster {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1fr;
+    gap: 24px;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* ===== VU METER MODULE ===== */
+  .meter-module {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .meter-housing {
+    position: relative;
+    width: 200px;
+    height: 140px;
+    background: linear-gradient(180deg, #141418 0%, #101014 100%);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    box-shadow:
+      inset 0 0 20px rgba(0,0,0,0.8),
+      0 4px 12px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.04);
+    overflow: hidden;
+  }
+
+  /* Glass overlay on meter */
+  .meter-glass {
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.01) 100%);
+    pointer-events: none;
+    z-index: 20;
+  }
+  .meter-glass::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* Meter SVG area */
+  .meter-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .meter-label {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* ===== CRT DISPLAY MODULE ===== */
+  .crt-module {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* The physical CRT housing — recessed bezel */
+  .crt-housing {
+    position: relative;
+    background: linear-gradient(180deg, #0e0e12 0%, #0a0a0d 100%);
+    border: 2px solid #1a1a22;
+    border-radius: 6px;
+    padding: 8px;
+    box-shadow:
+      inset 0 2px 8px rgba(0,0,0,0.9),
+      0 2px 4px rgba(0,0,0,0.3),
+      inset 0 0 0 1px rgba(0,0,0,0.5);
+  }
+
+  /* Inner bezel ring */
+  .crt-housing::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.02);
+    pointer-events: none;
+  }
+
+  .crt-screen {
+    position: relative;
+    background: #061208;
+    border-radius: 4px;
+    padding: 24px 20px;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+  }
+
+  /* CRT curvature effect */
+  .crt-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.4) 100%);
+    pointer-events: none;
+    z-index: 30;
+  }
+
+  /* Scanlines */
+  .crt-scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.15) 2px,
+      rgba(0, 0, 0, 0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 25;
+  }
+
+  /* Phosphor glow */
+  .crt-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(74, 222, 128, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* Screen reflection */
+  .crt-reflection {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 35;
+    border-radius: 4px 4px 0 0;
+  }
+
+  /* Subtle flicker animation */
+  @keyframes crt-flicker {
+    0%, 100% { opacity: 1; }
+    92% { opacity: 1; }
+    93% { opacity: 0.97; }
+    94% { opacity: 1; }
+  }
+
+  .crt-text {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--green-crt);
+    font-size: 11px;
+    line-height: 2;
+    letter-spacing: 0.2em;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 0 0 6px rgba(74, 222, 128, 0.6), 0 0 20px rgba(74, 222, 128, 0.2);
+    filter: blur(0.3px);
+    position: relative;
+    z-index: 20;
+    animation: crt-flicker 8s linear infinite;
+  }
+
+  .crt-subtext {
+    font-size: 8px;
+    color: rgba(74, 222, 128, 0.5);
+    letter-spacing: 0.25em;
+    text-shadow: 0 0 4px rgba(74, 222, 128, 0.3);
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(74, 222, 128, 0.1);
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 20;
+    text-transform: uppercase;
+  }
+
+  /* Faint concentric field rings behind CRT text */
+  .field-rings {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .field-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    border: 1px solid rgba(74, 222, 128, 0.04);
+    transform: translate(-50%, -50%);
+    animation: ring-pulse 6s ease-in-out infinite;
+  }
+  .field-ring:nth-child(1) { width: 80px; height: 80px; animation-delay: 0s; }
+  .field-ring:nth-child(2) { width: 140px; height: 140px; animation-delay: 1s; }
+  .field-ring:nth-child(3) { width: 200px; height: 200px; animation-delay: 2s; }
+  .field-ring:nth-child(4) { width: 260px; height: 260px; animation-delay: 3s; }
+
+  @keyframes ring-pulse {
+    0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.02); }
+  }
+
+  /* ===== KNOB MODULE ===== */
+  .knob-module {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .knob-housing {
+    position: relative;
+    width: 120px;
+    height: 120px;
+  }
+
+  /* Knob shadow */
+  .knob-shadow {
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.5);
+    filter: blur(12px);
+    transform: translateY(4px);
+  }
+
+  /* The knob body */
+  .knob-body {
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #2a2a30 0%, #18181c 50%, #0e0e12 100%);
+    border: 1px solid #2a2a30;
+    box-shadow:
+      0 4px 12px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      inset 0 -1px 0 rgba(0,0,0,0.3);
+  }
+
+  /* Knurled edge texture */
+  .knob-edge {
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      #1a1a20 0deg, #222228 3deg,
+      #1a1a20 6deg, #222228 9deg,
+      #1a1a20 12deg, #222228 15deg,
+      #1a1a20 18deg, #222228 21deg,
+      #1a1a20 24deg, #222228 27deg,
+      #1a1a20 30deg, #222228 33deg,
+      #1a1a20 36deg, #222228 39deg,
+      #1a1a20 42deg, #222228 45deg,
+      #1a1a20 48deg, #222228 51deg,
+      #1a1a20 54deg, #222228 57deg,
+      #1a1a20 60deg, #222228 63deg,
+      #1a1a20 66deg, #222228 69deg,
+      #1a1a20 72deg, #222228 75deg,
+      #1a1a20 78deg, #222228 81deg,
+      #1a1a20 84deg, #222228 87deg,
+      #1a1a20 90deg, #222228 93deg,
+      #1a1a20 96deg, #222228 99deg,
+      #1a1a20 102deg, #222228 105deg,
+      #1a1a20 108deg, #222228 111deg,
+      #1a1a20 114deg, #222228 117deg,
+      #1a1a20 120deg
+    );
+    border: 1px solid #0a0a0e;
+  }
+
+  /* Inner face */
+  .knob-face {
+    position: absolute;
+    inset: 16px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #252528 0%, #141418 100%);
+    border: 1px solid #2a2a30;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+  }
+
+  /* Indicator line */
+  .knob-indicator {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    width: 2px;
+    height: 16px;
+    background: #fff;
+    transform: translateX(-50%) rotate(-30deg);
+    transform-origin: bottom center;
+    border-radius: 1px;
+    opacity: 0.85;
+    box-shadow: 0 0 4px rgba(255,255,255,0.3);
+  }
+
+  /* Tick marks around knob */
+  .knob-ticks {
+    position: absolute;
+    inset: -4px;
+  }
+
+  .knob-label {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* ===== CALIBRATION READOUTS ===== */
+  .readout-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.03);
+    position: relative;
+    z-index: 10;
+  }
+
+  .readout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .readout-label {
+    font-size: 7px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .readout-value {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--green-crt);
+    text-shadow: 0 0 4px rgba(74, 222, 128, 0.3);
+    opacity: 0.8;
+  }
+  .readout-value.amber {
+    color: var(--amber);
+    text-shadow: 0 0 4px rgba(212, 160, 68, 0.3);
+  }
+  .readout-value.dim {
+    color: var(--text-mid);
+    text-shadow: none;
+  }
+
+  .readout-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--border-faint);
+  }
+
+  /* ===== STICKER ===== */
+  .sticker-area {
+    position: absolute;
+    bottom: 24px;
+    left: 20px;
+    z-index: 40;
+    transform: rotate(-8deg);
+    transition: transform 0.3s ease;
+  }
+  .sticker-area:hover {
+    transform: rotate(-5deg) scale(1.05);
+  }
+  .sticker {
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, #2a1a3a 0%, #1a1030 100%);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+      2px 4px 8px rgba(0,0,0,0.5),
+      0 1px 0 rgba(255,255,255,0.05);
+    position: relative;
+    overflow: hidden;
+  }
+  .sticker::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.3) 50%);
+    border-radius: 0 4px 0 0;
+  }
+  .sticker-text {
+    font-size: 7px;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    letter-spacing: 0.1em;
+    line-height: 1.4;
+  }
+
+  /* ===== FOOTER CONTROL SURFACE ===== */
+  .footer-panel {
+    height: 44px;
+    background: linear-gradient(180deg, #111114 0%, #0e0e11 100%);
+    border-top: 1px solid var(--border-faint);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    position: relative;
+  }
+
+  .footer-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03) 20%, rgba(255,255,255,0.03) 80%, transparent);
+  }
+
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .mode-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mode-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #111;
+    border: 1px solid var(--border-subtle);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+  }
+  .mode-label {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .mode-value {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  /* Next button */
+  .next-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 14px;
+    background: linear-gradient(180deg, #1a1a20 0%, #141418 100%);
+    border: 1px solid var(--border-subtle);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  }
+  .next-btn:hover {
+    border-color: var(--gold-dim);
+    background: linear-gradient(180deg, #1e1e24 0%, #18181c 100%);
+    box-shadow: 0 0 12px rgba(197, 160, 89, 0.08);
+  }
+  .next-btn:active {
+    transform: translateY(1px);
+    box-shadow: none;
+  }
+  .next-btn-text {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--text-mid);
+    text-transform: uppercase;
+  }
+  .next-btn:hover .next-btn-text {
+    color: var(--gold);
+  }
+  .next-btn-arrow {
+    width: 5px;
+    height: 5px;
+    border-top: 1px solid var(--text-dim);
+    border-right: 1px solid var(--text-dim);
+    transform: rotate(45deg);
+  }
+  .next-btn:hover .next-btn-arrow {
+    border-color: var(--gold);
+  }
+
+  .version-text {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+  }
+
+  /* Footer screw */
+  .footer-screw {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #0a0a0e;
+    border: 1px solid #1a1a20;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.03);
+  }
+
+  /* ===== SIDECHAIN STATUS ===== */
+  .sidechain-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sidechain-label {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .sidechain-value {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    animation: pulse-text 2s ease-in-out infinite;
+  }
+  @keyframes pulse-text {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  /* ===== ENGRAVED LABEL STRIPS ===== */
+  .label-strip {
+    position: absolute;
+    font-size: 6px;
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.06);
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+  .label-strip.left {
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%) rotate(180deg);
+  }
+  .label-strip.right {
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* ===== MAINTENANCE LABEL ===== */
+  .maintenance-label {
+    position: absolute;
+    bottom: 52px;
+    right: 20px;
+    z-index: 40;
+  }
+  .maintenance-label-inner {
+    background: rgba(20, 20, 24, 0.8);
+    border: 1px solid var(--border-faint);
+    padding: 3px 8px;
+    border-radius: 1px;
+  }
+  .maintenance-label-inner span {
+    font-size: 6px;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .instrument-cluster {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .header-panel {
+      padding: 0 16px;
+    }
+    .instrument-area {
+      padding: 20px 16px;
+    }
+    .signal-bar {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .readout-strip {
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .sticker-area {
+      bottom: 16px;
+      left: 12px;
+    }
+    .sticker {
+      width: 56px;
+      height: 56px;
+    }
+    .footer-panel {
+      padding: 0 16px;
+    }
+    .label-strip { display: none; }
+    .maintenance-label { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Ambient Environment -->
+<div class="environment"></div>
+
+<!-- Dust Particles -->
+<div class="dust-container" id="dustContainer"></div>
+
+<!-- ===== CONSOLE ===== -->
+<div class="console-housing">
+  <div class="outer-bezel">
+    <div class="inner-chassis">
+
+      <!-- Corner Fasteners -->
+      <div class="fastener tl"></div>
+      <div class="fastener tr"></div>
+      <div class="fastener bl"></div>
+      <div class="fastener br"></div>
+
+      <!-- Engraved Side Labels -->
+      <div class="label-strip left">RL-GRV-MK2 // FIELD DIAGNOSTICS</div>
+      <div class="label-strip right">REBEL LEADERS // OBSERVATORY</div>
+
+      <!-- ===== HEADER ===== -->
+      <div class="header-panel">
+        <div class="title-block">
+          <div class="title-main">GRAVITAS</div>
+          <div class="title-sub">TYPE: <span>MIRROR</span></div>
+        </div>
+
+        <div class="status-cluster">
+          <div class="led-group">
+            <div class="led power"></div>
+            <span class="led-label">PWR</span>
+          </div>
+          <div class="led-group">
+            <div class="led signal"></div>
+            <span class="led-label">SIG</span>
+          </div>
+          <div class="led-group">
+            <div class="led clip"></div>
+            <span class="led-label">CLIP</span>
+          </div>
+
+          <div class="serial-plate">
+            <span>RL-001 // ONLINE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MAIN INSTRUMENT AREA ===== -->
+      <div class="instrument-area">
+
+        <!-- Signal Input Bar -->
+        <div class="signal-bar">
+          <div class="signal-left">
+            <span class="signal-label">Signal Input</span>
+            <div class="divider-v"></div>
+            <div class="signal-dot"></div>
+            <span class="signal-category">Identity</span>
+          </div>
+          <div class="signal-right">
+            <div class="level-bar">
+              <div class="level-segment active"></div>
+              <div class="level-segment active"></div>
+              <div class="level-segment active"></div>
+              <div class="level-segment active"></div>
+              <div class="level-segment active"></div>
+              <div class="level-segment"></div>
+              <div class="level-segment"></div>
+              <div class="level-segment"></div>
+              <div class="level-segment"></div>
+              <div class="level-segment"></div>
+              <div class="level-segment"></div>
+              <div class="level-segment"></div>
+            </div>
+            <div class="divider-v"></div>
+            <span class="signal-label">Level</span>
+          </div>
+        </div>
+
+        <!-- Instrument Cluster -->
+        <div class="instrument-cluster">
+
+          <!-- LEFT: VU Meter -->
+          <div class="meter-module">
+            <div class="meter-housing">
+              <div class="meter-glass"></div>
+              <div class="meter-face">
+                <svg viewBox="0 0 200 140" width="100%" height="100%">
+                  <!-- Arc -->
+                  <path d="M 30 120 A 80 80 0 0 1 170 120" fill="none" stroke="#222228" stroke-width="1" stroke-dasharray="2 2"/>
+                  
+                  <!-- Tick marks -->
+                  <g>
+                    <!-- Major ticks with labels -->
+                    <line x1="38" y1="52" x2="48" y2="62" stroke="#888" stroke-width="1.5"/>
+                    <text x="28" y="48" fill="#555" font-size="8" font-family="monospace" text-anchor="middle">-20</text>
+                    
+                    <line x1="55" y1="38" x2="62" y2="50" stroke="#888" stroke-width="1"/>
+                    <line x1="72" y1="28" x2="77" y2="40" stroke="#888" stroke-width="1"/>
+                    <line x1="90" y1="22" x2="93" y2="34" stroke="#888" stroke-width="1"/>
+                    
+                    <line x1="100" y1="20" x2="100" y2="34" stroke="#ccc" stroke-width="2"/>
+                    <text x="100" y="14" fill="#888" font-size="9" font-family="monospace" text-anchor="middle" font-weight="bold">0</text>
+                    
+                    <line x1="110" y1="22" x2="107" y2="34" stroke="#888" stroke-width="1"/>
+                    <line x1="128" y1="28" x2="123" y2="40" stroke="#ef4444" stroke-width="1"/>
+                    <line x1="145" y1="38" x2="138" y2="50" stroke="#ef4444" stroke-width="1"/>
+                    
+                    <line x1="162" y1="52" x2="152" y2="62" stroke="#ef4444" stroke-width="1.5"/>
+                    <text x="172" y="48" fill="#ef4444" font-size="8" font-family="monospace" text-anchor="middle">+3</text>
+                  </g>
+                  
+                  <!-- VU label -->
+                  <text x="100" y="100" fill="#333" font-size="10" font-family="monospace" text-anchor="middle" font-weight="bold">VU</text>
+                  
+                  <!-- Needle -->
+                  <line x1="100" y1="130" x2="78" y2="38" stroke="#ef4444" stroke-width="2" stroke-linecap="round">
+                    <animateTransform attributeName="transform" type="rotate" values="-5 100 130;3 100 130;-2 100 130;0 100 130" dur="4s" repeatCount="indefinite"/>
+                  </line>
+                  
+                  <!-- Pivot -->
+                  <circle cx="100" cy="130" r="10" fill="url(#pivotGrad)"/>
+                  <circle cx="100" cy="130" r="4" fill="#0a0a0e"/>
+                  
+                  <defs>
+                    <radialGradient id="pivotGrad">
+                      <stop offset="0%" stop-color="#333"/>
+                      <stop offset="100%" stop-color="#111"/>
+                    </radialGradient>
+                  </defs>
+                </svg>
+              </div>
+            </div>
+            <span class="meter-label">Field Strength</span>
+          </div>
+
+          <!-- CENTER: CRT Display -->
+          <div class="crt-module">
+            <div class="crt-housing">
+              <div class="crt-screen">
+                <div class="crt-scanlines"></div>
+                <div class="crt-glow"></div>
+                <div class="crt-reflection"></div>
+                
+                <!-- Subtle field rings -->
+                <div class="field-rings">
+                  <div class="field-ring"></div>
+                  <div class="field-ring"></div>
+                  <div class="field-ring"></div>
+                  <div class="field-ring"></div>
+                </div>
+
+                <div class="crt-text">
+                  I feel a deep sense of personal agency in my role, not just a list of tasks.
+                </div>
+                <div class="crt-subtext">
+                  Q.1 // Identity
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Rotary Knob -->
+          <div class="knob-module">
+            <div class="knob-housing">
+              <div class="knob-shadow"></div>
+              <div class="knob-edge"></div>
+              <div class="knob-body">
+                <div class="knob-face">
+                  <div class="knob-indicator"></div>
+                </div>
+              </div>
+              
+              <!-- Tick marks -->
+              <svg viewBox="0 0 120 120" style="position:absolute;inset:-4px;width:calc(100% + 8px);height:calc(100% + 8px);pointer-events:none;">
+                <g transform="rotate(-135 60 60)"><line x1="60" y1="4" x2="60" y2="10" stroke="#444" stroke-width="1.5" stroke-linecap="round"/></g>
+                <g transform="rotate(-108 60 60)"><line x1="60" y1="4" x2="60" y2="9" stroke="#333" stroke-width="1" stroke-linecap="round"/></g>
+                <g transform="rotate(-81 60 60)"><line x1="60" y1="4" x2="60" y2="9" stroke="#333" stroke-width="1" stroke-linecap="round"/></g>
+                <g transform="rotate(-54 60 60)"><line x1="60" y1="4" x2="60" y2="9" stroke="#333" stroke-width="1" stroke-linecap="round"/></g>
+                <g transform="rotate(-27 60 60)"><line x1="60" y1="4" x2="60" y2="9" stroke="#333" stroke-width="1" stroke-linecap="round"/></g>
+                <g transform="rotate(0 60 60)"><line x1="60" y1="4" x2="60" y2="10" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></g>
+                <g transform="rotate(27 60 60)"><line x1="60" y1="4" x2="60" y2="9" stroke="#333" stroke-width="1" stroke-linecap="round"/></g>
+                <g transform="rotate(54 60 60)"><line x1="60" y1="4" x2="60" y2="9" stroke="#333" stroke-width="1" stroke-linecap="round"/></g>
+                <g transform="rotate(81 60 60)"><line x1="60" y1="4" x2="60" y2="9" stroke="#333" stroke-width="1" stroke-linecap="round"/></g>
+                <g transform="rotate(108 60 60)"><line x1="60" y1="4" x2="60" y2="9" stroke="#333" stroke-width="1" stroke-linecap="round"/></g>
+                <g transform="rotate(135 60 60)"><line x1="60" y1="4" x2="60" y2="10" stroke="#444" stroke-width="1.5" stroke-linecap="round"/></g>
+              </svg>
+            </div>
+            <span class="knob-label">Intensity</span>
+          </div>
+
+        </div>
+
+        <!-- Calibration Readouts -->
+        <div class="readout-strip">
+          <div class="readout">
+            <span class="readout-label">Field Lock</span>
+            <span class="readout-value">ACQUIRED</span>
+          </div>
+          <div class="readout-divider"></div>
+          <div class="readout">
+            <span class="readout-label">Drift</span>
+            <span class="readout-value amber">0.3°</span>
+          </div>
+          <div class="readout-divider"></div>
+          <div class="readout">
+            <span class="readout-label">Coherence</span>
+            <span class="readout-value">87%</span>
+          </div>
+          <div class="readout-divider"></div>
+          <div class="readout">
+            <span class="readout-label">Noise Floor</span>
+            <span class="readout-value dim">-42dB</span>
+          </div>
+          <div class="readout-divider"></div>
+          <div class="readout">
+            <span class="readout-label">Gravity Bias</span>
+            <span class="readout-value amber">IDENTITY</span>
+          </div>
+        </div>
+
+        <!-- Sticker -->
+        <div class="sticker-area">
+          <div class="sticker">
+            <span class="sticker-text">NIC<br/>STICKER<br/>HERE</span>
+          </div>
+        </div>
+
+        <!-- Maintenance Label -->
+        <div class="maintenance-label">
+          <div class="maintenance-label-inner">
+            <span>CAL: 2026.03 // UNIT RL-GRV-001</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== FOOTER ===== -->
+      <div class="footer-panel">
+        <div class="footer-left">
+          <div class="mode-indicator">
+            <div class="mode-dot"></div>
+            <span class="mode-label">Mode:</span>
+            <span class="mode-value">Standard</span>
+          </div>
+          <div class="divider-v"></div>
+          <div class="sidechain-status">
+            <span class="sidechain-label">Sidechain:</span>
+            <span class="sidechain-value">Searching...</span>
+          </div>
+        </div>
+        <div class="footer-right">
+          <div class="next-btn">
+            <span class="next-btn-text">Next</span>
+            <div class="next-btn-arrow"></div>
+          </div>
+          <div class="divider-v"></div>
+          <span class="version-text">V.2.0.0</span>
+          <div class="footer-screw"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // Generate dust particles
+  const dustContainer = document.getElementById('dustContainer');
+  for (let i = 0; i < 20; i++) {
+    const dust = document.createElement('div');
+    dust.className = 'dust';
+    dust.style.left = Math.random() * 100 + '%';
+    dust.style.animationDuration = (15 + Math.random() * 25) + 's';
+    dust.style.animationDelay = Math.random() * 20 + 's';
+    dust.style.width = (1 + Math.random() * 2) + 'px';
+    dust.style.height = dust.style.width;
+    dust.style.opacity = 0.03 + Math.random() * 0.06;
+    dustContainer.appendChild(dust);
+  }
+</script>
+
+</body>
+</html>
