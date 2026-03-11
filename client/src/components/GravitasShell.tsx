@@ -88,9 +88,9 @@ export default function GravitasShell({
           className="absolute flex flex-col overflow-hidden"
           style={{
             left: "18.5%",
-            top: "36%",
+            top: "35%",
             width: "62.4%",
-            height: "41.5%",
+            height: "44%",
             background: "#0c0c0e",
           }}
         >
@@ -205,7 +205,7 @@ export default function GravitasShell({
             <div className="flex-1 relative z-10">{children}</div>
 
             {/* Calibration Readouts */}
-            <div className="flex items-center justify-center gap-5 pt-1.5 mt-1 border-t border-white/[0.03] relative z-10">
+            <div className="flex items-center justify-center gap-5 pt-2 mt-2 border-t border-white/[0.03] relative z-10">
               <div className="flex flex-col items-center gap-[2px]">
                 <span className="text-[6px] tracking-[0.2em] text-[#3a3a44] uppercase">
                   Field Lock
