@@ -269,7 +269,7 @@ export default function GravityCheck() {
             <div className="relative bg-gradient-to-b from-[#0e0e12] to-[#0a0a0d] border-2 border-[#1a1a22] rounded-md p-1.5 shadow-[inset_0_2px_8px_rgba(0,0,0,0.9),0_2px_4px_rgba(0,0,0,0.3),inset_0_0_0_1px_rgba(0,0,0,0.5)]">
               <div className="absolute inset-[3px] rounded border border-white/[0.02] pointer-events-none" />
 
-              <div className="relative bg-[#061208] rounded p-4 min-h-[100px] flex flex-col items-center justify-center overflow-hidden shadow-[inset_0_0_30px_rgba(0,0,0,0.8)]">
+              <div className="relative bg-[#061208] rounded p-4 h-[140px] flex flex-col items-center justify-center overflow-hidden shadow-[inset_0_0_30px_rgba(0,0,0,0.8)]">
                 <div
                   className="absolute inset-0 pointer-events-none z-[25]"
                   style={{
