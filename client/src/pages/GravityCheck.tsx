@@ -168,6 +168,7 @@ export default function GravityCheck() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [knobValue, setKnobValue] = useState(50);
+  const [knobTouched, setKnobTouched] = useState(false);
   const [, setLocation] = useLocation();
 
   const activeQuestions: Question[] = scanMode ? getQuestions(scanMode) : [];
@@ -197,6 +198,7 @@ export default function GravityCheck() {
     } else {
       setCurrentQuestionIndex((prev) => prev + 1);
       setKnobValue(50);
+      setKnobTouched(false);
     }
   }, [currentQuestion, knobValue, answers, isLastQuestion, setLocation]);
 
@@ -218,15 +220,29 @@ export default function GravityCheck() {
     <button
       onClick={handleNext}
       className={cn(
-        "group flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-b from-[#1a1a20] to-[#141418] border border-[#2a2a32] rounded-[2px] shadow-[0_2px_4px_rgba(0,0,0,0.4)] transition-all duration-150",
-        "hover:border-[rgba(197,160,89,0.3)] hover:bg-gradient-to-b hover:from-[#1e1e24] hover:to-[#18181c] hover:shadow-[0_0_12px_rgba(197,160,89,0.08)]",
+        "group flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-b from-[#1a1a20] to-[#141418] border rounded-[2px] shadow-[0_2px_4px_rgba(0,0,0,0.4)] transition-all duration-300",
+        knobTouched
+          ? "border-green-400/50 shadow-[0_0_12px_rgba(74,222,128,0.15)]"
+          : "border-[#2a2a32]",
+        "hover:border-[rgba(74,222,128,0.5)] hover:shadow-[0_0_16px_rgba(74,222,128,0.2)]",
         "active:translate-y-[1px] active:shadow-none"
       )}
+      style={knobTouched ? { animation: "gravitas-next-pulse 2s ease-in-out infinite" } : undefined}
     >
-      <span className="text-[8px] tracking-[0.2em] uppercase text-[#5a5a66] group-hover:text-[#c5a059] transition-colors">
+      <span className={cn(
+        "text-[8px] tracking-[0.2em] uppercase transition-colors duration-300",
+        knobTouched
+          ? "text-green-400"
+          : "text-[#5a5a66] group-hover:text-green-400"
+      )}>
         {isLastQuestion ? "INITIALIZE" : "NEXT"}
       </span>
-      <div className="w-1 h-1 border-t border-r border-[#5a5a66] rotate-45 group-hover:border-[#c5a059] transition-colors" />
+      <div className={cn(
+        "w-1 h-1 border-t border-r rotate-45 transition-colors duration-300",
+        knobTouched
+          ? "border-green-400"
+          : "border-[#5a5a66] group-hover:border-green-400"
+      )} />
     </button>
   );
 
@@ -338,7 +354,7 @@ export default function GravityCheck() {
               value={knobValue}
               min={0}
               max={100}
-              onChange={setKnobValue}
+              onChange={(v: number) => { setKnobValue(v); if (!knobTouched) setKnobTouched(true); }}
               label="INTENSITY"
             />
           </div>
@@ -355,6 +371,10 @@ export default function GravityCheck() {
           92% { opacity: 1; }
           93% { opacity: 0.97; }
           94% { opacity: 1; }
+        }
+        @keyframes gravitas-next-pulse {
+          0%, 100% { box-shadow: 0 0 8px rgba(74,222,128,0.1); }
+          50% { box-shadow: 0 0 16px rgba(74,222,128,0.25), 0 0 4px rgba(74,222,128,0.1) inset; }
         }
       `}</style>
     </GravitasShell>
