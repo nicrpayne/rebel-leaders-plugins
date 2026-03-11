@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 const PLUGINS = [
   {
     id: "gravity-check",
-    title: "Gravity Check",
+    title: "GRAVITAS",
     category: "MIRROR",
     desc: "15 questions. 3 minutes. Reveal the hidden forces shaping your team's orbit.",
     status: "ACTIVE",
@@ -33,7 +33,7 @@ const PLUGINS = [
   }
 ];
 
-export default function ArmoryContent() {
+export default function WorkbenchContent() {
   const [activeCategory, setActiveCategory] = useState("ALL");
 
   return (

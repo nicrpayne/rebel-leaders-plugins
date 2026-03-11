@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 const PLUGINS = [
   {
     id: "gravity-check",
-    title: "Gravity Check",
+    title: "GRAVITAS",
     category: "MIRROR",
     desc: "15 questions. 3 minutes. Reveal the hidden forces shaping your team's orbit.",
     status: "ACTIVE",
@@ -47,7 +47,7 @@ export default function Home() {
           
           <nav className="hidden md:flex items-center gap-8 text-xs font-bold tracking-widest text-[#e6c885]/60">
             <a href="#" className="hover:text-[#c5a059] transition-colors">THE MAP</a>
-            <a href="#" className="text-[#c5a059] border-b border-[#c5a059]">ARMORY</a>
+            <a href="#" className="text-[#c5a059] border-b border-[#c5a059]">WORKBENCH</a>
             <a href="#" className="hover:text-[#c5a059] transition-colors">THE SHELF</a>
             <a href="#" className="hover:text-[#c5a059] transition-colors">RESIDENCY</a>
             <a href="#" className="hover:text-[#c5a059] transition-colors">ABOUT</a>
@@ -63,7 +63,7 @@ export default function Home() {
       <div className="relative pt-24 pb-16 text-center z-10">
         <div className="container mx-auto px-4">
           <div className="font-pixel text-[#8a6d3b] text-[10px] tracking-[0.2em] uppercase mb-4">Rebel OS // Plugins</div>
-          <h1 className="font-serif text-5xl md:text-7xl text-[#e6c885] mb-6 italic">The Armory</h1>
+          <h1 className="font-serif text-5xl md:text-7xl text-[#e6c885] mb-6 italic">The Workbench</h1>
           <p className="font-serif text-xl md:text-2xl text-[#e6c885]/70 max-w-2xl mx-auto leading-relaxed">
             Tools for the resistance. Diagnostics, protocols, and maps to navigate the organizational wilderness.
           </p>

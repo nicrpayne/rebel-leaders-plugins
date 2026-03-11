@@ -62,10 +62,10 @@ export default function Results() {
 
   const handleShare = () => {
     if (!results) return;
-    const text = `I just ran a Gravity Check on my team. My orbit is: ${results.archetype}. Find your signal at rebel-leader.com`;
+    const text = `I just ran GRAVITAS on my team. My orbit is: ${results.archetype}. Find your signal at rebel-leader.com`;
     if (navigator.share) {
       navigator.share({
-        title: "Gravity Check Results",
+        title: "GRAVITAS Results",
         text: text,
         url: window.location.href
       });
@@ -248,7 +248,7 @@ export default function Results() {
             <div className="text-center pt-4">
               <Link href="/">
                 <span className="text-[9px] font-pixel text-[#444] hover:text-[#666] cursor-pointer border-b border-transparent hover:border-[#444] transition-colors">
-                  RETURN TO ARMORY
+                  RETURN TO WORKBENCH
                 </span>
               </Link>
             </div>

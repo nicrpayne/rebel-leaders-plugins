@@ -7,7 +7,7 @@
 
 ## 1. The Mission: "Hope is an Act of Rebellion"
 
-The **Rebel Leaders Plugin Suite** is not just a set of productivity tools; it is a digital armory for the resistance. In a corporate world dominated by cynicism, burnout, and "default" leadership, we are building tools that help leaders reclaim their agency, humanity, and vision.
+The **Rebel Leaders Plugin Suite** is not just a set of productivity tools; it is a digital workbench for the resistance. In a corporate world dominated by cynicism, burnout, and "default" leadership, we are building tools that help leaders reclaim their agency, humanity, and vision.
 
 **Core Ethos:**
 *   **Tactile & Visceral:** Leadership is messy and physical. Our tools should feel like heavy, industrial machinery (switches, decks, cartridges), not sterile SaaS dashboards.
@@ -20,11 +20,11 @@ The **Rebel Leaders Plugin Suite** is not just a set of productivity tools; it i
 
 The suite currently consists of two interconnected modules:
 
-### A. Gravity Check (The Diagnostic)
+### A. GRAVITAS (The Diagnostic)
 *   **Purpose:** To visualize the invisible forces pulling a team apart.
 *   **Mechanic:** An "Orbital Mechanics" interface where users drag nodes (team members) to represent their distance from the leader and each other across 4 dimensions: *Identity, Relationship, Vision, Conflict*.
 *   **Output:** A "Gravity Score" and a specific "Bottleneck" (e.g., *Identity Drift*).
-*   **The Handoff:** Upon completion, the system "transmits" a signal to The Codex, auto-unlocking the recommended protocol.
+*   **The Handoff:** Upon completion, GRAVITAS "transmits" a signal to The Codex, auto-unlocking the recommended protocol.
 
 ### B. The Codex (The Solution)
 *   **Purpose:** A repository of "dangerous knowledge"—protocols, scripts, and coaching moves to break the bottleneck.
@@ -66,11 +66,11 @@ The suite currently consists of two interconnected modules:
 
 **Immediate Next Steps:**
 1.  **Unlockables:** Implement a "Profile" or "Trophy Case" where users can display the **Truth Sword** (asset already generated) after completing a streak of coaching sessions.
-2.  **Shareable Results:** A "Mission Report" card generated at the end of Gravity Check for social sharing.
+2.  **Shareable Results:** A "Mission Report" card generated at the end of GRAVITAS for social sharing.
 3.  **Timer/Notes in Run Mode:** Add a simple countdown timer and a text area for leaders to jot down observations during a protocol.
 
 **Long-Term Vision:**
-*   **Multiplayer Gravity Check:** Real-time collaboration where entire teams drag their own nodes to see the collective view.
+*   **Multiplayer GRAVITAS:** Real-time collaboration where entire teams drag their own nodes to see the collective view.
 *   **The Residency:** A deeper, cohort-based learning module (placeholder exists in nav).
 *   **Mobile App:** A companion app for "pocket protocols" (though the web app is mobile-first).
 

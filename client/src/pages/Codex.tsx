@@ -37,7 +37,7 @@ export default function Codex() {
     });
   };
 
-  // Load Gravity Check Results & Signal Handling
+  // Load GRAVITAS Results & Signal Handling
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const signal = params.get("signal");
@@ -208,7 +208,7 @@ export default function Codex() {
           </div>
         )}
 
-        {/* ── GRAVITY CHECK PROMPT (No Results) ── */}
+        {/* ── GRAVITAS PROMPT (No Results) ── */}
         {!hasGravityResults && (
           <div
             className={cn(
@@ -225,7 +225,7 @@ export default function Codex() {
                   Calibration Required
                 </h3>
                 <p className="font-mono text-[10px] text-[#666] mt-0.5">
-                  Run a Gravity Check to unlock personalized protocol recommendations.
+                  Run GRAVITAS to unlock personalized protocol recommendations.
                 </p>
               </div>
             </div>
@@ -237,7 +237,7 @@ export default function Codex() {
           </div>
         )}
 
-        {/* ── GRAVITY CHECK RESULTS BANNER ── */}
+        {/* ── GRAVITAS RESULTS BANNER ── */}
         {hasGravityResults && bottleneckReason && (
           <div
             className={cn(
