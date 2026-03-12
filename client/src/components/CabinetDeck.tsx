@@ -194,9 +194,9 @@ function PagerScreen({
         alt=""
         className="absolute pointer-events-none z-20"
         style={{
-          inset: "-8%",
-          width: "116%",
-          height: "116%",
+          inset: "-15%",
+          width: "130%",
+          height: "130%",
           objectFit: "fill",
         }}
         draggable={false}
