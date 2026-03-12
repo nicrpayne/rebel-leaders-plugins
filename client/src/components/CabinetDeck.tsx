@@ -151,12 +151,12 @@ function PagerScreen({
       <div
         className="absolute inset-0 pointer-events-none z-[15] rounded-[2px]"
         style={{
-          background: "radial-gradient(ellipse at center, rgba(0,0,0,0) 45%, rgba(0,0,0,0.12) 68%, rgba(0,0,0,0.32) 100%)",
+          background: "radial-gradient(ellipse at center, rgba(0,0,0,0) 35%, rgba(0,0,0,0.2) 58%, rgba(0,0,0,0.55) 100%)",
           boxShadow: [
-            "inset 0 0 18px rgba(0,0,0,0.55)",
-            "inset 0 0 40px rgba(0,0,0,0.35)",
-            "inset 0 10px 18px rgba(255,255,255,0.04)",
-            "inset 0 -8px 14px rgba(0,0,0,0.35)",
+            "inset 0 0 30px rgba(0,0,0,0.65)",
+            "inset 0 0 60px rgba(0,0,0,0.4)",
+            "inset 0 12px 24px rgba(255,255,255,0.06)",
+            "inset 0 -10px 20px rgba(0,0,0,0.45)",
           ].join(", "),
         }}
       />
@@ -166,9 +166,9 @@ function PagerScreen({
       <div
         className="absolute inset-0 pointer-events-none z-[16] rounded-[2px]"
         style={{
-          background: "linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 12%, rgba(255,255,255,0) 30%)",
+          background: "linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 15%, rgba(255,255,255,0) 35%)",
           mixBlendMode: "screen",
-          opacity: 0.35,
+          opacity: 0.55,
         }}
       />
 
