@@ -3,13 +3,13 @@ import { cn } from "@/lib/utils";
 import { CodexEntry } from "@/lib/codex-schema";
 
 /* ─────────────────────────────────────────────
-   CABINET DECK — V6
-   Full hero image background with CSS overlay zones:
-   - 4 pager screens (dynamic text — idle / loaded / scanning / scanned)
-   - Cartridge slot (load bay with insert/eject animations)
-   - 3 buttons: READ / SCAN / EJECT (CSS overlays covering baked-in typos)
+   CABINET DECK — V7
+   - 4 pager screens with TICKER TAPE mode (scrolls across all 4 as one strip)
+   - Cartridge slot with insert/eject animations
+   - 3 invisible button hit zones (no visual overlays — user will supply button images)
    - 3 indicator lights above buttons (CSS amber glow)
    - Full ritual: Load → Scan → Read → Eject
+   - Ticker tape triggers on load, scan complete, and idle ambient
    ───────────────────────────────────────────── */
 
 const SPINE_CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine_transparent_95539dfa.png";
@@ -32,14 +32,6 @@ const BUTTON_HITZONES = {
   read:  { left: 72.0, top: 64.0, width: 5.4, height: 17.0 },
   scan:  { left: 78.2, top: 64.0, width: 5.2, height: 17.0 },
   eject: { left: 84.2, top: 64.0, width: 4.8, height: 17.0 },
-};
-
-/* ── Button face overlays (precise position over the baked-in amber button faces) ── */
-/* These are the visual labels that cover the typos — sized to exactly match the button face */
-const BUTTON_FACES = {
-  read:  { left: 72.8, top: 72.0, width: 4.0, height: 7.5, label: "READ" },
-  scan:  { left: 79.1, top: 72.2, width: 3.9, height: 7.3, label: "SCAN" },
-  eject: { left: 85.2, top: 72.3, width: 3.5, height: 7.2, label: "EJECT" },
 };
 
 /* ── Indicator light positions (% of hero image) — above each button ── */
@@ -70,6 +62,14 @@ const IDLE_MESSAGES = [
   { line1: "SYSTEM", line2: "READY" },
 ];
 
+/* ── Ticker tape messages ── */
+const IDLE_TICKER_MESSAGES = [
+  ">>> CODEX RELAY NETWORK ACTIVE ... SIGNAL NOMINAL ... AWAITING INPUT >>>",
+  ">>> ARCHIVE STATUS: ONLINE ... ALL SECTORS NOMINAL ... STANDING BY >>>",
+  ">>> TRUST EQUATION MONITORING ... NO ANOMALIES DETECTED ... IDLE >>>",
+  ">>> RELAY 01 CLEAR ... RELAY 02 CLEAR ... SYSTEM READY >>>",
+];
+
 interface GravitasScores {
   identity: number;
   relationship: number;
@@ -88,7 +88,107 @@ interface CabinetDeckProps {
   bottleneckCategory: string | null;
 }
 
-/* ── Pager Screen Sub-component ── */
+/* ── Ticker Tape Sub-component ──
+   A single long string scrolls left-to-right across one screen.
+   Each screen shows a "window" into the same ticker at a different offset,
+   creating the illusion of one continuous crawl across all 4 physical screens.
+*/
+function TickerTape({
+  text,
+  screenIndex,
+  totalScreens,
+  durationMs,
+  onComplete,
+}: {
+  text: string;
+  screenIndex: number;
+  totalScreens: number;
+  durationMs: number;
+  onComplete?: () => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const [offset, setOffset] = useState<number | null>(null);
+  const animFrameRef = useRef<number>(0);
+  const startTimeRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (!containerRef.current || !textRef.current) return;
+
+    const containerW = containerRef.current.offsetWidth;
+    const textW = textRef.current.scrollWidth;
+
+    // Total travel distance: the text needs to scroll across all screens
+    // Each screen is a window. We offset based on screen position.
+    // The text starts fully off-screen right of screen 0 and ends fully off-screen left of screen 3.
+    // Total virtual strip width = containerW * totalScreens (approximate, since screens have gaps)
+    const totalStripW = containerW * totalScreens * 1.4; // 1.4 accounts for gaps between screens
+    const totalTravel = totalStripW + textW;
+
+    // This screen's viewport offset within the virtual strip
+    const screenOffset = (screenIndex / totalScreens) * totalStripW;
+
+    startTimeRef.current = performance.now();
+
+    const animate = (now: number) => {
+      const elapsed = now - startTimeRef.current;
+      const progress = Math.min(elapsed / durationMs, 1);
+
+      // Current position of the text's left edge in the virtual strip
+      const textLeft = totalStripW - progress * totalTravel;
+
+      // Position relative to this screen's viewport
+      const localX = textLeft + screenOffset;
+
+      setOffset(localX);
+
+      if (progress < 1) {
+        animFrameRef.current = requestAnimationFrame(animate);
+      } else {
+        if (onComplete && screenIndex === totalScreens - 1) {
+          onComplete();
+        }
+      }
+    };
+
+    animFrameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    };
+  }, [text, screenIndex, totalScreens, durationMs, onComplete]);
+
+  const textColor = "#33ff33";
+  const glowColor = "0 0 8px rgba(51,255,51,0.6), 0 0 2px rgba(51,255,51,0.9)";
+
+  return (
+    <div
+      ref={containerRef}
+      className="absolute inset-0 overflow-hidden flex items-center"
+      style={{
+        fontFamily: 'var(--font-lcd)',
+        padding: '0 8%',
+      }}
+    >
+      <div
+        ref={textRef}
+        className="whitespace-nowrap absolute"
+        style={{
+          color: textColor,
+          textShadow: `${glowColor}, 0 0 6px rgba(70,255,120,0.22)`,
+          fontSize: "clamp(8px, 1.3vw, 15px)",
+          letterSpacing: "0.1em",
+          transform: offset !== null ? `translateX(${offset}px)` : 'translateX(200%)',
+          willChange: 'transform',
+        }}
+      >
+        {text}
+      </div>
+    </div>
+  );
+}
+
+/* ── Pager Screen Sub-component (static two-line mode) ── */
 function PagerScreen({
   line1,
   line2,
@@ -151,46 +251,6 @@ function PagerScreen({
         padding: '8% 10%',
       }}
     >
-      {/* LCD background */}
-      <div
-        className="absolute pointer-events-none rounded-[1px]"
-        style={{
-          inset: "-2px",
-          background: "linear-gradient(170deg, #1a2a12 0%, #142210 25%, #0f1a0c 50%, #142210 75%, #1a2a12 100%)",
-        }}
-      />
-      {/* Scanlines */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px)",
-          backgroundSize: "100% 4px",
-          mixBlendMode: "multiply",
-        }}
-      />
-      {/* Edge darkening */}
-      <div
-        className="absolute inset-0 pointer-events-none z-[15] rounded-[2px]"
-        style={{
-          background: "radial-gradient(ellipse at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.15) 63%, rgba(0,0,0,0.42) 100%)",
-          boxShadow: [
-            "inset 0 0 24px rgba(0,0,0,0.6)",
-            "inset 0 0 50px rgba(0,0,0,0.38)",
-            "inset 0 11px 20px rgba(255,255,255,0.05)",
-            "inset 0 -9px 16px rgba(0,0,0,0.4)",
-          ].join(", "),
-        }}
-      />
-      {/* Glass reflection */}
-      <div
-        className="absolute inset-0 pointer-events-none z-[16] rounded-[2px]"
-        style={{
-          background: "linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 15%, rgba(255,255,255,0) 35%)",
-          mixBlendMode: "screen",
-          opacity: 0.55,
-        }}
-      />
-
       <span
         className={cn(
           "relative z-10 block truncate uppercase leading-none",
@@ -264,6 +324,53 @@ function IndicatorLight({ isOn, isPulsing }: { isOn: boolean; isPulsing: boolean
   );
 }
 
+/* ── Screen LCD Background (shared by both ticker and static modes) ── */
+function ScreenLCDBackground() {
+  return (
+    <>
+      {/* LCD background */}
+      <div
+        className="absolute pointer-events-none rounded-[1px]"
+        style={{
+          inset: "-2px",
+          background: "linear-gradient(170deg, #1a2a12 0%, #142210 25%, #0f1a0c 50%, #142210 75%, #1a2a12 100%)",
+        }}
+      />
+      {/* Scanlines */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px)",
+          backgroundSize: "100% 4px",
+          mixBlendMode: "multiply",
+        }}
+      />
+      {/* Edge darkening */}
+      <div
+        className="absolute inset-0 pointer-events-none z-[15] rounded-[2px]"
+        style={{
+          background: "radial-gradient(ellipse at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.15) 63%, rgba(0,0,0,0.42) 100%)",
+          boxShadow: [
+            "inset 0 0 24px rgba(0,0,0,0.6)",
+            "inset 0 0 50px rgba(0,0,0,0.38)",
+            "inset 0 11px 20px rgba(255,255,255,0.05)",
+            "inset 0 -9px 16px rgba(0,0,0,0.4)",
+          ].join(", "),
+        }}
+      />
+      {/* Glass reflection */}
+      <div
+        className="absolute inset-0 pointer-events-none z-[16] rounded-[2px]"
+        style={{
+          background: "linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 15%, rgba(255,255,255,0) 35%)",
+          mixBlendMode: "screen",
+          opacity: 0.55,
+        }}
+      />
+    </>
+  );
+}
+
 export default function CabinetDeck({
   loadedEntry,
   onEject,
@@ -284,6 +391,56 @@ export default function CabinetDeck({
   const [scanStep, setScanStep] = useState(0);
   const scanTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Ticker tape state
+  const [tickerMode, setTickerMode] = useState(false);
+  const [tickerText, setTickerText] = useState("");
+  const tickerTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Idle ticker — fires periodically when no cartridge is loaded
+  const idleTickerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Start a ticker crawl
+  const startTicker = useCallback((text: string, durationMs = 6000, onDone?: () => void) => {
+    setTickerText(text);
+    setTickerMode(true);
+    if (tickerTimeoutRef.current) clearTimeout(tickerTimeoutRef.current);
+    tickerTimeoutRef.current = setTimeout(() => {
+      setTickerMode(false);
+      setTickerText("");
+      onDone?.();
+    }, durationMs + 500); // small buffer after animation
+  }, []);
+
+  // Schedule idle ticker messages
+  useEffect(() => {
+    if (deckPhase !== "idle" || loadedEntry) {
+      if (idleTickerRef.current) clearTimeout(idleTickerRef.current);
+      return;
+    }
+
+    const scheduleIdle = () => {
+      const delay = 15000 + Math.random() * 25000; // 15-40s between idle tickers
+      idleTickerRef.current = setTimeout(() => {
+        const msg = IDLE_TICKER_MESSAGES[Math.floor(Math.random() * IDLE_TICKER_MESSAGES.length)];
+        startTicker(msg, 8000, () => {
+          scheduleIdle();
+        });
+      }, delay);
+    };
+
+    // First idle ticker after a short delay
+    idleTickerRef.current = setTimeout(() => {
+      const msg = IDLE_TICKER_MESSAGES[Math.floor(Math.random() * IDLE_TICKER_MESSAGES.length)];
+      startTicker(msg, 8000, () => {
+        scheduleIdle();
+      });
+    }, 5000);
+
+    return () => {
+      if (idleTickerRef.current) clearTimeout(idleTickerRef.current);
+    };
+  }, [deckPhase, loadedEntry, startTicker]);
+
   // Handle cartridge load/eject animations
   useEffect(() => {
     const currentId = loadedEntry?.id;
@@ -292,8 +449,19 @@ export default function CabinetDeck({
     if (loadedEntry && currentId !== prevId) {
       setDisplayEntry(loadedEntry);
       setAnimPhase("inserting");
-      setDeckPhase("loaded");
       setScanStep(0);
+
+      // Ticker on load
+      const title = loadedEntry.title?.toUpperCase() || "UNKNOWN";
+      const cat = loadedEntry.flywheel_node?.[0]?.toUpperCase() || "CODEX";
+      startTicker(
+        `>>> CARTRIDGE LOADED: ${title} ... ${cat} CLASS ... AWAITING SCAN ... PRESS SCAN TO ANALYZE >>>`,
+        7000,
+        () => {
+          setDeckPhase("loaded");
+        }
+      );
+
       const timer = setTimeout(() => setAnimPhase("loaded"), 400);
       prevLoadedIdRef.current = currentId;
       return () => clearTimeout(timer);
@@ -302,6 +470,10 @@ export default function CabinetDeck({
       setDeckPhase("idle");
       setScanStep(0);
       if (scanTimerRef.current) clearTimeout(scanTimerRef.current);
+
+      // Ticker on eject
+      startTicker(">>> CARTRIDGE EJECTED ... DECK CLEAR ... STANDING BY >>>", 5000);
+
       const timer = setTimeout(() => {
         setAnimPhase("idle");
         setDisplayEntry(null);
@@ -309,18 +481,19 @@ export default function CabinetDeck({
       prevLoadedIdRef.current = undefined;
       return () => clearTimeout(timer);
     }
-  }, [loadedEntry]);
+  }, [loadedEntry, startTicker]);
 
   // SCAN animation sequence
   const handleScan = useCallback(() => {
     if (!loadedEntry || deckPhase !== "loaded") return;
     setDeckPhase("scanning");
     setScanStep(0);
+    setTickerMode(false); // cancel any running ticker
 
     // Cycle through scan animation steps
     let step = 0;
     const totalSteps = SCAN_SEQUENCE.length;
-    const stepDuration = 600; // ms per step
+    const stepDuration = 600;
 
     const advanceStep = () => {
       step++;
@@ -328,25 +501,38 @@ export default function CabinetDeck({
         setScanStep(step);
         scanTimerRef.current = setTimeout(advanceStep, stepDuration);
       } else {
-        // Scan complete — resolve to scanned state
-        setDeckPhase("scanned");
-        setScanStep(0);
+        // Scan complete — fire ticker with results, then settle to scanned state
+        const cat = loadedEntry.category?.toUpperCase() || "UNKNOWN";
+        const node = loadedEntry.flywheel_node?.[0]?.toUpperCase() || "—";
+        const diff = loadedEntry.difficulty || 0;
+        const diffLabel = diff <= 2 ? "LOW" : diff <= 3 ? "MEDIUM" : "HIGH";
+        const context = loadedEntry.context_tags?.[0]?.toUpperCase().replace(/_/g, " ") || "GENERAL";
+
+        startTicker(
+          `>>> SCAN COMPLETE ... ${cat} ... ${node} ... INTENSITY ${diff} ${diffLabel} ... ${context} ... PROTOCOL READY ... PRESS READ >>>`,
+          7000,
+          () => {
+            setDeckPhase("scanned");
+            setScanStep(0);
+          }
+        );
       }
     };
 
     scanTimerRef.current = setTimeout(advanceStep, stepDuration);
-  }, [loadedEntry, deckPhase]);
+  }, [loadedEntry, deckPhase, startTicker]);
 
-  // Clean up scan timer on unmount
+  // Clean up timers on unmount
   useEffect(() => {
     return () => {
       if (scanTimerRef.current) clearTimeout(scanTimerRef.current);
+      if (tickerTimeoutRef.current) clearTimeout(tickerTimeoutRef.current);
+      if (idleTickerRef.current) clearTimeout(idleTickerRef.current);
     };
   }, []);
 
-  /* ── Build pager screen messages based on deck phase ── */
+  /* ── Build pager screen messages based on deck phase (static mode) ── */
   const getPagerMessages = useCallback(() => {
-    // Signal acquisition override
     if (isReceivingSignal) {
       return [
         { line1: "INCOMING", line2: "SIGNAL!" },
@@ -356,10 +542,8 @@ export default function CabinetDeck({
       ];
     }
 
-    // Deck ritual states
     switch (deckPhase) {
       case "loaded": {
-        // Cartridge just loaded — awaiting SCAN
         const cat = loadedEntry?.flywheel_node?.[0]?.toUpperCase() || "CODEX";
         const title = loadedEntry?.title?.substring(0, 14).toUpperCase() || "UNKNOWN";
         return [
@@ -371,13 +555,11 @@ export default function CabinetDeck({
       }
 
       case "scanning": {
-        // Rapid cycling animation
         const seq = SCAN_SEQUENCE[scanStep] || SCAN_SEQUENCE[0];
         return seq;
       }
 
       case "scanned": {
-        // Show cartridge metadata across 4 screens
         if (!loadedEntry) return IDLE_MESSAGES;
         const cat = loadedEntry.category?.toUpperCase() || "UNKNOWN";
         const node = loadedEntry.flywheel_node?.[0]?.toUpperCase() || "—";
@@ -393,7 +575,6 @@ export default function CabinetDeck({
       }
 
       default: {
-        // Idle — show gravitas scores if available, otherwise idle chatter
         if (gravitasScores) {
           const dims = ["identity", "relationship", "vision", "culture"] as const;
           return dims.map(d => {
@@ -411,16 +592,16 @@ export default function CabinetDeck({
   const isActive = deckPhase !== "idle" || !!gravitasScores || isReceivingSignal;
   const isScanning = deckPhase === "scanning";
 
-  // Button enabled states for the ritual
+  // Button enabled states
   const canRead = deckPhase === "scanned" && !!loadedEntry;
   const canScan = deckPhase === "loaded" && !!loadedEntry;
   const canEject = !!loadedEntry;
 
   // Indicator light states
   const lights = [
-    { isOn: canRead || isReaderOpen, isPulsing: isReaderOpen },     // READ light
-    { isOn: isScanning || deckPhase === "scanned", isPulsing: isScanning }, // SCAN light
-    { isOn: !!loadedEntry, isPulsing: false },                       // EJECT light (on when cartridge present)
+    { isOn: canRead || isReaderOpen, isPulsing: isReaderOpen },
+    { isOn: isScanning || deckPhase === "scanned", isPulsing: isScanning },
+    { isOn: !!loadedEntry, isPulsing: false },
   ];
 
   return (
@@ -448,21 +629,26 @@ export default function CabinetDeck({
             borderRadius: "3px",
           }}
         >
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              inset: "-4px",
-              background: "radial-gradient(ellipse at 50% 50%, #1a1c18 0%, #0e100c 40%, #080a07 100%)",
-              borderRadius: "2px",
-            }}
-          />
-          <PagerScreen
-            line1={pagerMessages[idx]?.line1 || ""}
-            line2={pagerMessages[idx]?.line2 || ""}
-            isActive={isActive}
-            isScanning={isScanning}
-            screenIndex={idx}
-          />
+          {/* LCD background layer (always present) */}
+          <ScreenLCDBackground />
+
+          {/* Content layer: ticker tape OR static messages */}
+          {tickerMode ? (
+            <TickerTape
+              text={tickerText}
+              screenIndex={idx}
+              totalScreens={PAGER_SCREENS.length}
+              durationMs={tickerText.length > 80 ? 8000 : 6000}
+            />
+          ) : (
+            <PagerScreen
+              line1={pagerMessages[idx]?.line1 || ""}
+              line2={pagerMessages[idx]?.line2 || ""}
+              isActive={isActive}
+              isScanning={isScanning}
+              screenIndex={idx}
+            />
+          )}
         </div>
       ))}
 
@@ -523,53 +709,8 @@ export default function CabinetDeck({
         </div>
       ))}
 
-      {/* ── BUTTON FACE OVERLAYS (visual labels covering baked-in typos) ── */}
-      {/* These sit precisely on the amber button faces with dark embossed text */}
-      {(["read", "scan", "eject"] as const).map((key) => {
-        const face = BUTTON_FACES[key];
-        return (
-          <div
-            key={`face-${key}`}
-            className="absolute pointer-events-none z-30 flex items-center justify-center"
-            style={{
-              left: `${face.left}%`,
-              top: `${face.top}%`,
-              width: `${face.width}%`,
-              height: `${face.height}%`,
-              /* Match the baked-in amber button texture */
-              background: "linear-gradient(180deg, #c9a24e 0%, #b8922e 15%, #a07c22 35%, #8a6a1a 55%, #7a5c16 75%, #6a4e12 100%)",
-              borderRadius: "2px",
-              /* Subtle bevel to match the physical button look */
-              boxShadow: [
-                "inset 0 1px 0 rgba(255,220,140,0.35)",
-                "inset 0 -1px 0 rgba(0,0,0,0.25)",
-                "inset 1px 0 0 rgba(255,220,140,0.1)",
-                "inset -1px 0 0 rgba(0,0,0,0.15)",
-                "0 1px 2px rgba(0,0,0,0.5)",
-              ].join(", "),
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "'Arial Black', 'Helvetica Neue', sans-serif",
-                fontSize: "clamp(5px, 0.65vw, 9px)",
-                fontWeight: 900,
-                color: "#3a2810",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                /* Embossed / debossed look — dark text with subtle highlight below */
-                textShadow: "0 1px 0 rgba(200,170,80,0.4), 0 -1px 0 rgba(0,0,0,0.15)",
-                lineHeight: 1,
-                userSelect: "none",
-              }}
-            >
-              {face.label}
-            </span>
-          </div>
-        );
-      })}
-
       {/* ── BUTTON HIT ZONES (invisible, generous click areas) ── */}
+      {/* No visual overlays — baked-in button images show through. User will supply corrected button images later. */}
       {/* READ */}
       <button
         onClick={() => { if (canRead) onRead(); }}
