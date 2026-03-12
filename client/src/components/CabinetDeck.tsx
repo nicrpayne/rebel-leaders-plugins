@@ -27,18 +27,26 @@ const PAGER_SCREENS = [
     transform: "perspective(350px) rotateY(3.5deg) rotateX(-0.5deg)" },
 ];
 
-/* ── Button positions (% of hero image) ── */
-const BUTTONS = {
-  read: { left: 72.6, top: 66.5, width: 4.4, height: 14.0, label: "READ" },
-  scan: { left: 78.9, top: 66.8, width: 4.2, height: 13.7, label: "SCAN" },
-  eject: { left: 85.0, top: 66.9, width: 3.7, height: 13.6, label: "EJECT" },
+/* ── Button hit zones (invisible, generous click area — % of hero image) ── */
+const BUTTON_HITZONES = {
+  read:  { left: 72.0, top: 64.0, width: 5.4, height: 17.0 },
+  scan:  { left: 78.2, top: 64.0, width: 5.2, height: 17.0 },
+  eject: { left: 84.2, top: 64.0, width: 4.8, height: 17.0 },
+};
+
+/* ── Button face overlays (precise position over the baked-in amber button faces) ── */
+/* These are the visual labels that cover the typos — sized to exactly match the button face */
+const BUTTON_FACES = {
+  read:  { left: 72.8, top: 72.0, width: 4.0, height: 7.5, label: "READ" },
+  scan:  { left: 79.1, top: 72.2, width: 3.9, height: 7.3, label: "SCAN" },
+  eject: { left: 85.2, top: 72.3, width: 3.5, height: 7.2, label: "EJECT" },
 };
 
 /* ── Indicator light positions (% of hero image) — above each button ── */
 const INDICATOR_LIGHTS = [
-  { left: 73.0, top: 61.5, width: 3.6, height: 3.5 },  // above READ
-  { left: 79.2, top: 61.8, width: 3.4, height: 3.3 },  // above SCAN
-  { left: 85.2, top: 62.0, width: 3.0, height: 3.2 },  // above EJECT
+  { left: 73.4, top: 66.2, width: 2.8, height: 4.0 },  // above READ
+  { left: 79.7, top: 66.4, width: 2.6, height: 3.8 },  // above SCAN
+  { left: 85.7, top: 66.5, width: 2.4, height: 3.7 },  // above EJECT
 ];
 
 /* ── Cartridge slot position (% of hero image) ── */
@@ -515,104 +523,113 @@ export default function CabinetDeck({
         </div>
       ))}
 
-      {/* ── BUTTON OVERLAYS ── */}
-      {/* These cover the baked-in typos with proper labels */}
+      {/* ── BUTTON FACE OVERLAYS (visual labels covering baked-in typos) ── */}
+      {/* These sit precisely on the amber button faces with dark embossed text */}
+      {(["read", "scan", "eject"] as const).map((key) => {
+        const face = BUTTON_FACES[key];
+        return (
+          <div
+            key={`face-${key}`}
+            className="absolute pointer-events-none z-30 flex items-center justify-center"
+            style={{
+              left: `${face.left}%`,
+              top: `${face.top}%`,
+              width: `${face.width}%`,
+              height: `${face.height}%`,
+              /* Match the baked-in amber button texture */
+              background: "linear-gradient(180deg, #c9a24e 0%, #b8922e 15%, #a07c22 35%, #8a6a1a 55%, #7a5c16 75%, #6a4e12 100%)",
+              borderRadius: "2px",
+              /* Subtle bevel to match the physical button look */
+              boxShadow: [
+                "inset 0 1px 0 rgba(255,220,140,0.35)",
+                "inset 0 -1px 0 rgba(0,0,0,0.25)",
+                "inset 1px 0 0 rgba(255,220,140,0.1)",
+                "inset -1px 0 0 rgba(0,0,0,0.15)",
+                "0 1px 2px rgba(0,0,0,0.5)",
+              ].join(", "),
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "'Arial Black', 'Helvetica Neue', sans-serif",
+                fontSize: "clamp(5px, 0.65vw, 9px)",
+                fontWeight: 900,
+                color: "#3a2810",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                /* Embossed / debossed look — dark text with subtle highlight below */
+                textShadow: "0 1px 0 rgba(200,170,80,0.4), 0 -1px 0 rgba(0,0,0,0.15)",
+                lineHeight: 1,
+                userSelect: "none",
+              }}
+            >
+              {face.label}
+            </span>
+          </div>
+        );
+      })}
 
-      {/* READ button */}
+      {/* ── BUTTON HIT ZONES (invisible, generous click areas) ── */}
+      {/* READ */}
       <button
         onClick={() => { if (canRead) onRead(); }}
         disabled={!canRead}
         className={cn(
-          "absolute z-40 flex items-center justify-center transition-all",
-          canRead ? "cursor-pointer hover:brightness-125 active:scale-95" : "cursor-default opacity-70"
+          "absolute z-40 transition-all",
+          canRead ? "cursor-pointer active:scale-95" : "cursor-default"
         )}
         style={{
-          left: `${BUTTONS.read.left}%`,
-          top: `${BUTTONS.read.top}%`,
-          width: `${BUTTONS.read.width}%`,
-          height: `${BUTTONS.read.height}%`,
-          background: "linear-gradient(180deg, #8b6914 0%, #6b4f0e 30%, #4a3508 60%, #3a2a06 100%)",
-          border: "1px solid #2a1f04",
-          borderRadius: "3px",
-          boxShadow: canRead
-            ? "0 1px 3px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,220,100,0.15)"
-            : "0 1px 2px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,220,100,0.05)",
-          fontFamily: "var(--font-lcd)",
-          fontSize: "clamp(5px, 0.7vw, 10px)",
-          color: canRead ? "#f5d070" : "#8a7040",
-          letterSpacing: "0.12em",
-          textShadow: canRead ? "0 0 4px rgba(245,208,112,0.5)" : "none",
-          lineHeight: 1,
+          left: `${BUTTON_HITZONES.read.left}%`,
+          top: `${BUTTON_HITZONES.read.top}%`,
+          width: `${BUTTON_HITZONES.read.width}%`,
+          height: `${BUTTON_HITZONES.read.height}%`,
+          background: "transparent",
+          border: "none",
+          outline: "none",
           padding: 0,
         }}
         title="READ PROTOCOL"
-      >
-        READ
-      </button>
-
-      {/* SCAN button */}
+      />
+      {/* SCAN */}
       <button
         onClick={handleScan}
         disabled={!canScan}
         className={cn(
-          "absolute z-40 flex items-center justify-center transition-all",
-          canScan ? "cursor-pointer hover:brightness-125 active:scale-95" : "cursor-default opacity-70"
+          "absolute z-40 transition-all",
+          canScan ? "cursor-pointer active:scale-95" : "cursor-default"
         )}
         style={{
-          left: `${BUTTONS.scan.left}%`,
-          top: `${BUTTONS.scan.top}%`,
-          width: `${BUTTONS.scan.width}%`,
-          height: `${BUTTONS.scan.height}%`,
-          background: "linear-gradient(180deg, #8b6914 0%, #6b4f0e 30%, #4a3508 60%, #3a2a06 100%)",
-          border: "1px solid #2a1f04",
-          borderRadius: "3px",
-          boxShadow: canScan
-            ? "0 1px 3px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,220,100,0.15)"
-            : "0 1px 2px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,220,100,0.05)",
-          fontFamily: "var(--font-lcd)",
-          fontSize: "clamp(5px, 0.7vw, 10px)",
-          color: canScan ? "#f5d070" : "#8a7040",
-          letterSpacing: "0.12em",
-          textShadow: canScan ? "0 0 4px rgba(245,208,112,0.5)" : "none",
-          lineHeight: 1,
+          left: `${BUTTON_HITZONES.scan.left}%`,
+          top: `${BUTTON_HITZONES.scan.top}%`,
+          width: `${BUTTON_HITZONES.scan.width}%`,
+          height: `${BUTTON_HITZONES.scan.height}%`,
+          background: "transparent",
+          border: "none",
+          outline: "none",
           padding: 0,
         }}
         title="SCAN CARTRIDGE"
-      >
-        SCAN
-      </button>
-
-      {/* EJECT button */}
+      />
+      {/* EJECT */}
       <button
         onClick={() => { if (canEject) onEject(); }}
         disabled={!canEject}
         className={cn(
-          "absolute z-40 flex items-center justify-center transition-all",
-          canEject ? "cursor-pointer hover:brightness-125 active:scale-95" : "cursor-default opacity-70"
+          "absolute z-40 transition-all",
+          canEject ? "cursor-pointer active:scale-95" : "cursor-default"
         )}
         style={{
-          left: `${BUTTONS.eject.left}%`,
-          top: `${BUTTONS.eject.top}%`,
-          width: `${BUTTONS.eject.width}%`,
-          height: `${BUTTONS.eject.height}%`,
-          background: "linear-gradient(180deg, #8b6914 0%, #6b4f0e 30%, #4a3508 60%, #3a2a06 100%)",
-          border: "1px solid #2a1f04",
-          borderRadius: "3px",
-          boxShadow: canEject
-            ? "0 1px 3px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,220,100,0.15)"
-            : "0 1px 2px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,220,100,0.05)",
-          fontFamily: "var(--font-lcd)",
-          fontSize: "clamp(5px, 0.65vw, 9px)",
-          color: canEject ? "#f5d070" : "#8a7040",
-          letterSpacing: "0.1em",
-          textShadow: canEject ? "0 0 4px rgba(245,208,112,0.5)" : "none",
-          lineHeight: 1,
+          left: `${BUTTON_HITZONES.eject.left}%`,
+          top: `${BUTTON_HITZONES.eject.top}%`,
+          width: `${BUTTON_HITZONES.eject.width}%`,
+          height: `${BUTTON_HITZONES.eject.height}%`,
+          background: "transparent",
+          border: "none",
+          outline: "none",
           padding: 0,
         }}
         title="EJECT CARTRIDGE"
-      >
-        EJECT
-      </button>
+      />
 
       {/* ── STATUS GLOW (when cartridge loaded) ── */}
       <div
