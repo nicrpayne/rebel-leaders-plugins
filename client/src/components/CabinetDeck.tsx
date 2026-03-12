@@ -16,10 +16,10 @@ const CABINET_HERO_CDN = "https://files.manuscdn.com/user_upload_by_module/sessi
 
 /* ── Pager screen positions (% of hero image) ── */
 const PAGER_SCREENS = [
-  { id: "identity",     left: 22.6, top: 17.8, width: 12.9, height: 17.0 },
-  { id: "relationship", left: 36.7, top: 17.9, width: 13.0, height: 16.9 },
-  { id: "vision",       left: 50.7, top: 17.8, width: 12.5, height: 12.4 },
-  { id: "culture",      left: 65.4, top: 17.6, width: 11.6, height: 11.1 },
+  { id: "identity",     left: 24.0, top: 18.6, width: 9.0, height: 9.1 },
+  { id: "relationship", left: 38.8, top: 18.8, width: 8.8, height: 9.1 },
+  { id: "vision",       left: 52.0, top: 19.5, width: 10.0, height: 8.1 },
+  { id: "culture",      left: 66.6, top: 19.4, width: 9.1, height: 7.3 },
 ];
 
 /* ── Button positions (% of hero image) ── */
@@ -179,12 +179,12 @@ export default function CabinetDeck({
           />
           {/* Green LCD text */}
           <div className={cn(
-            "absolute inset-0 flex flex-col items-center justify-center px-1",
+            "absolute inset-0 flex flex-col items-center justify-center px-0.5 overflow-hidden",
             "font-mono text-center leading-tight",
             isReceivingSignal && "animate-pulse"
           )}>
             <span className={cn(
-              "text-[8px] sm:text-[10px] md:text-[12px] lg:text-[14px] font-bold tracking-wider uppercase",
+              "text-[7px] sm:text-[8px] md:text-[10px] lg:text-[11px] font-bold tracking-wide uppercase truncate w-full text-center",
               (gravitasScores || loadedEntry)
                 ? "text-[#1a3a1a] drop-shadow-[0_0_6px_rgba(50,120,50,0.8)]"
                 : "text-[#2a4a2a]/70 drop-shadow-[0_0_3px_rgba(50,120,50,0.4)]"
@@ -192,7 +192,7 @@ export default function CabinetDeck({
               {pagerMessages[idx]?.line1 || ""}
             </span>
             <span className={cn(
-              "text-[7px] sm:text-[9px] md:text-[11px] lg:text-[13px] font-bold tracking-wider uppercase mt-0.5",
+              "text-[6px] sm:text-[7px] md:text-[9px] lg:text-[10px] font-bold tracking-wide uppercase mt-0.5 truncate w-full text-center",
               (gravitasScores || loadedEntry)
                 ? "text-[#1a3a1a] drop-shadow-[0_0_6px_rgba(50,120,50,0.8)]"
                 : "text-[#2a4a2a]/70 drop-shadow-[0_0_3px_rgba(50,120,50,0.4)]"
