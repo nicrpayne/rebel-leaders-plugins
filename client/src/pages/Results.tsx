@@ -234,6 +234,7 @@ export default function Results() {
       signalCategory={results.force}
       progress={1}
       totalQuestions={20}
+      hideCalStamp
     >
       {/* Results Layout — scrollable within instrument area */}
       <div className="h-full overflow-y-auto overflow-x-hidden custom-scrollbar relative z-10 pr-1">

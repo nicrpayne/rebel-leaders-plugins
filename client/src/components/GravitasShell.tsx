@@ -11,6 +11,7 @@ interface GravitasShellProps {
   progress?: number; // 0-1 for level bar
   totalQuestions?: number;
   hideCalibration?: boolean;
+  hideCalStamp?: boolean;
 }
 
 export default function GravitasShell({
@@ -23,6 +24,7 @@ export default function GravitasShell({
   progress = 0,
   totalQuestions = 12,
   hideCalibration = false,
+  hideCalStamp = false,
 }: GravitasShellProps) {
   const dustRef = useRef<HTMLDivElement>(null);
 
@@ -299,6 +301,17 @@ export default function GravitasShell({
             </div>
           </div>
         </div>
+
+        {/* Maintenance Label / Calibration Stamp */}
+        {!hideCalStamp && (
+        <div className="absolute bottom-[12%] right-[14%] z-40">
+          <div className="bg-[rgba(20,20,24,0.8)] border border-[#1a1a22] px-1.5 py-[2px] rounded-[1px]">
+            <span className="text-[5px] tracking-[0.15em] text-[#3a3a44] uppercase">
+              CAL: 2026.03 // UNIT RL-GRV-001
+            </span>
+          </div>
+        </div>
+        )}
 
         {/* Sticker — slapped on the chassis, below the panel */}
         <div
