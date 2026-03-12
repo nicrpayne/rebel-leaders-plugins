@@ -692,16 +692,24 @@ startTicker(msg, 14000, () => {
           <div
             key={animPhase === "ejecting" ? displayEntry.id : displayEntry.id + "-active"}
             className={cn(
-              "absolute inset-0 z-10 flex items-center justify-center transform-gpu will-change-transform",
+              "absolute z-10 flex items-center justify-center transform-gpu will-change-transform",
               animPhase === "inserting" && "animate-in fade-in zoom-in-90 duration-300 ease-out",
               animPhase === "ejecting" && "animate-out fade-out zoom-out-90 duration-300 ease-in fill-mode-forwards",
               animPhase === "loaded" && "opacity-100 scale-100"
             )}
+            style={{
+              /* Center the cartridge within the slot — sized to look proportional */
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '65%',
+              height: '75%',
+            }}
           >
             <img
               src={SPINE_CDN}
               alt="Cartridge Spine"
-              className="absolute inset-0 w-full h-full object-fill drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] scale-[1.02]"
+              className="absolute inset-0 w-full h-full object-fill drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
             />
             <div
               className="absolute w-[70%] h-[60%] flex flex-col items-center justify-center text-center"
