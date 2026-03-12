@@ -260,7 +260,7 @@ export default function GravitasShell({
 
             {/* Calibration Stamp — inside panel, bottom-right */}
             {!hideCalStamp && (
-            <div className="absolute bottom-2 right-3 z-40">
+            <div className="absolute bottom-1 right-3 z-40">
               <div className="bg-[rgba(20,20,24,0.8)] border border-[#1a1a22] px-1.5 py-[2px] rounded-[1px]">
                 <span className="text-[5px] tracking-[0.15em] text-[#3a3a44] uppercase">
                   CAL: 2026.03 // UNIT RL-GRV-001
@@ -318,7 +318,7 @@ export default function GravitasShell({
         <div
           className="absolute z-[50] transition-transform duration-300 hover:rotate-[-8deg] hover:scale-105"
           style={{
-            bottom: "16%",
+            bottom: "12%",
             left: "17%",
             transform: "rotate(-5deg)",
           }}
@@ -326,7 +326,7 @@ export default function GravitasShell({
           <img
             src="/assets/gravitas/nic-sticker.webp"
             alt="Nic Sword Bearer"
-            className="w-[80px] h-auto drop-shadow-[2px_4px_6px_rgba(0,0,0,0.6)]"
+            className="w-[120px] h-auto drop-shadow-[2px_4px_6px_rgba(0,0,0,0.6)]"
           />
         </div>
       </div>
