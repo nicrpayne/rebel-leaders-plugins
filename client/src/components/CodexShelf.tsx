@@ -543,8 +543,8 @@ export default function CodexShelf({
         style={{
           width: '64%',
           height: '176%',
-          bottom: '-5%',
-          right: '-3%',
+          bottom: '0%',
+          right: '2%',
         }}
       >
         {/* Sword glow — cyan radial light casting from the sword tip */}
