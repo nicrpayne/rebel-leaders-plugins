@@ -128,12 +128,12 @@ function PagerScreen({
         padding: '8% 10%',
       }}
     >
-      {/* LCD background — covers baked-in image text, feels like real LCD glass */}
+      {/* LCD background — fully opaque to cover baked-in image text */}
       <div
-        className="absolute inset-0 pointer-events-none rounded-[1px]"
+        className="absolute pointer-events-none rounded-[1px]"
         style={{
+          inset: "-2px",
           background: "linear-gradient(170deg, #1a2a12 0%, #142210 25%, #0f1a0c 50%, #142210 75%, #1a2a12 100%)",
-          opacity: 0.94,
         }}
       />
       {/* Very subtle scanline overlay — just enough to feel CRT-ish */}
