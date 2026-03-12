@@ -618,10 +618,10 @@ export default function CodexShelf({
         alt="Parable of the Shipwrecked Leaders"
         className="absolute z-[14] pointer-events-none"
         style={{
-          bottom: '8%',
-          right: '28%',
-          width: '30%',
-          height: 'auto',
+          bottom: '2%',
+          right: '22%',
+          height: '42%',
+          width: 'auto',
           transform: 'rotate(-3deg)',
           transformOrigin: 'bottom center',
           filter: 'brightness(0.7) contrast(1.15) saturate(0.8)',
@@ -633,10 +633,10 @@ export default function CodexShelf({
         alt="Rebellious Hope"
         className="absolute z-[13] pointer-events-none"
         style={{
-          bottom: '8%',
-          right: '20%',
-          width: '30%',
-          height: 'auto',
+          bottom: '2%',
+          right: '18%',
+          height: '42%',
+          width: 'auto',
           transform: 'rotate(2deg)',
           transformOrigin: 'bottom center',
           filter: 'brightness(0.7) contrast(1.15) saturate(0.8)',
