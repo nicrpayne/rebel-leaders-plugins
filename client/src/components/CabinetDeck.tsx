@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { CodexEntry } from "@/lib/codex-schema";
 
 /* ─────────────────────────────────────────────
-   CABINET DECK — V5
+   CABINET DECK — V5.1
    Full hero image background (pager bank + deck + atmosphere)
    with CSS overlay zones for interactive elements:
    - 4 pager screens (dynamic text from GRAVITAS)
@@ -58,6 +58,138 @@ interface CabinetDeckProps {
   bottleneckCategory: string | null;
 }
 
+/* ── Pager Screen Sub-component ── */
+function PagerScreen({
+  line1,
+  line2,
+  isActive,
+  isReceivingSignal,
+  screenIndex,
+}: {
+  line1: string;
+  line2: string;
+  isActive: boolean;
+  isReceivingSignal: boolean;
+  screenIndex: number;
+}) {
+  const [showCursor, setShowCursor] = useState(true);
+  const [flickerOpacity, setFlickerOpacity] = useState(1);
+
+  // Blinking cursor
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 530 + screenIndex * 70); // Slightly different blink rate per screen
+    return () => clearInterval(interval);
+  }, [screenIndex]);
+
+  // Random flicker — each screen flickers independently
+  useEffect(() => {
+    const scheduleFlicker = () => {
+      // Random delay between 3-12 seconds
+      const delay = 3000 + Math.random() * 9000;
+      const timer = setTimeout(() => {
+        // Quick flicker: drop opacity briefly
+        setFlickerOpacity(0.3 + Math.random() * 0.3);
+        setTimeout(() => {
+          setFlickerOpacity(1);
+          // Sometimes double-flicker
+          if (Math.random() > 0.6) {
+            setTimeout(() => {
+              setFlickerOpacity(0.4);
+              setTimeout(() => setFlickerOpacity(1), 50);
+            }, 80);
+          }
+        }, 40 + Math.random() * 60);
+        scheduleFlicker();
+      }, delay);
+      return timer;
+    };
+    const timer = scheduleFlicker();
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Text color: bright phosphor green on the dark LCD
+  const textColor = isActive
+    ? "#33ff33" // Bright active green
+    : "#22cc44"; // Slightly dimmer idle green
+
+  const glowColor = isActive
+    ? "0 0 8px rgba(51,255,51,0.6), 0 0 2px rgba(51,255,51,0.9)"
+    : "0 0 4px rgba(34,204,68,0.3), 0 0 1px rgba(34,204,68,0.6)";
+
+  return (
+    <div
+      className="absolute inset-0 flex flex-col justify-center overflow-hidden"
+      style={{
+        fontFamily: 'var(--font-lcd)',
+        opacity: flickerOpacity,
+        transition: flickerOpacity < 1 ? 'none' : 'opacity 0.15s ease',
+        padding: '8% 10%',
+      }}
+    >
+      {/* LCD background — covers baked-in image text, feels like real LCD glass */}
+      <div
+        className="absolute inset-0 pointer-events-none rounded-[1px]"
+        style={{
+          background: "linear-gradient(170deg, #1a2a12 0%, #142210 25%, #0f1a0c 50%, #142210 75%, #1a2a12 100%)",
+          opacity: 0.94,
+        }}
+      />
+      {/* Very subtle scanline overlay — just enough to feel CRT-ish */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px)",
+          backgroundSize: "100% 4px",
+          mixBlendMode: "multiply",
+        }}
+      />
+
+      <span
+        className={cn(
+          "relative z-10 block truncate uppercase leading-none",
+          isReceivingSignal && "animate-pulse"
+        )}
+        style={{
+          color: textColor,
+          textShadow: glowColor,
+          fontSize: "clamp(8px, 1.4vw, 16px)",
+          letterSpacing: "0.08em",
+        }}
+      >
+        {line1}
+      </span>
+      <span
+        className={cn(
+          "relative z-10 block truncate uppercase leading-none mt-[0.15em]",
+          isReceivingSignal && "animate-pulse"
+        )}
+        style={{
+          color: textColor,
+          textShadow: glowColor,
+          fontSize: "clamp(7px, 1.2vw, 14px)",
+          letterSpacing: "0.06em",
+        }}
+      >
+        {line2}
+        {/* Blinking cursor */}
+        <span
+          style={{
+            color: textColor,
+            opacity: showCursor ? 0.9 : 0,
+            transition: "opacity 0.08s",
+            marginLeft: "1px",
+            textShadow: glowColor,
+          }}
+        >
+          _
+        </span>
+      </span>
+    </div>
+  );
+}
+
 export default function CabinetDeck({
   loadedEntry,
   onEject,
@@ -95,7 +227,7 @@ export default function CabinetDeck({
   }, [loadedEntry]);
 
   /* ── Build pager screen messages ── */
-  const getPagerMessages = () => {
+  const getPagerMessages = useCallback(() => {
     if (isReceivingSignal) {
       return [
         { line1: "INCOMING", line2: "SIGNAL!" },
@@ -105,7 +237,6 @@ export default function CabinetDeck({
       ];
     }
     if (loadedEntry) {
-      // When a cartridge is loaded, show protocol info across screens
       const cat = loadedEntry.flywheel_node?.[0]?.toUpperCase() || "CODEX";
       return [
         { line1: "LOADED", line2: cat },
@@ -115,7 +246,6 @@ export default function CabinetDeck({
       ];
     }
     if (gravitasScores) {
-      // Show per-dimension scores on each screen
       const dims = ["identity", "relationship", "vision", "culture"] as const;
       return dims.map(d => {
         const score = gravitasScores[d];
@@ -127,9 +257,10 @@ export default function CabinetDeck({
       });
     }
     return IDLE_MESSAGES;
-  };
+  }, [isReceivingSignal, loadedEntry, gravitasScores, bottleneckCategory]);
 
   const pagerMessages = getPagerMessages();
+  const isActive = !!(gravitasScores || loadedEntry || isReceivingSignal);
 
   return (
     <div className="relative w-full select-none">
@@ -153,53 +284,13 @@ export default function CabinetDeck({
             height: `${screen.height}%`,
           }}
         >
-          {/* Opaque LCD background to cover baked-in image text */}
-          <div
-            className="absolute inset-0 rounded-[2px]"
-            style={{
-              background: "linear-gradient(180deg, #8aac7a 0%, #7a9e6a 30%, #6e9060 70%, #7a9e6a 100%)",
-              boxShadow: "inset 0 1px 3px rgba(0,0,0,0.3), inset 0 -1px 2px rgba(255,255,255,0.1)",
-            }}
+          <PagerScreen
+            line1={pagerMessages[idx]?.line1 || ""}
+            line2={pagerMessages[idx]?.line2 || ""}
+            isActive={isActive}
+            isReceivingSignal={isReceivingSignal}
+            screenIndex={idx}
           />
-          {/* Scanline effect */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-[0.08]"
-            style={{
-              backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.3) 1px, rgba(0,0,0,0.3) 2px)",
-              backgroundSize: "100% 2px",
-            }}
-          />
-          {/* Pixel grid texture */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-[0.04]"
-            style={{
-              backgroundImage: "repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(0,0,0,0.2) 1px, rgba(0,0,0,0.2) 2px)",
-              backgroundSize: "2px 100%",
-            }}
-          />
-          {/* Green LCD text */}
-          <div className={cn(
-            "absolute inset-0 flex flex-col items-center justify-center px-0.5 overflow-hidden",
-            "font-mono text-center leading-tight",
-            isReceivingSignal && "animate-pulse"
-          )}>
-            <span className={cn(
-              "text-[7px] sm:text-[8px] md:text-[10px] lg:text-[11px] font-bold tracking-wide uppercase truncate w-full text-center",
-              (gravitasScores || loadedEntry)
-                ? "text-[#1a3a1a] drop-shadow-[0_0_6px_rgba(50,120,50,0.8)]"
-                : "text-[#2a4a2a]/70 drop-shadow-[0_0_3px_rgba(50,120,50,0.4)]"
-            )}>
-              {pagerMessages[idx]?.line1 || ""}
-            </span>
-            <span className={cn(
-              "text-[6px] sm:text-[7px] md:text-[9px] lg:text-[10px] font-bold tracking-wide uppercase mt-0.5 truncate w-full text-center",
-              (gravitasScores || loadedEntry)
-                ? "text-[#1a3a1a] drop-shadow-[0_0_6px_rgba(50,120,50,0.8)]"
-                : "text-[#2a4a2a]/70 drop-shadow-[0_0_3px_rgba(50,120,50,0.4)]"
-            )}>
-              {pagerMessages[idx]?.line2 || ""}
-            </span>
-          </div>
         </div>
       ))}
 
@@ -323,8 +414,10 @@ export default function CabinetDeck({
 
       {/* ── SIGNAL ACQUISITION OVERLAY ── */}
       {isReceivingSignal && (
-        <div className="absolute inset-0 z-50 bg-black/80 flex flex-col items-center justify-center font-pixel text-amber-500 backdrop-blur-sm rounded-sm">
-          <div className="text-xl sm:text-2xl md:text-4xl mb-6 animate-pulse tracking-[0.2em] text-center px-4">
+        <div className="absolute inset-0 z-50 bg-black/80 flex flex-col items-center justify-center backdrop-blur-sm rounded-sm"
+          style={{ fontFamily: 'var(--font-lcd)' }}
+        >
+          <div className="text-xl sm:text-2xl md:text-4xl mb-6 animate-pulse tracking-[0.2em] text-center px-4 text-amber-500">
             SIGNAL RECEIVED: {bottleneckCategory?.toUpperCase() || "UNKNOWN"}
           </div>
           <div className="text-xs sm:text-sm md:text-base mb-4 text-amber-500/80 tracking-widest">

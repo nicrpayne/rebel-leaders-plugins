@@ -50,6 +50,7 @@
   --color-forest-deep: var(--forest-deep);
   --color-forest-light: var(--forest-light);
   --font-pixel: "Press Start 2P", system-ui, sans-serif;
+  --font-lcd: "VT323", "Courier New", monospace;
   --font-serif: "Cormorant Garamond", serif;
   --font-sans: "Outfit", sans-serif;
 }
