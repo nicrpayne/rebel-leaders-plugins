@@ -29,7 +29,7 @@ const PAGER_SCREENS = [
     transform: "perspective(500px) rotateY(-1.5deg) rotateX(-0.3deg)" },
   { id: "vision",       left: 51.2, top: 17.43, width: 11.3, height: 10.9,
     transform: "perspective(500px) rotateY(1.5deg) rotateX(-0.3deg)" },
-  { id: "culture",      left: 66.2, top: 17.3, width: 10.8, height: 10.8,
+  { id: "culture",      left: 65.8, top: 17.3, width: 11.2, height: 10.8,
     transform: "perspective(350px) rotateY(3.5deg) rotateX(-0.5deg)" },
 ];
 
