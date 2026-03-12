@@ -186,6 +186,24 @@ function PagerScreen({
           _
         </span>
       </span>
+
+      {/* ── Vignette border — subtle bezel shadow on the LCD glass ── */}
+      {/* Thicker at top (bezel overhang), varies per screen for perspective */}
+      <div
+        className="absolute inset-0 pointer-events-none z-20 rounded-[1px]"
+        style={{
+          boxShadow: [
+            // Top shadow — thickest (bezel overhang)
+            `inset 0 ${screenIndex === 0 ? '6px' : screenIndex === 3 ? '5px' : '5px'} ${screenIndex === 0 ? '8px' : '7px'} -2px rgba(0,0,0,${screenIndex === 0 ? 0.35 : 0.3})`,
+            // Bottom shadow — thinnest
+            `inset 0 -3px 5px -2px rgba(0,0,0,${screenIndex === 0 ? 0.2 : 0.15})`,
+            // Left shadow — heavier on screen 0 (far left, bezel closer)
+            `inset ${screenIndex === 0 ? '5px' : screenIndex === 1 ? '4px' : '3px'} 0 ${screenIndex === 0 ? '7px' : '5px'} -2px rgba(0,0,0,${screenIndex === 0 ? 0.3 : screenIndex === 1 ? 0.22 : 0.18})`,
+            // Right shadow — heavier on screen 3 (far right, bezel closer)
+            `inset ${screenIndex === 3 ? '-5px' : screenIndex === 2 ? '-4px' : '-3px'} 0 ${screenIndex === 3 ? '7px' : '5px'} -2px rgba(0,0,0,${screenIndex === 3 ? 0.3 : screenIndex === 2 ? 0.22 : 0.18})`,
+          ].join(', '),
+        }}
+      />
     </div>
   );
 }
