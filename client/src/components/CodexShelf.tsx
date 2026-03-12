@@ -545,7 +545,7 @@ export default function CodexShelf({
         style={{
           width: '40%',
           bottom: '4%',
-          right: '-6%',
+          right: '-10%',
         }}
       >
         {/* Sword glow — cyan radial light casting from the sword tip */}
@@ -618,9 +618,9 @@ export default function CodexShelf({
         alt="Parable of the Shipwrecked Leaders"
         className="absolute z-[14] pointer-events-none"
         style={{
-          bottom: '5%',
-          right: '33%',
-          width: '10%',
+          bottom: '8%',
+          right: '28%',
+          width: '30%',
           height: 'auto',
           transform: 'rotate(-3deg)',
           transformOrigin: 'bottom center',
@@ -633,9 +633,9 @@ export default function CodexShelf({
         alt="Rebellious Hope"
         className="absolute z-[13] pointer-events-none"
         style={{
-          bottom: '5%',
-          right: '29%',
-          width: '10%',
+          bottom: '8%',
+          right: '20%',
+          width: '30%',
           height: 'auto',
           transform: 'rotate(2deg)',
           transformOrigin: 'bottom center',
