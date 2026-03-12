@@ -589,10 +589,11 @@ export default function CodexShelf({
         <img
           src={STATUE_CDN}
           alt="The Sword-Bearer"
-          className="absolute bottom-0 right-[5%] z-[2]"
+          className="absolute right-[2%] z-[2]"
           style={{
-            width: '80%',
+            width: '100%',
             height: 'auto',
+            bottom: '2%',
             filter: 'brightness(0.8) contrast(1.1) saturate(0.85)',
           }}
           draggable={false}
