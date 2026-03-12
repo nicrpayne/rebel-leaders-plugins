@@ -15,11 +15,22 @@ const SPINE_CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMo
 const CABINET_HERO_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/fLHdQJImZxvFSNJX.webp";
 
 /* ── Pager screen positions (% of hero image) ── */
+/* ── Per-screen perspective transforms ──
+   The hero image has slight camera perspective — screens aren't perfectly
+   straight-on. We apply a tiny CSS 3D transform to each overlay so it
+   matches the trapezoidal shape of the bezel in the image.
+   Screen 1 (far left): left edge closer to camera → rotateY slightly
+   Screen 4 (far right): right edge closer to camera → rotateY opposite
+   Screens 2-3 (center): minimal rotation                              */
 const PAGER_SCREENS = [
-  { id: "identity",     left: 23.0, top: 17.6, width: 10.625, height: 10.625 },
-  { id: "relationship", left: 37.3, top: 17.2, width: 11.8, height: 12.5 },
-  { id: "vision",       left: 50.5, top: 17.8, width: 12.5, height: 11.5 },
-  { id: "culture",      left: 65.0, top: 17.8, width: 11.5, height: 10.5 },
+  { id: "identity",     left: 23.0, top: 17.6, width: 10.625, height: 10.625,
+    transform: "perspective(400px) rotateY(2.5deg) rotateX(-0.5deg)" },
+  { id: "relationship", left: 37.3, top: 17.2, width: 11.8, height: 12.5,
+    transform: "perspective(600px) rotateY(1deg) rotateX(-0.3deg)" },
+  { id: "vision",       left: 50.5, top: 17.8, width: 12.5, height: 11.5,
+    transform: "perspective(600px) rotateY(-1deg) rotateX(-0.3deg)" },
+  { id: "culture",      left: 65.0, top: 17.8, width: 11.5, height: 10.5,
+    transform: "perspective(400px) rotateY(-2.5deg) rotateX(-0.5deg)" },
 ];
 
 /* ── Button positions (% of hero image) ── */
@@ -151,12 +162,12 @@ function PagerScreen({
       <div
         className="absolute inset-0 pointer-events-none z-[15] rounded-[2px]"
         style={{
-          background: "radial-gradient(ellipse at center, rgba(0,0,0,0) 35%, rgba(0,0,0,0.2) 58%, rgba(0,0,0,0.55) 100%)",
+          background: "radial-gradient(ellipse at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.15) 63%, rgba(0,0,0,0.42) 100%)",
           boxShadow: [
-            "inset 0 0 30px rgba(0,0,0,0.65)",
-            "inset 0 0 60px rgba(0,0,0,0.4)",
-            "inset 0 12px 24px rgba(255,255,255,0.06)",
-            "inset 0 -10px 20px rgba(0,0,0,0.45)",
+            "inset 0 0 24px rgba(0,0,0,0.6)",
+            "inset 0 0 50px rgba(0,0,0,0.38)",
+            "inset 0 11px 20px rgba(255,255,255,0.05)",
+            "inset 0 -9px 16px rgba(0,0,0,0.4)",
           ].join(", "),
         }}
       />
@@ -309,6 +320,8 @@ export default function CabinetDeck({
             top: `${screen.top}%`,
             width: `${screen.width}%`,
             height: `${screen.height}%`,
+            transform: screen.transform,
+            transformOrigin: "center center",
           }}
         >
           {/* Static "screen off" layer — always visible, covers baked-in image text.
