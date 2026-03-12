@@ -146,6 +146,32 @@ function PagerScreen({
         }}
       />
 
+      {/* ── Display Optics Layer 1: Inner edge darkening ── */}
+      {/* Radial gradient vignette + inset box-shadows = bezel-glass mask */}
+      <div
+        className="absolute inset-0 pointer-events-none z-[15] rounded-[2px]"
+        style={{
+          background: "radial-gradient(ellipse at center, rgba(0,0,0,0) 45%, rgba(0,0,0,0.12) 68%, rgba(0,0,0,0.32) 100%)",
+          boxShadow: [
+            "inset 0 0 18px rgba(0,0,0,0.55)",
+            "inset 0 0 40px rgba(0,0,0,0.35)",
+            "inset 0 10px 18px rgba(255,255,255,0.04)",
+            "inset 0 -8px 14px rgba(0,0,0,0.35)",
+          ].join(", "),
+        }}
+      />
+
+      {/* ── Display Optics Layer 2: Glass reflection ── */}
+      {/* Faint top-edge highlight simulating light hitting the glass surface */}
+      <div
+        className="absolute inset-0 pointer-events-none z-[16] rounded-[2px]"
+        style={{
+          background: "linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 12%, rgba(255,255,255,0) 30%)",
+          mixBlendMode: "screen",
+          opacity: 0.35,
+        }}
+      />
+
       <span
         className={cn(
           "relative z-10 block truncate uppercase leading-none",
@@ -153,7 +179,7 @@ function PagerScreen({
         )}
         style={{
           color: textColor,
-          textShadow: glowColor,
+          textShadow: `${glowColor}, 0 0 6px rgba(70,255,120,0.22)`,
           fontSize: "clamp(8px, 1.4vw, 16px)",
           letterSpacing: "0.08em",
         }}
