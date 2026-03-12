@@ -43,6 +43,8 @@ function groupByFlywheel(entries: CodexEntry[]): Record<FlywheelNode, CodexEntry
    ───────────────────────────────────────────── */
 const SPINE_CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine_transparent_95539dfa.png";
 const STATUE_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/FLleLCCpIbXNFGAi.png";
+const JOURNAL_1_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/QpoMAbQdCUmVwpEp.png"; // Field Notes
+const JOURNAL_2_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/NxYFwBmJGtYavDiv.png"; // Protocols
 
 interface SpineProps {
   entry: CodexEntry;
@@ -607,6 +609,46 @@ export default function CodexShelf({
             background: 'linear-gradient(180deg, rgba(40,25,10,0.15) 0%, rgba(20,12,5,0.25) 100%)',
             mixBlendMode: 'multiply',
           }}
+        />
+      </div>
+
+      {/* ── JOURNALS (bottom shelf, to the left of statue) ── */}
+      <div
+        className="absolute z-[14] pointer-events-none"
+        style={{
+          bottom: '6%',
+          right: '26%',
+          width: '14%',
+          display: 'flex',
+          alignItems: 'flex-end',
+          gap: '0.5%',
+        }}
+      >
+        {/* Journal 1 — Field Notes, leaning slightly left */}
+        <img
+          src={JOURNAL_1_CDN}
+          alt="Field Notes Journal"
+          style={{
+            width: '48%',
+            height: 'auto',
+            transform: 'rotate(-3deg)',
+            transformOrigin: 'bottom center',
+            filter: 'brightness(0.75) contrast(1.15) saturate(0.8)',
+          }}
+          draggable={false}
+        />
+        {/* Journal 2 — Protocols, leaning slightly right against journal 1 */}
+        <img
+          src={JOURNAL_2_CDN}
+          alt="Protocols Journal"
+          style={{
+            width: '45%',
+            height: 'auto',
+            transform: 'rotate(2deg)',
+            transformOrigin: 'bottom center',
+            filter: 'brightness(0.7) contrast(1.15) saturate(0.8)',
+          }}
+          draggable={false}
         />
       </div>
 
