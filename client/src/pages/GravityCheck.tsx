@@ -210,6 +210,7 @@ export default function GravityCheck() {
         signalCategory="IDENTITY"
         progress={0}
         totalQuestions={20}
+        hideCalibration
       >
         <ModeSelect onSelect={(mode) => setScanMode(mode)} />
       </GravitasShell>
