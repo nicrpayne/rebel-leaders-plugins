@@ -319,7 +319,7 @@ export default function GravitasShell({
           className="absolute z-[50] transition-transform duration-300 hover:rotate-[-8deg] hover:scale-105"
           style={{
             bottom: "12%",
-            left: "26%",
+            left: "calc(26% + 100px)",
             transform: "rotate(-5deg)",
           }}
         >
