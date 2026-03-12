@@ -16,7 +16,7 @@ const CABINET_HERO_CDN = "https://files.manuscdn.com/user_upload_by_module/sessi
 
 /* ── Pager screen positions (% of hero image) ── */
 const PAGER_SCREENS = [
-  { id: "identity",     left: 23.0, top: 17.6, width: 10.5, height: 10.5 },
+  { id: "identity",     left: 23.0, top: 17.6, width: 10.625, height: 10.625 },
   { id: "relationship", left: 37.3, top: 17.2, width: 11.8, height: 12.5 },
   { id: "vision",       left: 50.5, top: 17.8, width: 12.5, height: 11.5 },
   { id: "culture",      left: 65.0, top: 17.8, width: 11.5, height: 10.5 },
