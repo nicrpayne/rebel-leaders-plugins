@@ -24,7 +24,7 @@ const CABINET_HERO_CDN = "https://files.manuscdn.com/user_upload_by_module/sessi
    Screens 2-3 (center): minimal rotation                              */
 const PAGER_SCREENS = [
   { id: "identity",     left: 23.0, top: 17.6, width: 10.625, height: 10.625,
-    transform: "perspective(400px) rotateY(2.5deg) rotateX(-0.5deg)" },
+    transform: "perspective(250px) rotateY(5.5deg) rotateX(-1deg)" },
   { id: "relationship", left: 37.3, top: 17.2, width: 11.8, height: 12.5,
     transform: "perspective(600px) rotateY(1deg) rotateX(-0.3deg)" },
   { id: "vision",       left: 50.5, top: 17.8, width: 12.5, height: 11.5,
