@@ -172,7 +172,7 @@ function TickerTapeWindow({
         style={{
           color: textColor,
           textShadow: `${glowColor}, 0 0 6px rgba(70,255,120,0.22)`,
-          fontSize: "clamp(8px, 1.3vw, 15px)",
+          fontSize: "clamp(10px, 1.8vw, 20px)",
           letterSpacing: "0.1em",
           left: 0,
           transform: localX !== null ? `translateX(${localX}px)` : 'translateX(200%)',
@@ -446,8 +446,8 @@ export default function CabinetDeck({
       const delay = 15000 + Math.random() * 25000; // 15-40s between idle tickers
       idleTickerRef.current = setTimeout(() => {
         const msg = IDLE_TICKER_MESSAGES[Math.floor(Math.random() * IDLE_TICKER_MESSAGES.length)];
-        startTicker(msg, 8000, () => {
-          scheduleIdle();
+      startTicker(msg, 14000, () => {
+        scheduleIdle();
         });
       }, delay);
     };
@@ -455,10 +455,10 @@ export default function CabinetDeck({
     // First idle ticker after a short delay
     idleTickerRef.current = setTimeout(() => {
       const msg = IDLE_TICKER_MESSAGES[Math.floor(Math.random() * IDLE_TICKER_MESSAGES.length)];
-      startTicker(msg, 8000, () => {
-        scheduleIdle();
-      });
-    }, 5000);
+startTicker(msg, 14000, () => {
+          scheduleIdle();
+        });
+      }, 5000);
 
     return () => {
       if (idleTickerRef.current) clearTimeout(idleTickerRef.current);
@@ -480,7 +480,7 @@ export default function CabinetDeck({
       const cat = loadedEntry.flywheel_node?.[0]?.toUpperCase() || "CODEX";
       startTicker(
         `>>> CARTRIDGE LOADED: ${title} ... ${cat} CLASS ... AWAITING SCAN ... PRESS SCAN TO ANALYZE >>>`,
-        7000,
+        12000,
         () => {
           setDeckPhase("loaded");
         }
@@ -496,7 +496,7 @@ export default function CabinetDeck({
       if (scanTimerRef.current) clearTimeout(scanTimerRef.current);
 
       // Ticker on eject
-      startTicker(">>> CARTRIDGE EJECTED ... DECK CLEAR ... STANDING BY >>>", 5000);
+      startTicker(">>> CARTRIDGE EJECTED ... DECK CLEAR ... STANDING BY >>>", 10000);
 
       const timer = setTimeout(() => {
         setAnimPhase("idle");
@@ -534,7 +534,7 @@ export default function CabinetDeck({
 
         startTicker(
           `>>> SCAN COMPLETE ... ${cat} ... ${node} ... INTENSITY ${diff} ${diffLabel} ... ${context} ... PROTOCOL READY ... PRESS READ >>>`,
-          7000,
+          14000,
           () => {
             setDeckPhase("scanned");
             setScanStep(0);
