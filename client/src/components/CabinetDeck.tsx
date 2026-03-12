@@ -27,10 +27,10 @@ const PAGER_SCREENS = [
     transform: "perspective(350px) rotateY(-3.5deg) rotateX(-0.5deg)" },
   { id: "relationship", left: 36.9, top: 17.65, width: 11.1, height: 11.1,
     transform: "perspective(500px) rotateY(-1.5deg) rotateX(-0.3deg)" },
-  { id: "vision",       left: 51.2, top: 17.45, width: 11.3, height: 10.9,
+  { id: "vision",       left: 51.2, top: 17.43, width: 11.3, height: 10.9,
     transform: "perspective(500px) rotateY(1.5deg) rotateX(-0.3deg)" },
-  { id: "culture",      left: 65.0, top: 17.8, width: 11.5, height: 10.5,
-    transform: "perspective(400px) rotateY(-2.5deg) rotateX(-0.5deg)" },
+  { id: "culture",      left: 64.8, top: 17.5, width: 11.0, height: 10.8,
+    transform: "perspective(350px) rotateY(3.5deg) rotateX(-0.5deg)" },
 ];
 
 /* ── Button positions (% of hero image) ── */
