@@ -314,6 +314,7 @@ export default function GravitasShell({
 
 
 
+
         {/* Sticker — slapped on the chassis, below the panel */}
         <div
           className="absolute z-[50] transition-transform duration-300 hover:rotate-[-8deg] hover:scale-105"
