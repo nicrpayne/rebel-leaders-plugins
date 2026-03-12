@@ -541,9 +541,10 @@ export default function CodexShelf({
       <div
         className="absolute right-0 z-[15] pointer-events-none"
         style={{
-          width: '80%',
-          height: '220%',
+          width: '64%',
+          height: '176%',
           bottom: '-5%',
+          right: '-3%',
         }}
       >
         {/* Sword glow — cyan radial light casting from the sword tip */}
