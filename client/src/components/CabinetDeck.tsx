@@ -23,8 +23,8 @@ const CABINET_HERO_CDN = "https://files.manuscdn.com/user_upload_by_module/sessi
    Screen 4 (far right): right edge closer to camera → rotateY opposite
    Screens 2-3 (center): minimal rotation                              */
 const PAGER_SCREENS = [
-  { id: "identity",     left: 23.0, top: 17.6, width: 10.625, height: 10.625,
-    transform: "perspective(250px) rotateY(-5.5deg) rotateX(-1deg)" },
+  { id: "identity",     left: 22.2, top: 17.6, width: 11.4, height: 10.625,
+    transform: "perspective(350px) rotateY(-3.5deg) rotateX(-0.5deg)" },
   { id: "relationship", left: 37.3, top: 17.2, width: 11.8, height: 12.5,
     transform: "perspective(600px) rotateY(1deg) rotateX(-0.3deg)" },
   { id: "vision",       left: 50.5, top: 17.8, width: 12.5, height: 11.5,
@@ -322,6 +322,7 @@ export default function CabinetDeck({
             height: `${screen.height}%`,
             transform: screen.transform,
             transformOrigin: "center center",
+            borderRadius: "3px",
           }}
         >
           {/* Static "screen off" layer — always visible, covers baked-in image text.
