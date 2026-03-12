@@ -256,30 +256,7 @@ export default function GravitasShell({
             </div>
             )}
 
-            {/* Sticker */}
-            <div
-              className="absolute z-40 transition-transform duration-300 hover:rotate-[-12deg] hover:scale-105"
-              style={{
-                bottom: "30px",
-                left: "-5px",
-                transform: "rotate(-15deg)",
-              }}
-            >
-              <img
-                src="/assets/gravitas/nic-sticker.webp"
-                alt="Nic Sword Bearer"
-                className="w-[120px] h-auto drop-shadow-[2px_4px_6px_rgba(0,0,0,0.6)]"
-              />
-            </div>
 
-            {/* Maintenance Label */}
-            <div className="absolute bottom-2 right-3 z-40">
-              <div className="bg-[rgba(20,20,24,0.8)] border border-[#1a1a22] px-1.5 py-[2px] rounded-[1px]">
-                <span className="text-[5px] tracking-[0.15em] text-[#3a3a44] uppercase">
-                  CAL: 2026.03 // UNIT RL-GRV-001
-                </span>
-              </div>
-            </div>
           </div>
 
           {/* Footer Panel */}
@@ -321,6 +298,22 @@ export default function GravitasShell({
               <div className="w-[7px] h-[7px] rounded-full bg-[#0a0a0e] border border-[#1a1a20] shadow-[inset_0_1px_1px_rgba(255,255,255,0.03)]" />
             </div>
           </div>
+        </div>
+
+        {/* Sticker — slapped on the chassis, below the panel */}
+        <div
+          className="absolute z-[50] transition-transform duration-300 hover:rotate-[-8deg] hover:scale-105"
+          style={{
+            bottom: "16%",
+            left: "17%",
+            transform: "rotate(-5deg)",
+          }}
+        >
+          <img
+            src="/assets/gravitas/nic-sticker.webp"
+            alt="Nic Sword Bearer"
+            className="w-[80px] h-auto drop-shadow-[2px_4px_6px_rgba(0,0,0,0.6)]"
+          />
         </div>
       </div>
 
