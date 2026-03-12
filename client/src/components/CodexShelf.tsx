@@ -619,10 +619,10 @@ export default function CodexShelf({
         className="absolute z-[14] pointer-events-none"
         style={{
           bottom: '2%',
-          right: '22%',
-          height: '42%',
+          right: '24%',
+          height: '85%',
           width: 'auto',
-          transform: 'rotate(-3deg)',
+          transform: 'rotate(-4deg)',
           transformOrigin: 'bottom center',
           filter: 'brightness(0.7) contrast(1.15) saturate(0.8)',
         }}
@@ -634,10 +634,10 @@ export default function CodexShelf({
         className="absolute z-[13] pointer-events-none"
         style={{
           bottom: '2%',
-          right: '18%',
-          height: '42%',
+          right: '20%',
+          height: '72%',
           width: 'auto',
-          transform: 'rotate(2deg)',
+          transform: 'rotate(3deg)',
           transformOrigin: 'bottom center',
           filter: 'brightness(0.7) contrast(1.15) saturate(0.8)',
         }}
