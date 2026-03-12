@@ -680,12 +680,13 @@ startTicker(msg, 14000, () => {
 
       {/* ── CARTRIDGE SLOT OVERLAY ── */}
       <div
-        className="absolute overflow-hidden"
+        className="absolute"
         style={{
           left: `${SLOT.left}%`,
           top: `${SLOT.top}%`,
           width: `${SLOT.width}%`,
           height: `${SLOT.height}%`,
+          overflow: 'visible',
         }}
       >
         {displayEntry && (
@@ -702,8 +703,8 @@ startTicker(msg, 14000, () => {
               left: '50%',
               top: '50%',
               transform: 'translate(-50%, -50%)',
-              width: '92%',
-              height: '90%',
+              width: '184%',
+              height: '180%',
             }}
           >
             <img
