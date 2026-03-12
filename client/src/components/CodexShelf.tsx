@@ -42,6 +42,7 @@ function groupByFlywheel(entries: CodexEntry[]): Record<FlywheelNode, CodexEntry
    Uses the exact cartridge spine image from the Load Bay
    ───────────────────────────────────────────── */
 const SPINE_CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine_transparent_95539dfa.png";
+const STATUE_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/FLleLCCpIbXNFGAi.png";
 
 interface SpineProps {
   entry: CodexEntry;
@@ -536,6 +537,88 @@ export default function CodexShelf({
 
   return (
     <div className="relative w-full overflow-hidden rounded-sm">
+      {/* ── SWORD-BEARER STATUE (right side, spanning both shelves) ── */}
+      <div
+        className="absolute right-0 bottom-0 z-[15] pointer-events-none"
+        style={{
+          width: '22%',
+          height: '100%',
+        }}
+      >
+        {/* Sword glow — cyan radial light casting from the sword tip */}
+        <div
+          className="absolute z-[1]"
+          style={{
+            top: '-10%',
+            left: '20%',
+            width: '80%',
+            height: '50%',
+            background: 'radial-gradient(ellipse 60% 80% at 55% 70%, rgba(80,220,240,0.25) 0%, rgba(60,200,220,0.12) 30%, transparent 70%)',
+            filter: 'blur(15px)',
+            animation: 'swordPulse 3s ease-in-out infinite alternate',
+          }}
+        />
+        {/* Secondary glow — wider, softer ambient light spill */}
+        <div
+          className="absolute z-[0]"
+          style={{
+            top: '0%',
+            left: '-10%',
+            width: '120%',
+            height: '70%',
+            background: 'radial-gradient(ellipse 70% 60% at 60% 50%, rgba(80,220,240,0.08) 0%, rgba(60,200,220,0.04) 40%, transparent 70%)',
+            filter: 'blur(25px)',
+          }}
+        />
+        {/* Sword light reflection on shelf surface */}
+        <div
+          className="absolute z-[1]"
+          style={{
+            bottom: '5%',
+            left: '10%',
+            width: '80%',
+            height: '20%',
+            background: 'radial-gradient(ellipse 80% 50% at 50% 20%, rgba(80,220,240,0.1) 0%, transparent 70%)',
+            filter: 'blur(12px)',
+            animation: 'swordPulse 3s ease-in-out infinite alternate',
+          }}
+        />
+        {/* The statue image */}
+        <img
+          src={STATUE_CDN}
+          alt="The Sword-Bearer"
+          className="absolute bottom-0 right-0 z-[2]"
+          style={{
+            width: '85%',
+            height: 'auto',
+            maxHeight: '95%',
+            objectFit: 'contain',
+            objectPosition: 'bottom right',
+            filter: 'brightness(0.8) contrast(1.1) saturate(0.85)',
+            /* Subtle warm tint to blend with shelf lighting */
+          }}
+          draggable={false}
+        />
+        {/* Warm ambient overlay on statue to blend with scene */}
+        <div
+          className="absolute bottom-0 right-0 z-[3] pointer-events-none"
+          style={{
+            width: '85%',
+            height: '95%',
+            background: 'linear-gradient(180deg, rgba(40,25,10,0.15) 0%, rgba(20,12,5,0.25) 100%)',
+            mixBlendMode: 'multiply',
+          }}
+        />
+      </div>
+
+      {/* Sword glow animation keyframes */}
+      <style>{`
+        @keyframes swordPulse {
+          0% { opacity: 0.7; }
+          100% { opacity: 1; }
+        }
+      `}</style>
+
       {/* Shelf Background Image — full coverage */}
       <div
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
