@@ -44,6 +44,7 @@ function groupByFlywheel(entries: CodexEntry[]): Record<FlywheelNode, CodexEntry
 const SPINE_CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine_transparent_95539dfa.png";
 const STATUE_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/FLleLCCpIbXNFGAi.png";
 const JOURNAL_1_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/zWRQfTmONtObpdxL.png"; // Parable of the Shipwrecked Leaders
+const JOURNAL_2_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/azSuVoekkFnNjqzv.png"; // Rebellious Hope
 
 interface SpineProps {
   entry: CodexEntry;
@@ -611,17 +612,32 @@ export default function CodexShelf({
         />
       </div>
 
-      {/* ── JOURNAL (bottom shelf, to the left of statue) ── */}
+      {/* ── JOURNALS (bottom shelf, to the left of statue) ── */}
       <img
         src={JOURNAL_1_CDN}
         alt="Parable of the Shipwrecked Leaders"
         className="absolute z-[14] pointer-events-none"
         style={{
           bottom: '5%',
-          right: '30%',
+          right: '33%',
           width: '10%',
           height: 'auto',
           transform: 'rotate(-3deg)',
+          transformOrigin: 'bottom center',
+          filter: 'brightness(0.7) contrast(1.15) saturate(0.8)',
+        }}
+        draggable={false}
+      />
+      <img
+        src={JOURNAL_2_CDN}
+        alt="Rebellious Hope"
+        className="absolute z-[13] pointer-events-none"
+        style={{
+          bottom: '5%',
+          right: '29%',
+          width: '10%',
+          height: 'auto',
+          transform: 'rotate(2deg)',
           transformOrigin: 'bottom center',
           filter: 'brightness(0.7) contrast(1.15) saturate(0.8)',
         }}
