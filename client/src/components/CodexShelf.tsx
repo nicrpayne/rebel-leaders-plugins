@@ -44,7 +44,6 @@ function groupByFlywheel(entries: CodexEntry[]): Record<FlywheelNode, CodexEntry
 const SPINE_CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine_transparent_95539dfa.png";
 const STATUE_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/FLleLCCpIbXNFGAi.png";
 const JOURNAL_1_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/zWRQfTmONtObpdxL.png"; // Parable of the Shipwrecked Leaders
-const JOURNAL_2_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/IlSFyhnaOVXlnHmO.png"; // Rebellious Hope
 
 interface SpineProps {
   entry: CodexEntry;
@@ -612,45 +611,22 @@ export default function CodexShelf({
         />
       </div>
 
-      {/* ── JOURNALS (bottom shelf, to the left of statue) ── */}
-      <div
+      {/* ── JOURNAL (bottom shelf, to the left of statue) ── */}
+      <img
+        src={JOURNAL_1_CDN}
+        alt="Parable of the Shipwrecked Leaders"
         className="absolute z-[14] pointer-events-none"
         style={{
           bottom: '5%',
-          right: '28%',
-          width: '16%',
-          display: 'flex',
-          alignItems: 'flex-end',
-          gap: '1%',
+          right: '30%',
+          width: '10%',
+          height: 'auto',
+          transform: 'rotate(-3deg)',
+          transformOrigin: 'bottom center',
+          filter: 'brightness(0.7) contrast(1.15) saturate(0.8)',
         }}
-      >
-        {/* Journal 1 — Parable of the Shipwrecked Leaders, leaning slightly left */}
-        <img
-          src={JOURNAL_1_CDN}
-          alt="Parable of the Shipwrecked Leaders"
-          style={{
-            width: '42%',
-            height: 'auto',
-            transform: 'rotate(-4deg)',
-            transformOrigin: 'bottom center',
-            filter: 'brightness(0.7) contrast(1.15) saturate(0.8)',
-          }}
-          draggable={false}
-        />
-        {/* Journal 2 — Rebellious Hope, leaning slightly right */}
-        <img
-          src={JOURNAL_2_CDN}
-          alt="Rebellious Hope"
-          style={{
-            width: '55%',
-            height: 'auto',
-            transform: 'rotate(2deg)',
-            transformOrigin: 'bottom center',
-            filter: 'brightness(0.65) contrast(1.1) saturate(0.8)',
-          }}
-          draggable={false}
-        />
-      </div>
+        draggable={false}
+      />
 
       {/* Sword glow animation keyframes */}
       <style>{`
