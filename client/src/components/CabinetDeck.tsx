@@ -703,14 +703,25 @@ startTicker(msg, 14000, () => {
               left: '65%',
               top: '71%',
               transform: 'translate(-50%, -50%)',
-              width: '118%',
-              height: '115%',
+              width: '110%',
+              height: '108%',
             }}
           >
+            {/* Warm color overlay to match deck ambient lighting */}
+            <div
+              className="absolute inset-0 z-10 pointer-events-none rounded-sm"
+              style={{
+                background: 'linear-gradient(180deg, rgba(40,25,10,0.35) 0%, rgba(20,12,5,0.25) 100%)',
+                mixBlendMode: 'multiply',
+              }}
+            />
             <img
               src={SPINE_CDN}
               alt="Cartridge Spine"
               className="absolute inset-0 w-full h-full object-fill drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
+              style={{
+                filter: 'brightness(0.72) contrast(1.15) saturate(0.8) sepia(0.15)',
+              }}
             />
             <div
               className="absolute w-[70%] h-[60%] flex flex-col items-center justify-center text-center"
