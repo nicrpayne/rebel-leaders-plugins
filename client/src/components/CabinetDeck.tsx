@@ -187,20 +187,6 @@ function PagerScreen({
         </span>
       </span>
 
-      {/* ── Vignette overlay — feathered bezel shadow PNG ── */}
-      {/* Slightly oversized to feather over the screen edges into the bezel */}
-      <img
-        src={`/assets/screen_vignette_${screenIndex}.png`}
-        alt=""
-        className="absolute pointer-events-none z-20"
-        style={{
-          inset: "-15%",
-          width: "130%",
-          height: "130%",
-          objectFit: "fill",
-        }}
-        draggable={false}
-      />
     </div>
   );
 }
