@@ -541,10 +541,9 @@ export default function CodexShelf({
       <div
         className="absolute z-[15] pointer-events-none"
         style={{
-          width: '30%',
-          bottom: '0',
-          right: '0',
-          top: '0',
+          width: '25%',
+          bottom: '10%',
+          right: '-2%',
         }}
       >
         {/* Sword glow — cyan radial light casting from the sword tip */}
@@ -589,11 +588,12 @@ export default function CodexShelf({
         <img
           src={STATUE_CDN}
           alt="The Sword-Bearer"
-          className="absolute right-[2%] z-[2]"
+          className="absolute z-[2]"
           style={{
             width: '100%',
             height: 'auto',
-            bottom: '2%',
+            bottom: '0',
+            right: '0',
             filter: 'brightness(0.8) contrast(1.1) saturate(0.85)',
           }}
           draggable={false}
