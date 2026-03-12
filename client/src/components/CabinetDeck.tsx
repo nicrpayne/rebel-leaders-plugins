@@ -16,10 +16,10 @@ const CABINET_HERO_CDN = "https://files.manuscdn.com/user_upload_by_module/sessi
 
 /* ── Pager screen positions (% of hero image) ── */
 const PAGER_SCREENS = [
-  { id: "identity",     left: 24.0, top: 18.6, width: 9.0, height: 9.1 },
-  { id: "relationship", left: 38.8, top: 18.8, width: 8.8, height: 9.1 },
-  { id: "vision",       left: 52.0, top: 19.5, width: 10.0, height: 8.1 },
-  { id: "culture",      left: 66.6, top: 19.4, width: 9.1, height: 7.3 },
+  { id: "identity",     left: 22.5, top: 17.0, width: 12.0, height: 12.5 },
+  { id: "relationship", left: 37.3, top: 17.2, width: 11.8, height: 12.5 },
+  { id: "vision",       left: 50.5, top: 17.8, width: 12.5, height: 11.5 },
+  { id: "culture",      left: 65.0, top: 17.8, width: 11.5, height: 10.5 },
 ];
 
 /* ── Button positions (% of hero image) ── */
@@ -284,6 +284,16 @@ export default function CabinetDeck({
             height: `${screen.height}%`,
           }}
         >
+          {/* Static "screen off" layer — always visible, covers baked-in image text.
+              When the LCD flickers, this dark dead-screen shows through instead of the image. */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              inset: "-4px",
+              background: "radial-gradient(ellipse at 50% 50%, #1a1c18 0%, #0e100c 40%, #080a07 100%)",
+              borderRadius: "2px",
+            }}
+          />
           <PagerScreen
             line1={pagerMessages[idx]?.line1 || ""}
             line2={pagerMessages[idx]?.line2 || ""}
