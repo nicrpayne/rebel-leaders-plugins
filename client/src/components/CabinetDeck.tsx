@@ -89,28 +89,36 @@ interface CabinetDeckProps {
 }
 
 /* ── Ticker Tape Sub-component ──
-   A single long string scrolls left-to-right across one screen.
-   Each screen shows a "window" into the same ticker at a different offset,
-   creating the illusion of one continuous crawl across all 4 physical screens.
+   Each screen renders its own TickerTape instance, but they all share the same
+   `progress` value (0→1) driven by the parent. The parent uses a single
+   requestAnimationFrame loop and passes progress down.
+
+   The trick: we model a virtual strip that spans all 4 screens plus the gaps
+   between them. The text starts off-screen to the RIGHT of screen 4 (rightmost)
+   and scrolls LEFT, exiting off-screen to the LEFT of screen 1 (leftmost).
+
+   Each screen knows its physical left-edge position (in % of the hero image).
+   We use those real positions to compute where each screen's viewport sits
+   within the virtual strip, so the text flows naturally through the gaps.
 */
-function TickerTape({
+function TickerTapeWindow({
   text,
-  screenIndex,
-  totalScreens,
-  durationMs,
-  onComplete,
+  progress,
+  screenLeftPct,
+  screenWidthPct,
+  stripLeftPct,
+  stripRightPct,
 }: {
   text: string;
-  screenIndex: number;
-  totalScreens: number;
-  durationMs: number;
-  onComplete?: () => void;
+  progress: number;          // 0→1 global animation progress
+  screenLeftPct: number;     // this screen's left % in hero image
+  screenWidthPct: number;    // this screen's width % in hero image
+  stripLeftPct: number;      // leftmost screen's left edge %
+  stripRightPct: number;     // rightmost screen's right edge %
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
-  const [offset, setOffset] = useState<number | null>(null);
-  const animFrameRef = useRef<number>(0);
-  const startTimeRef = useRef<number>(0);
+  const [localX, setLocalX] = useState<number | null>(null);
 
   useEffect(() => {
     if (!containerRef.current || !textRef.current) return;
@@ -118,45 +126,34 @@ function TickerTape({
     const containerW = containerRef.current.offsetWidth;
     const textW = textRef.current.scrollWidth;
 
-    // Total travel distance: the text needs to scroll across all screens
-    // Each screen is a window. We offset based on screen position.
-    // The text starts fully off-screen right of screen 0 and ends fully off-screen left of screen 3.
-    // Total virtual strip width = containerW * totalScreens (approximate, since screens have gaps)
-    const totalStripW = containerW * totalScreens * 1.4; // 1.4 accounts for gaps between screens
-    const totalTravel = totalStripW + textW;
+    // The virtual strip spans from stripLeftPct to stripRightPct of the hero.
+    // We need to map percentages to pixels relative to the hero width.
+    // But we only know our own container width and our own screen width %.
+    // heroWidth ≈ containerW / (screenWidthPct / 100)
+    const heroW = containerW / (screenWidthPct / 100);
 
-    // This screen's viewport offset within the virtual strip
-    const screenOffset = (screenIndex / totalScreens) * totalStripW;
+    // Virtual strip in pixels
+    const stripLeftPx = (stripLeftPct / 100) * heroW;
+    const stripRightPx = (stripRightPct / 100) * heroW;
+    const stripWidthPx = stripRightPx - stripLeftPx;
 
-    startTimeRef.current = performance.now();
+    // This screen's left edge in pixels (within the hero)
+    const myLeftPx = (screenLeftPct / 100) * heroW;
 
-    const animate = (now: number) => {
-      const elapsed = now - startTimeRef.current;
-      const progress = Math.min(elapsed / durationMs, 1);
+    // Text starts fully off-screen right (at stripRightPx + some padding)
+    // Text ends fully off-screen left (at stripLeftPx - textW - some padding)
+    const startX = stripRightPx + textW * 0.1;  // start just past right edge
+    const endX = stripLeftPx - textW * 1.1;      // end past left edge
+    const totalTravel = startX - endX;
 
-      // Current position of the text's left edge in the virtual strip
-      const textLeft = totalStripW - progress * totalTravel;
+    // Current text left edge position in hero-pixel space
+    const textLeftPx = startX - progress * totalTravel;
 
-      // Position relative to this screen's viewport
-      const localX = textLeft + screenOffset;
+    // Convert to local coordinates (relative to this screen's left edge)
+    const local = textLeftPx - myLeftPx;
 
-      setOffset(localX);
-
-      if (progress < 1) {
-        animFrameRef.current = requestAnimationFrame(animate);
-      } else {
-        if (onComplete && screenIndex === totalScreens - 1) {
-          onComplete();
-        }
-      }
-    };
-
-    animFrameRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-    };
-  }, [text, screenIndex, totalScreens, durationMs, onComplete]);
+    setLocalX(local);
+  }, [progress, text, screenLeftPct, screenWidthPct, stripLeftPct, stripRightPct]);
 
   const textColor = "#33ff33";
   const glowColor = "0 0 8px rgba(51,255,51,0.6), 0 0 2px rgba(51,255,51,0.9)";
@@ -167,7 +164,6 @@ function TickerTape({
       className="absolute inset-0 overflow-hidden flex items-center"
       style={{
         fontFamily: 'var(--font-lcd)',
-        padding: '0 8%',
       }}
     >
       <div
@@ -178,7 +174,8 @@ function TickerTape({
           textShadow: `${glowColor}, 0 0 6px rgba(70,255,120,0.22)`,
           fontSize: "clamp(8px, 1.3vw, 15px)",
           letterSpacing: "0.1em",
-          transform: offset !== null ? `translateX(${offset}px)` : 'translateX(200%)',
+          left: 0,
+          transform: localX !== null ? `translateX(${localX}px)` : 'translateX(200%)',
           willChange: 'transform',
         }}
       >
@@ -394,21 +391,48 @@ export default function CabinetDeck({
   // Ticker tape state
   const [tickerMode, setTickerMode] = useState(false);
   const [tickerText, setTickerText] = useState("");
+  const [tickerProgress, setTickerProgress] = useState(0);
   const tickerTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tickerAnimRef = useRef<number>(0);
+  const tickerStartRef = useRef<number>(0);
+  const tickerDurationRef = useRef<number>(6000);
+
+  // Compute the virtual strip bounds from screen positions (leftmost left edge to rightmost right edge)
+  const stripLeftPct = PAGER_SCREENS[0].left;
+  const stripRightPct = PAGER_SCREENS[PAGER_SCREENS.length - 1].left + PAGER_SCREENS[PAGER_SCREENS.length - 1].width;
 
   // Idle ticker — fires periodically when no cartridge is loaded
   const idleTickerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Start a ticker crawl
+  // Start a ticker crawl — single rAF loop drives all 4 screens
   const startTicker = useCallback((text: string, durationMs = 6000, onDone?: () => void) => {
+    // Cancel any existing ticker
+    if (tickerAnimRef.current) cancelAnimationFrame(tickerAnimRef.current);
+    if (tickerTimeoutRef.current) clearTimeout(tickerTimeoutRef.current);
+
     setTickerText(text);
     setTickerMode(true);
-    if (tickerTimeoutRef.current) clearTimeout(tickerTimeoutRef.current);
-    tickerTimeoutRef.current = setTimeout(() => {
-      setTickerMode(false);
-      setTickerText("");
-      onDone?.();
-    }, durationMs + 500); // small buffer after animation
+    setTickerProgress(0);
+    tickerDurationRef.current = durationMs;
+    tickerStartRef.current = performance.now();
+
+    const animate = (now: number) => {
+      const elapsed = now - tickerStartRef.current;
+      const p = Math.min(elapsed / durationMs, 1);
+      setTickerProgress(p);
+      if (p < 1) {
+        tickerAnimRef.current = requestAnimationFrame(animate);
+      } else {
+        // Animation complete — settle back to static after a short pause
+        tickerTimeoutRef.current = setTimeout(() => {
+          setTickerMode(false);
+          setTickerText("");
+          onDone?.();
+        }, 400);
+      }
+    };
+
+    tickerAnimRef.current = requestAnimationFrame(animate);
   }, []);
 
   // Schedule idle ticker messages
@@ -634,11 +658,13 @@ export default function CabinetDeck({
 
           {/* Content layer: ticker tape OR static messages */}
           {tickerMode ? (
-            <TickerTape
+            <TickerTapeWindow
               text={tickerText}
-              screenIndex={idx}
-              totalScreens={PAGER_SCREENS.length}
-              durationMs={tickerText.length > 80 ? 8000 : 6000}
+              progress={tickerProgress}
+              screenLeftPct={screen.left}
+              screenWidthPct={screen.width}
+              stripLeftPct={stripLeftPct}
+              stripRightPct={stripRightPct}
             />
           ) : (
             <PagerScreen
