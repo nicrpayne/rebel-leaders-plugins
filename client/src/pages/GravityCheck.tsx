@@ -66,9 +66,9 @@ function ModeSelect({ onSelect }: { onSelect: (mode: ScanMode) => void }) {
   const [hoveredMode, setHoveredMode] = useState<ScanMode | null>(null);
 
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-6 relative z-10">
-      <div className="text-center mb-2">
-        <div className="text-[8px] tracking-[0.3em] text-[#3a3a44] uppercase mb-2">
+    <div className="flex flex-col items-center justify-center h-full gap-3 relative z-10">
+      <div className="text-center mb-0">
+        <div className="text-[8px] tracking-[0.3em] text-[#3a3a44] uppercase mb-1">
           SELECT SCAN DEPTH
         </div>
         <div
@@ -82,13 +82,13 @@ function ModeSelect({ onSelect }: { onSelect: (mode: ScanMode) => void }) {
         </div>
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex gap-4">
         <button
           onClick={() => { playBootSound(); onSelect("SCAN"); }}
           onMouseEnter={() => setHoveredMode("SCAN")}
           onMouseLeave={() => setHoveredMode(null)}
           className={cn(
-            "group relative flex flex-col items-center gap-3 px-6 py-4 bg-gradient-to-b from-[#111116] to-[#0c0c0f] border rounded transition-all duration-300",
+            "group relative flex flex-col items-center gap-2 px-5 py-3 bg-gradient-to-b from-[#111116] to-[#0c0c0f] border rounded transition-all duration-300",
             hoveredMode === "SCAN"
               ? "border-green-400/40 shadow-[0_0_20px_rgba(74,222,128,0.08)]"
               : "border-[#1a1a22] hover:border-[#2a2a32]"
@@ -99,8 +99,8 @@ function ModeSelect({ onSelect }: { onSelect: (mode: ScanMode) => void }) {
             hoveredMode === "SCAN" ? "opacity-100" : "opacity-0"
           )} style={{ background: "radial-gradient(ellipse at center, rgba(74,222,128,0.03) 0%, transparent 70%)" }} />
 
-          <div className="relative z-10 flex flex-col items-center gap-2">
-            <div className="w-10 h-10 rounded-full border border-green-400/20 flex items-center justify-center">
+          <div className="relative z-10 flex flex-col items-center gap-1.5">
+            <div className="w-8 h-8 rounded-full border border-green-400/20 flex items-center justify-center">
               <div className="w-3 h-3 rounded-full bg-green-400/30 shadow-[0_0_8px_rgba(74,222,128,0.3)]" />
             </div>
             <span className="text-[11px] tracking-[0.25em] text-green-400 uppercase font-bold"
@@ -110,7 +110,7 @@ function ModeSelect({ onSelect }: { onSelect: (mode: ScanMode) => void }) {
             <span className="text-[7px] tracking-[0.15em] text-[#3a3a44] uppercase">
               20 READINGS // ~4 MIN
             </span>
-            <span className="text-[6px] tracking-[0.1em] text-[#2a2a32] uppercase mt-1 max-w-[120px] text-center leading-relaxed">
+            <span className="text-[6px] tracking-[0.1em] text-[#2a2a32] uppercase mt-0.5 max-w-[120px] text-center leading-snug">
               SURFACE-LEVEL FIELD READING. FAST. DIRECTIONAL.
             </span>
           </div>
@@ -121,7 +121,7 @@ function ModeSelect({ onSelect }: { onSelect: (mode: ScanMode) => void }) {
           onMouseEnter={() => setHoveredMode("DEEP_SCAN")}
           onMouseLeave={() => setHoveredMode(null)}
           className={cn(
-            "group relative flex flex-col items-center gap-3 px-6 py-4 bg-gradient-to-b from-[#111116] to-[#0c0c0f] border rounded transition-all duration-300",
+            "group relative flex flex-col items-center gap-2 px-5 py-3 bg-gradient-to-b from-[#111116] to-[#0c0c0f] border rounded transition-all duration-300",
             hoveredMode === "DEEP_SCAN"
               ? "border-amber-400/40 shadow-[0_0_20px_rgba(212,160,68,0.08)]"
               : "border-[#1a1a22] hover:border-[#2a2a32]"
@@ -132,9 +132,9 @@ function ModeSelect({ onSelect }: { onSelect: (mode: ScanMode) => void }) {
             hoveredMode === "DEEP_SCAN" ? "opacity-100" : "opacity-0"
           )} style={{ background: "radial-gradient(ellipse at center, rgba(212,160,68,0.03) 0%, transparent 70%)" }} />
 
-          <div className="relative z-10 flex flex-col items-center gap-2">
-            <div className="w-10 h-10 rounded-full border border-amber-400/20 flex items-center justify-center relative">
-              <div className="absolute w-7 h-7 rounded-full border border-amber-400/15" />
+          <div className="relative z-10 flex flex-col items-center gap-1.5">
+            <div className="w-8 h-8 rounded-full border border-amber-400/20 flex items-center justify-center relative">
+              <div className="absolute w-6 h-6 rounded-full border border-amber-400/15" />
               <div className="w-3 h-3 rounded-full bg-amber-400/40 shadow-[0_0_8px_rgba(212,160,68,0.4)]" />
             </div>
             <span className="text-[11px] tracking-[0.25em] text-[#c5a059] uppercase font-bold"
@@ -144,7 +144,7 @@ function ModeSelect({ onSelect }: { onSelect: (mode: ScanMode) => void }) {
             <span className="text-[7px] tracking-[0.15em] text-[#3a3a44] uppercase">
               52 READINGS // ~12 MIN
             </span>
-            <span className="text-[6px] tracking-[0.1em] text-[#2a2a32] uppercase mt-1 max-w-[120px] text-center leading-relaxed">
+            <span className="text-[6px] tracking-[0.1em] text-[#2a2a32] uppercase mt-0.5 max-w-[120px] text-center leading-snug">
               FULL GRAVITATIONAL MAPPING. THOROUGH. REVELATORY.
             </span>
           </div>
