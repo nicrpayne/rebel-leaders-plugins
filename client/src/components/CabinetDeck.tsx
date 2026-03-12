@@ -25,8 +25,8 @@ const CABINET_HERO_CDN = "https://files.manuscdn.com/user_upload_by_module/sessi
 const PAGER_SCREENS = [
   { id: "identity",     left: 22.75, top: 17.6, width: 10.85, height: 10.625,
     transform: "perspective(350px) rotateY(-3.5deg) rotateX(-0.5deg)" },
-  { id: "relationship", left: 37.3, top: 17.2, width: 11.8, height: 12.5,
-    transform: "perspective(600px) rotateY(1deg) rotateX(-0.3deg)" },
+  { id: "relationship", left: 37.6, top: 17.8, width: 10.5, height: 10.0,
+    transform: "perspective(500px) rotateY(-1.5deg) rotateX(-0.3deg)" },
   { id: "vision",       left: 50.5, top: 17.8, width: 12.5, height: 11.5,
     transform: "perspective(600px) rotateY(-1deg) rotateX(-0.3deg)" },
   { id: "culture",      left: 65.0, top: 17.8, width: 11.5, height: 10.5,
