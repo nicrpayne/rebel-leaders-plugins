@@ -97,8 +97,8 @@ function PagerScreen({
   // Random flicker — each screen flickers independently
   useEffect(() => {
     const scheduleFlicker = () => {
-      // Random delay between 3-12 seconds
-      const delay = 3000 + Math.random() * 9000;
+      // Random delay between 6-24 seconds
+      const delay = 6000 + Math.random() * 18000;
       const timer = setTimeout(() => {
         // Quick flicker: drop opacity briefly
         setFlickerOpacity(0.3 + Math.random() * 0.3);
