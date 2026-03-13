@@ -704,8 +704,8 @@ startTicker(msg, 14000, () => {
               left: '65%',
               top: '71%',
               transform: 'translate(-50%, -50%)',
-              width: '158%',
-              height: '156%',
+              width: '166%',
+              height: '164%',
             }}
           >
             <img
