@@ -57,16 +57,17 @@ const JOURNAL_2_CDN = "https://files.manuscdn.com/user_upload_by_module/session_
    After rotation: visual width = IMG_H (spine thickness),
                    visual height = IMG_W (spine height).
 
-   SCALE controls overall size. Change THIS ONE NUMBER to resize all shelf cartridges.
-   BASE_W = 270, BASE_H = 180  →  ratio = 1.5:1 (matches full image)
-   The cartridge body fills ~30% of the height, so visual spine thickness ≈ 180 * 0.3 = 54px
+   SCALE controls overall size proportionally.
+   BASE_W controls height on shelf (after 90° rotation).
+   BASE_H controls width/thickness on shelf (after 90° rotation).
+   These can be tuned independently.
 */
-const SPINE_SCALE = 0.82;                          // ← TUNE THIS to resize all shelf cartridges
-const SPINE_IMG_W = Math.round(270 * SPINE_SCALE); // horizontal dimension of the inner image container
-const SPINE_IMG_H = Math.round(180 * SPINE_SCALE); // vertical dimension of the inner image container (1.5:1)
+const SPINE_SCALE = 0.82;                          // ← TUNE THIS to resize both dimensions proportionally
+const SPINE_IMG_W = Math.round(350 * SPINE_SCALE); // horizontal pre-rotation → becomes HEIGHT on shelf
+const SPINE_IMG_H = Math.round(180 * SPINE_SCALE); // vertical pre-rotation → becomes WIDTH on shelf (unchanged)
 // After 90° rotation the visual footprint flips:
-const SPINE_VIS_W = SPINE_IMG_H;                   // visual width on shelf (spine thickness)
-const SPINE_VIS_H = SPINE_IMG_W;                   // visual height on shelf (spine height)
+const SPINE_VIS_W = SPINE_IMG_H;                   // visual width on shelf (spine thickness) — unchanged
+const SPINE_VIS_H = SPINE_IMG_W;                   // visual height on shelf (spine height) — now taller
 // The cartridge body is only ~30% of the image height, so effective visual thickness ≈ VIS_W * 0.3
 // Tight packing: overlap the transparent padding so cartridge bodies sit close together
 const SPINE_PACK = Math.round(SPINE_VIS_W * 0.36); // horizontal overlap in px — eats into transparent padding
