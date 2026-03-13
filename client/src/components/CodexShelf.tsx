@@ -59,7 +59,7 @@ const JOURNAL_2_CDN = "https://files.manuscdn.com/user_upload_by_module/session_
    SPINE_GAP    — horizontal space between cartridges (px, negative = overlap)
 */
 const SPINE_HEIGHT = 270;   // ← cartridge height on shelf in px
-const SPINE_WIDTH  = 195;   // ← cartridge thickness on shelf in px
+const SPINE_WIDTH  = 130;   // ← cartridge thickness on shelf in px
 const SPINE_GAP    = -8;    // ← spacing between cartridges (negative = overlap)
 // Internal: the image container is horizontal, then rotated 90°
 // Container W = shelf height, Container H = shelf width
@@ -129,7 +129,7 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
             className="uppercase leading-tight px-1 line-clamp-2"
             style={{
               fontFamily: "'Courier New', 'Courier', monospace",
-              fontSize: `${Math.max(7, Math.round(_CTR_H * 0.15))}px`,
+              fontSize: '9px',
               fontWeight: 900,
               color: '#1a120a',
               letterSpacing: '0.1em',
@@ -220,27 +220,27 @@ const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   // 3. Feedforward — slight tilt, nudged forward, the one #4 leans on
   MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 4,  offsetX: 0 },
   // 4. No With a Clean Yes — leaning left onto #3, slid left to nestle against it
-  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -13, offsetY: -2, offsetX: 50 },
+  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -13, offsetY: -2, offsetX: 0 },
 
   // === RELATIONSHIP SECTION (positions 5-13) ===
   // 5. Repair in 48 Hours — small real gap before it (section break), mostly straight
-  MOVE_REPAIR_48H:             { tilt: 0.2,  offsetY: 0,  offsetX: 30, gapBefore: 6 },
+  MOVE_REPAIR_48H:             { tilt: 0.2,  offsetY: 0,  offsetX: 0, gapBefore: 6 },
   // 6. Minority Report — straight
-  MOVE_MINORITY_REPORT:        { tilt: 0,    offsetY: 0,  offsetX: 30 },
+  MOVE_MINORITY_REPORT:        { tilt: 0,    offsetY: 0,  offsetX: 0 },
   // 7. Fridge Rights Audit — straight, nudged forward
-  MOVE_FRIDGE_RIGHTS_AUDIT:    { tilt: 0,    offsetY: 4,  offsetX: 30 },
+  MOVE_FRIDGE_RIGHTS_AUDIT:    { tilt: 0,    offsetY: 4,  offsetX: 0 },
   // 8. The Mirror Move — domino lean right, slid right to close gap with #9
-  MOVE_THE_MIRROR:             { tilt: 18,   offsetY: -1, offsetX: 30 },
+  MOVE_THE_MIRROR:             { tilt: 18,   offsetY: -1, offsetX: 0 },
   // 9. Trust Micro-Deposit — domino lean right, slid right to lean into #10
-  MOVE_TRUST_MICRO_DEPOSIT:    { tilt: 20,   offsetY: -3, offsetX: 30 },
+  MOVE_TRUST_MICRO_DEPOSIT:    { tilt: 20,   offsetY: -3, offsetX: 0 },
   // 10. 3 Coaching Questions — the backstop, straight and sturdy
-  MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  offsetX: 100 },
+  MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  offsetX: 0 },
   // 11. SBI Feedback — straight
-  MOVE_FEEDBACK_SBI:           { tilt: 0.3,  offsetY: 0,  offsetX: 100 },
+  MOVE_FEEDBACK_SBI:           { tilt: 0.3,  offsetY: 0,  offsetX: 0 },
   // 12. Accountability With Care — slight lean
-  MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -1.0, offsetY: 1, offsetX: 100 },
+  MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -1.0, offsetY: 1, offsetX: 0 },
   // 13. Recover After You Missed It — end of row, slight lean right (resting against nothing)
-  MOVE_RECOVER_AFTER_MISS:     { tilt: 1.2,  offsetY: 0,  offsetX: 100 },
+  MOVE_RECOVER_AFTER_MISS:     { tilt: 1.2,  offsetY: 0,  offsetX: 0 },
 };
 
 /* ─────────────────────────────────────────────
@@ -250,22 +250,22 @@ const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
 const BOTTOM_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   // === VISION SECTION ===
   // First 3 laid flat (-90°), stacked like a pile
-  MOVE_DECISION_RIGHTS_MAP:    { tilt: -90, offsetY: 55, offsetX: 70, useCenter: true },
-  MOVE_STOP_LIST:              { tilt: -90, offsetY: 22, offsetX: 42, useCenter: true },
-  MOVE_DISAGREE_AND_COMMIT:    { tilt: -90, offsetY: -10, offsetX: 45, useCenter: true },
+  MOVE_DECISION_RIGHTS_MAP:    { tilt: -90, offsetY: 55, offsetX: 0, useCenter: true },
+  MOVE_STOP_LIST:              { tilt: -90, offsetY: 22, offsetX: 0, useCenter: true },
+  MOVE_DISAGREE_AND_COMMIT:    { tilt: -90, offsetY: -10, offsetX: 0, useCenter: true },
   // Remaining Vision cartridges standing upright
-  MOVE_THE_ONE_THING:          { tilt: 0, offsetY: 0, offsetX: 120 },
-  MOVE_NORTH_STAR_SENTENCE:    { tilt: 0.3, offsetY: 0, offsetX: 120 },
-  MOVE_KILL_THE_GHOST_GOAL:    { tilt: 0, offsetY: 2, offsetX: 120 },
-  MOVE_WIN_CONDITION:          { tilt: -0.5, offsetY: 0, offsetX: 120 },
-  MOVE_TRADEOFF_TALK:          { tilt: 0.3, offsetY: 1, offsetX: 120 },
+  MOVE_THE_ONE_THING:          { tilt: 0, offsetY: 0, offsetX: 0 },
+  MOVE_NORTH_STAR_SENTENCE:    { tilt: 0.3, offsetY: 0, offsetX: 0 },
+  MOVE_KILL_THE_GHOST_GOAL:    { tilt: 0, offsetY: 2, offsetX: 0 },
+  MOVE_WIN_CONDITION:          { tilt: -0.5, offsetY: 0, offsetX: 0 },
+  MOVE_TRADEOFF_TALK:          { tilt: 0.3, offsetY: 1, offsetX: 0 },
   // === CULTURE SECTION ===
-  MOVE_TRUTH_WEATHER:          { tilt: 0, offsetY: 0, offsetX: 120 },
-  MOVE_MEETING_REWRITE:        { tilt: 0.5, offsetY: 0, offsetX: 120 },
-  MOVE_PERMISSION_SLIP:        { tilt: 0, offsetY: 2, offsetX: 120 },
-  MOVE_SHADOW_NORMS:           { tilt: -0.3, offsetY: 0, offsetX: 120 },
-  MOVE_ENERGY_LEAK_CHECK:      { tilt: 0, offsetY: 1, offsetX: 120 },
-  MOVE_SAFE_TO_SAY:            { tilt: 0.5, offsetY: 0, offsetX: 120 },
+  MOVE_TRUTH_WEATHER:          { tilt: 0, offsetY: 0, offsetX: 0 },
+  MOVE_MEETING_REWRITE:        { tilt: 0.5, offsetY: 0, offsetX: 0 },
+  MOVE_PERMISSION_SLIP:        { tilt: 0, offsetY: 2, offsetX: 0 },
+  MOVE_SHADOW_NORMS:           { tilt: -0.3, offsetY: 0, offsetX: 0 },
+  MOVE_ENERGY_LEAK_CHECK:      { tilt: 0, offsetY: 1, offsetX: 0 },
+  MOVE_SAFE_TO_SAY:            { tilt: 0.5, offsetY: 0, offsetX: 0 },
 };
 
 /* ─────────────────────────────────────────────
