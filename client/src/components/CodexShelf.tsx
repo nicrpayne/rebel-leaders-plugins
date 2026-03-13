@@ -41,7 +41,8 @@ function groupByFlywheel(entries: CodexEntry[]): Record<FlywheelNode, CodexEntry
    SPINE CARTRIDGE (Vertical, standing on shelf)
    Uses the exact cartridge spine image from the Load Bay
    ───────────────────────────────────────────── */
-const SPINE_CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine_transparent_95539dfa.png";
+const SPINE_CDN_OLD = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine_transparent_95539dfa.png";
+const SPINE_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/CsmUKCVLeilIqNNJ.png";
 const STATUE_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/FLleLCCpIbXNFGAi.png";
 const JOURNAL_1_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/zWRQfTmONtObpdxL.png"; // Parable of the Shipwrecked Leaders
 const JOURNAL_2_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/azSuVoekkFnNjqzv.png"; // Rebellious Hope
@@ -85,8 +86,8 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
       <div
         className="absolute top-1/2 left-1/2 overflow-hidden rounded-[3px]"
         style={{
-          width: "205px",
-          height: "63px",
+          width: "230px",
+          height: "72px",
           transform: "translate(-50%, -50%) rotate(90deg)",
         }}
       >
@@ -96,14 +97,15 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
           className="absolute inset-0 w-full h-full object-fill drop-shadow-[2px_4px_8px_rgba(0,0,0,0.7)]"
           draggable={false}
         />
+        {/* Text overlay — positioned on the parchment label area (left ~75% of cartridge) */}
         <div
-          className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none"
-          style={{ transform: "rotate(-0.5deg)" }}
+          className="absolute top-0 left-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none"
+          style={{ width: '75%', height: '100%' }}
         >
-          <span className="font-serif text-[#1a120a] text-[8px] md:text-[9px] lg:text-[10px] font-black uppercase leading-tight tracking-wider px-2 drop-shadow-[0_0_3px_rgba(230,220,195,1)] drop-shadow-[0_1px_0_rgba(255,255,255,0.6)] line-clamp-2">
+          <span className="font-serif text-[#1a120a] text-[7px] md:text-[8px] lg:text-[9px] font-black uppercase leading-tight tracking-wider px-3 drop-shadow-[0_0_3px_rgba(230,220,195,1)] drop-shadow-[0_1px_0_rgba(255,255,255,0.6)] line-clamp-2">
             {entry.title}
           </span>
-          <span className="font-mono text-[5px] md:text-[6px] text-[#2a1d10]/70 mt-0.5 tracking-tight font-bold drop-shadow-[0_0_2px_rgba(230,220,195,1)]">
+          <span className="font-mono text-[4.5px] md:text-[5.5px] text-[#2a1d10]/70 mt-0.5 tracking-tight font-bold drop-shadow-[0_0_2px_rgba(230,220,195,1)]">
             {entry.id}
           </span>
         </div>
@@ -146,11 +148,15 @@ function CartridgeFlat({ entry, isLoaded, onClick, tilt = 0 }: FlatSpineProps) {
           draggable={false}
         />
       </div>
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none">
-        <span className="font-serif text-[#1a120a] text-[8px] md:text-[9px] lg:text-[10px] font-black uppercase leading-tight tracking-wider px-2 drop-shadow-[0_0_3px_rgba(230,220,195,1)] drop-shadow-[0_1px_0_rgba(255,255,255,0.6)] line-clamp-1">
+      {/* Text overlay — positioned on the parchment label area (left ~75% of cartridge) */}
+      <div
+        className="absolute top-0 left-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none"
+        style={{ width: '75%', height: '100%' }}
+      >
+        <span className="font-serif text-[#1a120a] text-[7px] md:text-[8px] lg:text-[9px] font-black uppercase leading-tight tracking-wider px-2 drop-shadow-[0_0_3px_rgba(230,220,195,1)] drop-shadow-[0_1px_0_rgba(255,255,255,0.6)] line-clamp-1">
           {entry.title}
         </span>
-        <span className="font-mono text-[5px] md:text-[6px] text-[#2a1d10]/70 mt-0.5 tracking-tight font-bold drop-shadow-[0_0_2px_rgba(230,220,195,1)]">
+        <span className="font-mono text-[4.5px] md:text-[5.5px] text-[#2a1d10]/70 mt-0.5 tracking-tight font-bold drop-shadow-[0_0_2px_rgba(230,220,195,1)]">
           {entry.id}
         </span>
       </div>
