@@ -601,17 +601,31 @@ export default function CodexShelf({
             animation: 'swordPulse 3s ease-in-out infinite alternate',
           }}
         />
-        {/* Sword blade white overlay — faint translucent white to make sword cut through */}
+        {/* Sword blade white overlay — bright translucent white to make sword cut through */}
         <div
           className="absolute z-[6]"
           style={{
-            top: '-5%',
-            left: '37%',
-            width: '12%',
-            height: '28%',
-            background: 'linear-gradient(to top, rgba(255,255,255,0.08) 0%, rgba(200,250,255,0.2) 40%, rgba(255,255,255,0.35) 70%, rgba(200,250,255,0.15) 100%)',
-            filter: 'blur(3px)',
+            top: '-6%',
+            left: '36%',
+            width: '14%',
+            height: '30%',
+            background: 'linear-gradient(to top, rgba(255,255,255,0.15) 0%, rgba(220,255,255,0.45) 30%, rgba(255,255,255,0.65) 60%, rgba(220,255,255,0.5) 80%, rgba(255,255,255,0.25) 100%)',
+            filter: 'blur(2px)',
             borderRadius: '40%',
+            animation: 'swordPulse 3s ease-in-out infinite alternate',
+          }}
+        />
+        {/* Sword blade outer bloom — wider soft white halo around the blade */}
+        <div
+          className="absolute z-[5]"
+          style={{
+            top: '-8%',
+            left: '33%',
+            width: '20%',
+            height: '32%',
+            background: 'linear-gradient(to top, rgba(255,255,255,0.03) 0%, rgba(200,250,255,0.12) 30%, rgba(255,255,255,0.18) 60%, rgba(200,250,255,0.08) 100%)',
+            filter: 'blur(6px)',
+            borderRadius: '35%',
             animation: 'swordPulse 3s ease-in-out infinite alternate',
           }}
         />
@@ -666,29 +680,29 @@ export default function CodexShelf({
           ))}
         </div>
 
-        {/* ── BRIGHT ORANGE BASE BACKLIGHT ── */}
+        {/* ── WARM ORANGE AMBIENT — full shelf height for depth ── */}
         <div
           className="absolute z-[1]"
           style={{
             bottom: '0%',
-            left: '5%',
-            width: '90%',
-            height: '35%',
-            background: 'radial-gradient(ellipse 80% 70% at 50% 90%, rgba(255,140,30,0.4) 0%, rgba(230,120,20,0.2) 30%, rgba(200,100,10,0.08) 55%, transparent 75%)',
-            filter: 'blur(12px)',
+            left: '-10%',
+            width: '120%',
+            height: '110%',
+            background: 'radial-gradient(ellipse 70% 90% at 50% 95%, rgba(255,140,30,0.35) 0%, rgba(230,120,20,0.18) 20%, rgba(200,100,10,0.08) 45%, rgba(180,90,10,0.03) 65%, transparent 85%)',
+            filter: 'blur(18px)',
             animation: 'emberPulse 4s ease-in-out infinite alternate',
           }}
         />
-        {/* Orange base backlight — secondary wider spread */}
+        {/* Orange ambient — secondary fill reaching to shelf ceiling */}
         <div
           className="absolute z-[0]"
           style={{
-            bottom: '-5%',
-            left: '-10%',
-            width: '120%',
-            height: '40%',
-            background: 'radial-gradient(ellipse 70% 50% at 50% 85%, rgba(255,160,40,0.18) 0%, rgba(220,120,20,0.06) 50%, transparent 75%)',
-            filter: 'blur(20px)',
+            bottom: '-10%',
+            left: '-20%',
+            width: '140%',
+            height: '130%',
+            background: 'radial-gradient(ellipse 60% 80% at 50% 90%, rgba(255,160,40,0.14) 0%, rgba(220,120,20,0.06) 40%, rgba(180,90,10,0.02) 65%, transparent 80%)',
+            filter: 'blur(30px)',
           }}
         />
         {/* Golden ember glow at base — warm fire/embers on the rock */}
