@@ -740,9 +740,9 @@ export default function CodexShelf({
         alt="Parable of the Shipwrecked Leaders"
         className="absolute z-[14] pointer-events-none"
         style={{
-          bottom: '0%',
-          right: '-10%',
-          height: '85%',
+          bottom: '3%',
+          right: '-13%',
+          height: '75%',
           width: 'auto',
           transform: 'rotate(-4deg)',
           transformOrigin: 'bottom center',
