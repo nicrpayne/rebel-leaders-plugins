@@ -47,6 +47,30 @@ const STATUE_CDN = "https://files.manuscdn.com/user_upload_by_module/session_fil
 const JOURNAL_1_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/zWRQfTmONtObpdxL.png"; // Parable of the Shipwrecked Leaders
 const JOURNAL_2_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/azSuVoekkFnNjqzv.png"; // Rebellious Hope
 
+/* ── GLOBAL CARTRIDGE SIZING ──
+   The cartridge image is 1536×1024 (1.5:1 ratio) with transparent padding.
+   The actual cartridge body within the image is ~3.86:1.
+   We use the FULL image ratio (1.5:1) for the container + object-contain
+   so the cartridge renders undistorted. The transparent padding is invisible.
+
+   On the shelf, we rotate 90° so it stands upright like a book spine.
+   After rotation: visual width = IMG_H (spine thickness),
+                   visual height = IMG_W (spine height).
+
+   SCALE controls overall size. Change THIS ONE NUMBER to resize all shelf cartridges.
+   BASE_W = 270, BASE_H = 180  →  ratio = 1.5:1 (matches full image)
+   The cartridge body fills ~30% of the height, so visual spine thickness ≈ 180 * 0.3 = 54px
+*/
+const SPINE_SCALE = 0.82;                          // ← TUNE THIS to resize all shelf cartridges
+const SPINE_IMG_W = Math.round(270 * SPINE_SCALE); // horizontal dimension of the inner image container
+const SPINE_IMG_H = Math.round(180 * SPINE_SCALE); // vertical dimension of the inner image container (1.5:1)
+// After 90° rotation the visual footprint flips:
+const SPINE_VIS_W = SPINE_IMG_H;                   // visual width on shelf (spine thickness)
+const SPINE_VIS_H = SPINE_IMG_W;                   // visual height on shelf (spine height)
+// The cartridge body is only ~30% of the image height, so effective visual thickness ≈ VIS_W * 0.3
+// Tight packing: overlap the transparent padding so cartridge bodies sit close together
+const SPINE_PACK = Math.round(SPINE_VIS_W * 0.36); // horizontal overlap in px — eats into transparent padding
+
 interface SpineProps {
   entry: CodexEntry;
   isLoaded: boolean;
@@ -65,48 +89,59 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
       disabled={isLoaded}
       className={cn(
         "relative flex-shrink-0 group transition-all duration-300 ease-out cursor-pointer",
-        "w-[100px] md:w-[116px] lg:w-[128px] h-[205px] md:h-[238px] lg:h-[272px]",
-        // Sits on the shelf surface, behind the metal guard rail
         "mb-0",
-        // Negative horizontal margin to pack spines tightly
-        "-mx-[8px] md:-mx-[10px] lg:-mx-[12px]",
         isLoaded
           ? "opacity-0 pointer-events-none scale-95"
           : "opacity-100 hover:translate-y-[-8px] hover:brightness-125 active:scale-95"
       )}
       style={{
-        transform: isLoaded ? undefined : `translateY(${offsetY}px) rotate(${tilt}deg)`,
+        // Outer button matches the rotated visual footprint
+        width: `${SPINE_VIS_W}px`,
+        height: `${SPINE_VIS_H}px`,
+        // Tight packing via negative horizontal margin
+        marginLeft: gapBefore !== undefined ? `${gapBefore}px` : `-${SPINE_PACK}px`,
+        marginRight: `-${SPINE_PACK}px`,
+        // Per-cartridge personality
+        transform: isLoaded ? undefined : `translateY(${offsetY}px) translateX(${offsetX}px) rotate(${tilt}deg)`,
         transformOrigin: tilt !== 0 ? (useCenter ? "center center" : "bottom center") : undefined,
         transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-        left: offsetX ? `${offsetX}px` : undefined,
-        ...(gapBefore !== undefined ? { marginLeft: `${gapBefore}px` } : {}),
       }}
       title={entry.title}
     >
+      {/* Inner container: holds the cartridge image at its natural (pre-rotation) dimensions,
+          centered in the button, then rotated 90° to stand upright */}
       <div
         className="absolute top-1/2 left-1/2 overflow-hidden rounded-[3px]"
         style={{
-          width: "260px",
-          height: "60px",
+          width: `${SPINE_IMG_W}px`,
+          height: `${SPINE_IMG_H}px`,
           transform: "translate(-50%, -50%) rotate(90deg)",
         }}
       >
         <img
           src={SPINE_CDN}
           alt={entry.title}
-          className="absolute inset-0 w-full h-full object-fill drop-shadow-[2px_4px_8px_rgba(0,0,0,0.7)]"
+          className="absolute inset-0 w-full h-full object-contain drop-shadow-[2px_4px_8px_rgba(0,0,0,0.7)]"
           draggable={false}
         />
-        {/* Text overlay — positioned on the parchment label area */}
+        {/* Text overlay — positioned on the parchment label area.
+            With object-contain, the cartridge body sits in the center ~30% of the container height.
+            The parchment label is in the left ~75% of the cartridge body.
+            Container height = SPINE_IMG_H. Body starts at ~33% and ends at ~63% of container. */}
         <div
-          className="absolute top-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none"
-          style={{ left: '12%', width: '66%', height: '100%' }}
+          className="absolute flex flex-col items-center justify-center text-center z-10 pointer-events-none"
+          style={{
+            top: '33%',
+            height: '34%',
+            left: '8%',
+            width: '62%',
+          }}
         >
           <span
             className="uppercase leading-tight px-1 line-clamp-2"
             style={{
               fontFamily: "'Courier New', 'Courier', monospace",
-              fontSize: '6px',
+              fontSize: `${Math.max(7, Math.round(SPINE_IMG_H * 0.06))}px`,
               fontWeight: 900,
               color: '#1a120a',
               letterSpacing: '0.1em',
@@ -226,21 +261,23 @@ const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
    ───────────────────────────────────────────── */
 const BOTTOM_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   // === VISION SECTION ===
-  MOVE_DECISION_RIGHTS_MAP:    { tilt: -90, offsetY: 63, offsetX: 78, useCenter: true },
-  MOVE_STOP_LIST:              { tilt: -90, offsetY: 29, offsetX: 49, useCenter: true },
-  MOVE_DISAGREE_AND_COMMIT:    { tilt: -90, offsetY: -7, offsetX: 52, useCenter: true },
-  MOVE_THE_ONE_THING:          { tilt: 0, offsetY: 0, offsetX: 200 },
-  MOVE_NORTH_STAR_SENTENCE:    { tilt: 0, offsetY: 0, offsetX: 200 },
-  MOVE_KILL_THE_GHOST_GOAL:    { tilt: 0, offsetY: 0, offsetX: 200 },
-  MOVE_WIN_CONDITION:          { tilt: 0, offsetY: 0, offsetX: 200 },
-  MOVE_TRADEOFF_TALK:          { tilt: 0, offsetY: 0, offsetX: 200 },
+  // First 3 laid flat (-90°), stacked like a pile
+  MOVE_DECISION_RIGHTS_MAP:    { tilt: -90, offsetY: 55, offsetX: 70, useCenter: true },
+  MOVE_STOP_LIST:              { tilt: -90, offsetY: 22, offsetX: 42, useCenter: true },
+  MOVE_DISAGREE_AND_COMMIT:    { tilt: -90, offsetY: -10, offsetX: 45, useCenter: true },
+  // Remaining Vision cartridges standing upright
+  MOVE_THE_ONE_THING:          { tilt: 0, offsetY: 0, offsetX: 120 },
+  MOVE_NORTH_STAR_SENTENCE:    { tilt: 0.3, offsetY: 0, offsetX: 120 },
+  MOVE_KILL_THE_GHOST_GOAL:    { tilt: 0, offsetY: 2, offsetX: 120 },
+  MOVE_WIN_CONDITION:          { tilt: -0.5, offsetY: 0, offsetX: 120 },
+  MOVE_TRADEOFF_TALK:          { tilt: 0.3, offsetY: 1, offsetX: 120 },
   // === CULTURE SECTION ===
-  MOVE_TRUTH_WEATHER:          { tilt: 0, offsetY: 0, offsetX: 200 },
-  MOVE_MEETING_REWRITE:        { tilt: 0, offsetY: 0, offsetX: 200 },
-  MOVE_PERMISSION_SLIP:        { tilt: 0, offsetY: 0, offsetX: 200 },
-  MOVE_SHADOW_NORMS:           { tilt: 0, offsetY: 0, offsetX: 200 },
-  MOVE_ENERGY_LEAK_CHECK:      { tilt: 0, offsetY: 0, offsetX: 200 },
-  MOVE_SAFE_TO_SAY:            { tilt: 0, offsetY: 0, offsetX: 200 },
+  MOVE_TRUTH_WEATHER:          { tilt: 0, offsetY: 0, offsetX: 120 },
+  MOVE_MEETING_REWRITE:        { tilt: 0.5, offsetY: 0, offsetX: 120 },
+  MOVE_PERMISSION_SLIP:        { tilt: 0, offsetY: 2, offsetX: 120 },
+  MOVE_SHADOW_NORMS:           { tilt: -0.3, offsetY: 0, offsetX: 120 },
+  MOVE_ENERGY_LEAK_CHECK:      { tilt: 0, offsetY: 1, offsetX: 120 },
+  MOVE_SAFE_TO_SAY:            { tilt: 0.5, offsetY: 0, offsetX: 120 },
 };
 
 /* ─────────────────────────────────────────────
