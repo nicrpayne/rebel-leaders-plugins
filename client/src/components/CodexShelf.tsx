@@ -631,11 +631,11 @@ export default function CodexShelf({
       <img
         src={JOURNAL_2_CDN}
         alt="Rebellious Hope"
-        className="absolute z-[13] pointer-events-none"
+        className="absolute z-[12] pointer-events-none"
         style={{
           bottom: '2%',
-          right: '-8%',
-          height: '72%',
+          right: '-12%',
+          height: '65%',
           width: 'auto',
           transform: 'rotate(0deg)',
           transformOrigin: 'bottom center',
