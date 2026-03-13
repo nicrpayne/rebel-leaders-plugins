@@ -666,55 +666,29 @@ export default function CodexShelf({
           ))}
         </div>
 
-        {/* ── WARM ORANGE AMBIENT — full shelf height, JACKED UP ── */}
+        {/* ── WARM ORANGE AMBIENT — radiates from BEHIND the statue, center-mass ── */}
         <div
           className="absolute z-[1]"
           style={{
-            bottom: '0%',
+            top: '15%',
             left: '-15%',
             width: '130%',
-            height: '115%',
-            background: 'radial-gradient(ellipse 75% 90% at 50% 92%, rgba(255,130,20,0.55) 0%, rgba(240,110,15,0.3) 18%, rgba(210,90,10,0.15) 40%, rgba(180,80,10,0.06) 60%, transparent 82%)',
-            filter: 'blur(16px)',
+            height: '85%',
+            background: 'radial-gradient(ellipse 70% 70% at 50% 45%, rgba(255,130,20,0.5) 0%, rgba(240,110,15,0.25) 20%, rgba(210,90,10,0.12) 40%, rgba(180,80,10,0.04) 60%, transparent 80%)',
+            filter: 'blur(18px)',
             animation: 'emberPulse 4s ease-in-out infinite alternate',
           }}
         />
-        {/* Orange ambient — secondary fill reaching to shelf ceiling */}
+        {/* Orange ambient — wider fill behind statue, spreading to shelf walls */}
         <div
           className="absolute z-[0]"
           style={{
-            bottom: '-10%',
+            top: '5%',
             left: '-25%',
             width: '150%',
-            height: '140%',
-            background: 'radial-gradient(ellipse 65% 85% at 50% 88%, rgba(255,150,30,0.25) 0%, rgba(230,120,20,0.12) 30%, rgba(200,90,10,0.05) 55%, rgba(180,80,10,0.02) 70%, transparent 85%)',
-            filter: 'blur(28px)',
-          }}
-        />
-        {/* Golden ember glow at base — warm fire/embers on the rock */}
-        <div
-          className="absolute z-[3]"
-          style={{
-            bottom: '2%',
-            left: '15%',
-            width: '70%',
-            height: '22%',
-            background: 'radial-gradient(ellipse 80% 60% at 50% 85%, rgba(255,170,40,0.35) 0%, rgba(230,130,20,0.18) 35%, rgba(200,100,10,0.06) 60%, transparent 80%)',
-            filter: 'blur(8px)',
-            animation: 'emberPulse 4s ease-in-out infinite alternate',
-          }}
-        />
-        {/* Ember sparkle points */}
-        <div
-          className="absolute z-[4]"
-          style={{
-            bottom: '5%',
-            left: '20%',
-            width: '60%',
-            height: '14%',
-            background: 'radial-gradient(ellipse 40% 50% at 30% 70%, rgba(255,180,40,0.35) 0%, transparent 70%), radial-gradient(ellipse 35% 45% at 70% 60%, rgba(255,200,60,0.28) 0%, transparent 70%)',
-            filter: 'blur(4px)',
-            animation: 'emberPulse 4s ease-in-out infinite alternate-reverse',
+            height: '110%',
+            background: 'radial-gradient(ellipse 65% 70% at 50% 45%, rgba(255,150,30,0.2) 0%, rgba(230,120,20,0.08) 35%, rgba(200,90,10,0.03) 55%, transparent 75%)',
+            filter: 'blur(30px)',
           }}
         />
 
