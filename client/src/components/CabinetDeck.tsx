@@ -708,27 +708,16 @@ startTicker(msg, 14000, () => {
               height: '108%',
             }}
           >
-            {/* Warm color overlay to match deck ambient lighting */}
-            <div
-              className="absolute inset-0 z-10 pointer-events-none rounded-sm"
-              style={{
-                background: 'linear-gradient(180deg, rgba(40,25,10,0.35) 0%, rgba(20,12,5,0.25) 100%)',
-                mixBlendMode: 'multiply',
-              }}
-            />
             <img
               src={SPINE_CDN}
               alt="Cartridge Spine"
               className="absolute inset-0 w-full h-full object-fill drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
-              style={{
-                filter: 'brightness(0.72) contrast(1.15) saturate(0.8) sepia(0.15)',
-              }}
             />
+            {/* Text overlay — positioned on the parchment label area (left ~75% of cartridge) */}
             <div
-              className="absolute w-[70%] h-[60%] flex flex-col items-center justify-center text-center"
-              style={{ transform: "rotate(-0.5deg)" }}
+              className="absolute top-0 left-0 flex flex-col items-center justify-center text-center"
+              style={{ width: '75%', height: '100%' }}
             >
-              <div className="absolute inset-0 bg-[#e6dcc3]/40 blur-sm rounded-full mix-blend-hard-light -z-10" />
               <h3 className="font-serif text-[#1a120a] text-[9px] sm:text-[10px] md:text-[11px] lg:text-[12px] font-black uppercase leading-tight tracking-widest px-2 drop-shadow-[0_0_3px_rgba(230,220,195,1)] drop-shadow-[0_1px_0_rgba(255,255,255,0.6)]">
                 {displayEntry.title}
               </h3>
