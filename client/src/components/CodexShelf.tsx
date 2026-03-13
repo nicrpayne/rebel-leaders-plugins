@@ -138,6 +138,19 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
           >
             {entry.title}
           </span>
+          <span
+            style={{
+              fontFamily: "'Courier New', 'Courier', monospace",
+              fontSize: '5px',
+              fontWeight: 700,
+              color: 'rgba(42,29,16,0.7)',
+              letterSpacing: '0.08em',
+              textShadow: '0 0 2px rgba(230,220,195,0.8)',
+              marginTop: '2px',
+            }}
+          >
+            {entry.id}
+          </span>
         </div>
       </div>
     </button>
@@ -215,10 +228,10 @@ const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   // === IDENTITY SECTION (positions 1-4) ===
   // 1. Name the Cost — straight, anchoring the left wall, nudged forward
   MOVE_NAME_THE_COST:          { tilt: 0,    offsetY: 4,  offsetX: 0 },
-  // 2. Clarity Contract — straight, nudged forward
-  MOVE_CLARITY_CONTRACT:       { tilt: 0,    offsetY: 4,  offsetX: 0 },
-  // 3. Feedforward — slight tilt, nudged forward, the one #4 leans on
-  MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 4,  offsetX: 0 },
+  // 2. Clarity Contract — straight, nudged forward, touching #3
+  MOVE_CLARITY_CONTRACT:       { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: 0 },
+  // 3. Feedforward — slight tilt, nudged forward, touching #2
+  MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 4,  offsetX: 0, gapBefore: 0 },
   // 4. No With a Clean Yes — leaning left onto #3, slid left to nestle against it
   MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -13, offsetY: -2, offsetX: 0 },
 
