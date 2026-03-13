@@ -702,10 +702,10 @@ startTicker(msg, 14000, () => {
             style={{
               /* Center the cartridge within the slot — sized to look proportional */
               left: '65%',
-              top: '71%',
+              top: '73%',
               transform: 'translate(-50%, -50%)',
-              width: '166%',
-              height: '164%',
+              width: '171%',
+              height: '169%',
             }}
           >
             <img
