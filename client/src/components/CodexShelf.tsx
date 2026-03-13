@@ -741,7 +741,7 @@ export default function CodexShelf({
         className="absolute z-[14] pointer-events-none"
         style={{
           bottom: '3%',
-          right: '-8%',
+          right: '-7%',
           height: '75%',
           width: 'auto',
           transform: 'rotate(-4deg)',
