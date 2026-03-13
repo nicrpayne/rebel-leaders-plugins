@@ -716,7 +716,7 @@ startTicker(msg, 14000, () => {
             {/* Text overlay — positioned on the parchment label area (left ~78% of cartridge) */}
             <div
               className="absolute top-0 flex flex-col items-center justify-center text-center"
-              style={{ left: '4%', width: '72%', height: '100%' }}
+              style={{ left: '12%', width: '68%', height: '100%' }}
             >
               <h3
                 className="uppercase leading-tight px-3"
@@ -732,7 +732,7 @@ startTicker(msg, 14000, () => {
                 {displayEntry.title}
               </h3>
               <span
-                className="mt-1"
+                className="mt-0"
                 style={{
                   fontFamily: "'Courier New', 'Courier', monospace",
                   fontSize: 'clamp(6px, 0.8vw, 10px)',
