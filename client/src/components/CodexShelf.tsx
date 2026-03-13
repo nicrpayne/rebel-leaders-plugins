@@ -544,7 +544,7 @@ export default function CodexShelf({
         className="absolute z-[15] pointer-events-none"
         style={{
           width: '48%',
-          bottom: '5%',
+          bottom: '7%',
           right: '-12%',
           overflow: 'visible',
         }}
