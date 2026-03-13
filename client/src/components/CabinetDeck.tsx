@@ -716,7 +716,7 @@ startTicker(msg, 14000, () => {
             {/* Text overlay — positioned on the parchment label area (left ~78% of cartridge) */}
             <div
               className="absolute top-0 flex flex-col items-center justify-center text-center"
-              style={{ left: '18%', width: '62%', height: '100%', marginTop: '-3%' }}
+              style={{ left: '18%', width: '62%', height: '100%', marginTop: '-1%' }}
             >
               <h3
                 className="uppercase leading-tight px-3"
