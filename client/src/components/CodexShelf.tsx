@@ -634,10 +634,10 @@ export default function CodexShelf({
         className="absolute z-[13] pointer-events-none"
         style={{
           bottom: '2%',
-          right: '-5%',
+          right: '-8%',
           height: '72%',
           width: 'auto',
-          transform: 'rotate(3deg)',
+          transform: 'rotate(0deg)',
           transformOrigin: 'bottom center',
           filter: 'brightness(0.7) contrast(1.15) saturate(0.8)',
         }}
