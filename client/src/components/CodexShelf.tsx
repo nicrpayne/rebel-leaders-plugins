@@ -93,7 +93,6 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
         width: `${SPINE_WIDTH}px`,
         height: `${SPINE_HEIGHT}px`,
         marginLeft: gapBefore !== undefined ? `${gapBefore}px` : `${SPINE_GAP}px`,
-        marginRight: `${SPINE_GAP}px`,
         transform: isLoaded ? undefined : `translateY(${offsetY}px) translateX(${offsetX}px) rotate(${tilt}deg)`,
         transformOrigin: tilt !== 0 ? (useCenter ? "center center" : "bottom center") : undefined,
         transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
@@ -855,7 +854,8 @@ export default function CodexShelf({
         <div className="relative pl-0 pr-4 md:pr-5 lg:pr-6 pt-0">
           <div
             ref={scrollRefTop}
-            className="flex items-end gap-0 overflow-visible pb-0 pt-0 h-[225px] md:h-[265px] lg:h-[305px]"
+            className="flex items-end gap-0 overflow-visible pb-0 pt-0"
+            style={{ minHeight: `${SPINE_HEIGHT + 30}px` }}
           >
             {topVisible.map((section) => {
               const sectionEntries = grouped[section.key];
@@ -891,7 +891,8 @@ export default function CodexShelf({
         <div className="relative pl-0 pr-4 md:pr-5 lg:pr-6 pb-0">
           <div
             ref={scrollRefBottom}
-            className="flex items-end gap-0 overflow-visible pb-0 pt-0 h-[220px] md:h-[260px] lg:h-[300px]"
+            className="flex items-end gap-0 overflow-visible pb-0 pt-0"
+            style={{ minHeight: `${SPINE_HEIGHT + 30}px` }}
           >
             {bottomVisible.map((section) => {
               const sectionEntries = grouped[section.key];
