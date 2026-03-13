@@ -65,7 +65,7 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
       disabled={isLoaded}
       className={cn(
         "relative flex-shrink-0 group transition-all duration-300 ease-out cursor-pointer",
-        "w-[63px] md:w-[74px] lg:w-[80px] h-[205px] md:h-[238px] lg:h-[272px]",
+        "w-[22px] md:w-[26px] lg:w-[28px] h-[205px] md:h-[238px] lg:h-[272px]",
         // Sits on the shelf surface, behind the metal guard rail
         "mb-0",
         // Negative horizontal margin to pack spines tightly
@@ -86,8 +86,8 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
       <div
         className="absolute top-1/2 left-1/2 overflow-hidden rounded-[3px]"
         style={{
-          width: "230px",
-          height: "72px",
+          width: "260px",
+          height: "28px",
           transform: "translate(-50%, -50%) rotate(90deg)",
         }}
       >
@@ -97,16 +97,23 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
           className="absolute inset-0 w-full h-full object-fill drop-shadow-[2px_4px_8px_rgba(0,0,0,0.7)]"
           draggable={false}
         />
-        {/* Text overlay — positioned on the parchment label area (left ~75% of cartridge) */}
+        {/* Text overlay — positioned on the parchment label area */}
         <div
-          className="absolute top-0 left-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none"
-          style={{ width: '75%', height: '100%' }}
+          className="absolute top-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none"
+          style={{ left: '12%', width: '66%', height: '100%' }}
         >
-          <span className="font-serif text-[#1a120a] text-[7px] md:text-[8px] lg:text-[9px] font-black uppercase leading-tight tracking-wider px-3 drop-shadow-[0_0_3px_rgba(230,220,195,1)] drop-shadow-[0_1px_0_rgba(255,255,255,0.6)] line-clamp-2">
+          <span
+            className="uppercase leading-tight px-1 line-clamp-2"
+            style={{
+              fontFamily: "'Courier New', 'Courier', monospace",
+              fontSize: '6px',
+              fontWeight: 900,
+              color: '#1a120a',
+              letterSpacing: '0.1em',
+              textShadow: '0 0 2px rgba(230,220,195,0.8)',
+            }}
+          >
             {entry.title}
-          </span>
-          <span className="font-mono text-[4.5px] md:text-[5.5px] text-[#2a1d10]/70 mt-0.5 tracking-tight font-bold drop-shadow-[0_0_2px_rgba(230,220,195,1)]">
-            {entry.id}
           </span>
         </div>
       </div>
