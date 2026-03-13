@@ -12,7 +12,8 @@ import { CodexEntry } from "@/lib/codex-schema";
    - Ticker tape triggers on load, scan complete, and idle ambient
    ───────────────────────────────────────────── */
 
-const SPINE_CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine_transparent_95539dfa.png";
+const SPINE_CDN_OLD = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine_transparent_95539dfa.png";
+const SPINE_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/CsmUKCVLeilIqNNJ.png";
 const CABINET_HERO_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/fLHdQJImZxvFSNJX.webp";
 
 /* ── Pager screen positions (% of hero image) ── */
