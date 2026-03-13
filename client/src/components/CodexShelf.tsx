@@ -48,31 +48,23 @@ const JOURNAL_1_CDN = "https://files.manuscdn.com/user_upload_by_module/session_
 const JOURNAL_2_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/azSuVoekkFnNjqzv.png"; // Rebellious Hope
 
 /* ── GLOBAL CARTRIDGE SIZING ──
-   The cartridge image is 1536×1024. The actual cartridge body is ~3.86:1.
-   We use object-fill so the image stretches to fill the container exactly.
-   The container ratio is set to the cartridge body ratio (~4:1).
-   This means the transparent padding gets squished away and the cartridge
-   body fills the container edge-to-edge.
+   Dead simple: SPINE_HEIGHT and SPINE_WIDTH are what you see on screen.
+   No rotation math, no ratio locking. You say 200, you get 200px.
 
-   On the shelf, we rotate 90° so it stands upright like a book spine.
-   After rotation: visual width = IMG_H (spine thickness),
-                   visual height = IMG_W (spine height).
+   Internally the image is rendered into a horizontal container then
+   rotated 90°, but you never need to think about that.
 
-   To make cartridges TALLER: increase BASE_H_ON_SHELF (line below).
-   To make cartridges WIDER:  increase BASE_W_ON_SHELF (line below).
-   SCALE resizes both proportionally.
+   SPINE_HEIGHT — how tall the cartridge stands on the shelf (px)
+   SPINE_WIDTH  — how thick/wide the cartridge spine is on the shelf (px)
+   SPINE_GAP    — horizontal space between cartridges (px, negative = overlap)
 */
-const SPINE_SCALE = 1.0;                           // ← TUNE THIS to resize both dimensions proportionally
-const BASE_H_ON_SHELF = 240;                       // ← spine HEIGHT on shelf (taller = bigger number)
-const BASE_W_ON_SHELF = 80;                        // ← spine WIDTH/thickness on shelf
-// Pre-rotation container: W becomes height after 90°, H becomes width after 90°
-const SPINE_IMG_W = Math.round(BASE_H_ON_SHELF * SPINE_SCALE); // pre-rotation W → shelf height
-const SPINE_IMG_H = Math.round(BASE_W_ON_SHELF * SPINE_SCALE); // pre-rotation H → shelf width
-// After 90° rotation the visual footprint flips:
-const SPINE_VIS_W = SPINE_IMG_H;                   // visual width on shelf (spine thickness)
-const SPINE_VIS_H = SPINE_IMG_W;                   // visual height on shelf (spine height)
-// Tight packing: negative margin so cartridge bodies sit close together
-const SPINE_PACK = Math.round(SPINE_VIS_W * 0.12); // horizontal overlap in px
+const SPINE_HEIGHT = 250;   // ← cartridge height on shelf in px
+const SPINE_WIDTH  = 65;    // ← cartridge thickness on shelf in px
+const SPINE_GAP    = -8;    // ← spacing between cartridges (negative = overlap)
+// Internal: the image container is horizontal, then rotated 90°
+// Container W = shelf height, Container H = shelf width
+const _CTR_W = SPINE_HEIGHT;
+const _CTR_H = SPINE_WIDTH;
 
 interface SpineProps {
   entry: CodexEntry;
@@ -98,26 +90,22 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
           : "opacity-100 hover:translate-y-[-8px] hover:brightness-125 active:scale-95"
       )}
       style={{
-        // Outer button matches the rotated visual footprint
-        width: `${SPINE_VIS_W}px`,
-        height: `${SPINE_VIS_H}px`,
-        // Tight packing via negative horizontal margin
-        marginLeft: gapBefore !== undefined ? `${gapBefore}px` : `-${SPINE_PACK}px`,
-        marginRight: `-${SPINE_PACK}px`,
-        // Per-cartridge personality
+        width: `${SPINE_WIDTH}px`,
+        height: `${SPINE_HEIGHT}px`,
+        marginLeft: gapBefore !== undefined ? `${gapBefore}px` : `${SPINE_GAP}px`,
+        marginRight: `${SPINE_GAP}px`,
         transform: isLoaded ? undefined : `translateY(${offsetY}px) translateX(${offsetX}px) rotate(${tilt}deg)`,
         transformOrigin: tilt !== 0 ? (useCenter ? "center center" : "bottom center") : undefined,
         transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
       }}
       title={entry.title}
     >
-      {/* Inner container: holds the cartridge image at its natural (pre-rotation) dimensions,
-          centered in the button, then rotated 90° to stand upright */}
+      {/* Inner container: horizontal image rotated 90° to stand upright */}
       <div
         className="absolute top-1/2 left-1/2 overflow-hidden rounded-[3px]"
         style={{
-          width: `${SPINE_IMG_W}px`,
-          height: `${SPINE_IMG_H}px`,
+          width: `${_CTR_W}px`,
+          height: `${_CTR_H}px`,
           transform: "translate(-50%, -50%) rotate(90deg)",
         }}
       >
@@ -127,14 +115,12 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
           className="absolute inset-0 w-full h-full object-fill drop-shadow-[2px_4px_8px_rgba(0,0,0,0.7)]"
           draggable={false}
         />
-        {/* Text overlay — positioned on the parchment label area.
-            With object-fill, the cartridge body fills the entire container.
-            The parchment label occupies roughly the left 75% of the cartridge. */}
+        {/* Text overlay on the parchment label area */}
         <div
           className="absolute flex flex-col items-center justify-center text-center z-10 pointer-events-none"
           style={{
-            top: '8%',
-            height: '84%',
+            top: '5%',
+            height: '90%',
             left: '8%',
             width: '62%',
           }}
@@ -143,7 +129,7 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
             className="uppercase leading-tight px-1 line-clamp-2"
             style={{
               fontFamily: "'Courier New', 'Courier', monospace",
-              fontSize: `${Math.max(8, Math.round(SPINE_IMG_H * 0.14))}px`,
+              fontSize: `${Math.max(7, Math.round(_CTR_H * 0.15))}px`,
               fontWeight: 900,
               color: '#1a120a',
               letterSpacing: '0.1em',
