@@ -544,7 +544,7 @@ export default function CodexShelf({
         className="absolute z-[15] pointer-events-none"
         style={{
           width: '48%',
-          bottom: '2%',
+          bottom: '5%',
           right: '-12%',
           overflow: 'visible',
         }}
@@ -732,16 +732,6 @@ export default function CodexShelf({
           }}
         />
 
-        {/* Warm ambient overlay on statue to blend with scene */}
-        <div
-          className="absolute bottom-0 right-0 z-[3] pointer-events-none"
-          style={{
-            width: '85%',
-            height: '95%',
-            background: 'linear-gradient(180deg, rgba(40,25,10,0.12) 0%, rgba(20,12,5,0.2) 100%)',
-            mixBlendMode: 'multiply',
-          }}
-        />
       </div>
 
       {/* ── JOURNALS (bottom shelf, to the left of statue) ── */}
