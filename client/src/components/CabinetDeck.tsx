@@ -713,15 +713,35 @@ startTicker(msg, 14000, () => {
               alt="Cartridge Spine"
               className="absolute inset-0 w-full h-full object-fill drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
             />
-            {/* Text overlay — positioned on the parchment label area (left ~75% of cartridge) */}
+            {/* Text overlay — positioned on the parchment label area (left ~78% of cartridge) */}
             <div
-              className="absolute top-0 left-0 flex flex-col items-center justify-center text-center"
-              style={{ width: '75%', height: '100%' }}
+              className="absolute top-0 flex flex-col items-center justify-center text-center"
+              style={{ left: '4%', width: '72%', height: '100%' }}
             >
-              <h3 className="font-serif text-[#1a120a] text-[9px] sm:text-[10px] md:text-[11px] lg:text-[12px] font-black uppercase leading-tight tracking-widest px-2 drop-shadow-[0_0_3px_rgba(230,220,195,1)] drop-shadow-[0_1px_0_rgba(255,255,255,0.6)]">
+              <h3
+                className="uppercase leading-tight px-3"
+                style={{
+                  fontFamily: "'Courier New', 'Courier', monospace",
+                  fontSize: 'clamp(11px, 1.6vw, 18px)',
+                  fontWeight: 900,
+                  color: '#1a120a',
+                  letterSpacing: '0.12em',
+                  textShadow: '0 0 2px rgba(230,220,195,0.8), 0 1px 0 rgba(255,255,255,0.4)',
+                }}
+              >
                 {displayEntry.title}
               </h3>
-              <span className="font-mono text-[5px] sm:text-[6px] md:text-[7px] text-[#2a1d10]/80 mt-0.5 tracking-tighter font-bold drop-shadow-[0_0_2px_rgba(230,220,195,1)]">
+              <span
+                className="mt-1"
+                style={{
+                  fontFamily: "'Courier New', 'Courier', monospace",
+                  fontSize: 'clamp(6px, 0.8vw, 10px)',
+                  fontWeight: 700,
+                  color: 'rgba(42,29,16,0.7)',
+                  letterSpacing: '0.08em',
+                  textShadow: '0 0 2px rgba(230,220,195,0.8)',
+                }}
+              >
                 {displayEntry.id}
               </span>
             </div>
