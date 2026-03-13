@@ -59,7 +59,7 @@ const JOURNAL_2_CDN = "https://files.manuscdn.com/user_upload_by_module/session_
    SPINE_GAP    — horizontal space between cartridges (px, negative = overlap)
 */
 const SPINE_HEIGHT = 270;   // ← cartridge height on shelf in px
-const SPINE_WIDTH  = 130;   // ← cartridge thickness on shelf in px
+const SPINE_WIDTH  = 145;   // ← cartridge thickness on shelf in px
 const SPINE_GAP    = -8;    // ← spacing between cartridges (negative = overlap)
 // Internal: the image container is horizontal, then rotated 90°
 // Container W = shelf height, Container H = shelf width
@@ -119,10 +119,10 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
         <div
           className="absolute flex flex-col items-center justify-center text-center z-10 pointer-events-none"
           style={{
-            top: '5%',
-            height: '90%',
-            left: '8%',
-            width: '62%',
+            top: '10%',
+            height: '80%',
+            left: '10%',
+            width: '58%',
           }}
         >
           <span
