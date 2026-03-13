@@ -756,10 +756,10 @@ export default function CodexShelf({
         className="absolute z-[12] pointer-events-none"
         style={{
           bottom: '2%',
-          right: '-7%',
+          right: '-8%',
           height: '65%',
           width: 'auto',
-          transform: 'rotate(0deg)',
+          transform: 'rotate(-3deg)',
           transformOrigin: 'bottom center',
           filter: 'brightness(0.7) contrast(1.15) saturate(0.8)',
         }}
