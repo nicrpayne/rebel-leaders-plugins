@@ -65,7 +65,7 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
       disabled={isLoaded}
       className={cn(
         "relative flex-shrink-0 group transition-all duration-300 ease-out cursor-pointer",
-        "w-[50px] md:w-[58px] lg:w-[64px] h-[205px] md:h-[238px] lg:h-[272px]",
+        "w-[100px] md:w-[116px] lg:w-[128px] h-[205px] md:h-[238px] lg:h-[272px]",
         // Sits on the shelf surface, behind the metal guard rail
         "mb-0",
         // Negative horizontal margin to pack spines tightly
