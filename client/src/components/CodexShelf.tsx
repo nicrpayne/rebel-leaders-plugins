@@ -65,11 +65,11 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
       disabled={isLoaded}
       className={cn(
         "relative flex-shrink-0 group transition-all duration-300 ease-out cursor-pointer",
-        "w-[22px] md:w-[26px] lg:w-[28px] h-[205px] md:h-[238px] lg:h-[272px]",
+        "w-[50px] md:w-[58px] lg:w-[64px] h-[205px] md:h-[238px] lg:h-[272px]",
         // Sits on the shelf surface, behind the metal guard rail
         "mb-0",
         // Negative horizontal margin to pack spines tightly
-        "-mx-[18px] md:-mx-[20px] lg:-mx-[22px]",
+        "-mx-[8px] md:-mx-[10px] lg:-mx-[12px]",
         isLoaded
           ? "opacity-0 pointer-events-none scale-95"
           : "opacity-100 hover:translate-y-[-8px] hover:brightness-125 active:scale-95"
@@ -87,7 +87,7 @@ function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offse
         className="absolute top-1/2 left-1/2 overflow-hidden rounded-[3px]"
         style={{
           width: "260px",
-          height: "28px",
+          height: "60px",
           transform: "translate(-50%, -50%) rotate(90deg)",
         }}
       >
