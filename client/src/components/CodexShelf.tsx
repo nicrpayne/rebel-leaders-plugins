@@ -228,31 +228,31 @@ const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   // 1. Name the Cost — straight, anchoring the left wall, nudged forward
   MOVE_NAME_THE_COST:          { tilt: 0,    offsetY: 4,  offsetX: 0 },
   // 2. Clarity Contract — straight, nudged forward, touching #3
-  MOVE_CLARITY_CONTRACT:       { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: 0 },
+  MOVE_CLARITY_CONTRACT:       { tilt: 0,    offsetY: 4,  offsetX: -100, gapBefore: 0 },
   // 3. Feedforward — slight tilt, nudged forward, touching #2
-  MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 4,  offsetX: 0, gapBefore: 0 },
+  MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 4,  offsetX: -202, gapBefore: 0 },
   // 4. No With a Clean Yes — leaning left onto #3, slid left to nestle against it
-  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -13, offsetY: -2, offsetX: 0 },
+  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -13, offsetY: -2, offsetX: -250 },
 
   // === RELATIONSHIP SECTION (positions 5-13) ===
   // 5. Repair in 48 Hours — small real gap before it (section break), mostly straight
-  MOVE_REPAIR_48H:             { tilt: 0.2,  offsetY: 0,  offsetX: 0, gapBefore: 6 },
+  MOVE_REPAIR_48H:             { tilt: 0.2,  offsetY: 0,  offsetX: -250, gapBefore: 6 },
   // 6. Minority Report — straight
-  MOVE_MINORITY_REPORT:        { tilt: 0,    offsetY: 0,  offsetX: 0 },
+  MOVE_MINORITY_REPORT:        { tilt: 0,    offsetY: 0,  offsetX: -465 },
   // 7. Fridge Rights Audit — straight, nudged forward
-  MOVE_FRIDGE_RIGHTS_AUDIT:    { tilt: 0,    offsetY: 4,  offsetX: 0 },
+  MOVE_FRIDGE_RIGHTS_AUDIT:    { tilt: 0,    offsetY: 4,  offsetX: -475 },
   // 8. The Mirror Move — domino lean right, slid right to close gap with #9
-  MOVE_THE_MIRROR:             { tilt: 18,   offsetY: -1, offsetX: 0 },
+  MOVE_THE_MIRROR:             { tilt: 18,   offsetY: -1, offsetX: -625 },
   // 9. Trust Micro-Deposit — domino lean right, slid right to lean into #10
-  MOVE_TRUST_MICRO_DEPOSIT:    { tilt: 20,   offsetY: -3, offsetX: 0 },
+  MOVE_TRUST_MICRO_DEPOSIT:    { tilt: 20,   offsetY: -3, offsetX: -655 },
   // 10. 3 Coaching Questions — the backstop, straight and sturdy
-  MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  offsetX: 0 },
+  MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  offsetX: -655 },
   // 11. SBI Feedback — straight
-  MOVE_FEEDBACK_SBI:           { tilt: 0.3,  offsetY: 0,  offsetX: 0 },
+  MOVE_FEEDBACK_SBI:           { tilt: 0.3,  offsetY: 0,  offsetX: -730 },
   // 12. Accountability With Care — slight lean
-  MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -1.0, offsetY: 1, offsetX: 0 },
+  MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -1.0, offsetY: 1, offsetX: -725 },
   // 13. Recover After You Missed It — end of row, slight lean right (resting against nothing)
-  MOVE_RECOVER_AFTER_MISS:     { tilt: 1.2,  offsetY: 0,  offsetX: 0 },
+  MOVE_RECOVER_AFTER_MISS:     { tilt: 1.2,  offsetY: 0,  offsetX: -725 },
 };
 
 /* ─────────────────────────────────────────────
