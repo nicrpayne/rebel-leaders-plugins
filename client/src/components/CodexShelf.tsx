@@ -562,42 +562,56 @@ export default function CodexShelf({
           draggable={false}
         />
 
-        {/* Backlight halo — warm golden rim light behind the statue */}
+        {/* Backlight halo — warm golden, focused on lower half (not head) */}
         <div
           className="absolute z-[1]"
           style={{
-            top: '5%',
-            left: '15%',
-            width: '70%',
-            height: '90%',
-            background: 'radial-gradient(ellipse 60% 70% at 50% 45%, rgba(210,160,60,0.18) 0%, rgba(180,130,40,0.09) 35%, transparent 70%)',
-            filter: 'blur(20px)',
+            top: '40%',
+            left: '10%',
+            width: '80%',
+            height: '60%',
+            background: 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(210,160,60,0.12) 0%, rgba(180,130,40,0.06) 40%, transparent 70%)',
+            filter: 'blur(18px)',
           }}
         />
 
-        {/* Sword glow — INTENSIFIED cyan radial from sword tip */}
+        {/* Sword glow — INTENSIFIED cyan, pulled UP away from head */}
         <div
           className="absolute z-[4]"
           style={{
-            top: '-15%',
-            left: '15%',
-            width: '85%',
-            height: '55%',
-            background: 'radial-gradient(ellipse 50% 80% at 55% 75%, rgba(120,240,255,0.5) 0%, rgba(80,220,240,0.25) 25%, rgba(60,200,220,0.1) 50%, transparent 75%)',
-            filter: 'blur(12px)',
+            top: '-18%',
+            left: '20%',
+            width: '70%',
+            height: '40%',
+            background: 'radial-gradient(ellipse 50% 70% at 55% 80%, rgba(120,240,255,0.45) 0%, rgba(80,220,240,0.18) 30%, transparent 65%)',
+            filter: 'blur(10px)',
             animation: 'swordPulse 3s ease-in-out infinite alternate',
           }}
         />
-        {/* Sword core — tight white-hot center */}
+        {/* Sword core — tight white-hot center, high up on sword only */}
         <div
           className="absolute z-[5]"
           style={{
-            top: '-8%',
-            left: '30%',
-            width: '40%',
-            height: '30%',
-            background: 'radial-gradient(ellipse 30% 70% at 55% 80%, rgba(220,255,255,0.6) 0%, rgba(140,235,250,0.2) 40%, transparent 70%)',
-            filter: 'blur(6px)',
+            top: '-12%',
+            left: '32%',
+            width: '36%',
+            height: '22%',
+            background: 'radial-gradient(ellipse 25% 65% at 55% 85%, rgba(220,255,255,0.55) 0%, rgba(140,235,250,0.15) 45%, transparent 70%)',
+            filter: 'blur(5px)',
+            animation: 'swordPulse 3s ease-in-out infinite alternate',
+          }}
+        />
+        {/* Sword blade white overlay — faint translucent white to make sword cut through */}
+        <div
+          className="absolute z-[6]"
+          style={{
+            top: '-5%',
+            left: '37%',
+            width: '12%',
+            height: '28%',
+            background: 'linear-gradient(to top, rgba(255,255,255,0.08) 0%, rgba(200,250,255,0.2) 40%, rgba(255,255,255,0.35) 70%, rgba(200,250,255,0.15) 100%)',
+            filter: 'blur(3px)',
+            borderRadius: '40%',
             animation: 'swordPulse 3s ease-in-out infinite alternate',
           }}
         />
@@ -616,16 +630,16 @@ export default function CodexShelf({
           }}
         />
 
-        {/* Secondary glow — wider, softer ambient light spill */}
+        {/* Secondary glow — reduced, pushed up to sword zone only */}
         <div
           className="absolute z-[0]"
           style={{
-            top: '-5%',
-            left: '-15%',
-            width: '130%',
-            height: '75%',
-            background: 'radial-gradient(ellipse 70% 60% at 55% 50%, rgba(80,220,240,0.12) 0%, rgba(60,200,220,0.05) 40%, transparent 70%)',
-            filter: 'blur(30px)',
+            top: '-10%',
+            left: '-5%',
+            width: '110%',
+            height: '45%',
+            background: 'radial-gradient(ellipse 60% 50% at 55% 70%, rgba(80,220,240,0.07) 0%, rgba(60,200,220,0.03) 40%, transparent 65%)',
+            filter: 'blur(25px)',
           }}
         />
 
@@ -652,6 +666,31 @@ export default function CodexShelf({
           ))}
         </div>
 
+        {/* ── BRIGHT ORANGE BASE BACKLIGHT ── */}
+        <div
+          className="absolute z-[1]"
+          style={{
+            bottom: '0%',
+            left: '5%',
+            width: '90%',
+            height: '35%',
+            background: 'radial-gradient(ellipse 80% 70% at 50% 90%, rgba(255,140,30,0.4) 0%, rgba(230,120,20,0.2) 30%, rgba(200,100,10,0.08) 55%, transparent 75%)',
+            filter: 'blur(12px)',
+            animation: 'emberPulse 4s ease-in-out infinite alternate',
+          }}
+        />
+        {/* Orange base backlight — secondary wider spread */}
+        <div
+          className="absolute z-[0]"
+          style={{
+            bottom: '-5%',
+            left: '-10%',
+            width: '120%',
+            height: '40%',
+            background: 'radial-gradient(ellipse 70% 50% at 50% 85%, rgba(255,160,40,0.18) 0%, rgba(220,120,20,0.06) 50%, transparent 75%)',
+            filter: 'blur(20px)',
+          }}
+        />
         {/* Golden ember glow at base — warm fire/embers on the rock */}
         <div
           className="absolute z-[3]"
@@ -659,9 +698,9 @@ export default function CodexShelf({
             bottom: '2%',
             left: '15%',
             width: '70%',
-            height: '25%',
-            background: 'radial-gradient(ellipse 80% 60% at 50% 80%, rgba(220,160,40,0.25) 0%, rgba(200,120,20,0.12) 35%, rgba(180,100,10,0.05) 60%, transparent 80%)',
-            filter: 'blur(10px)',
+            height: '22%',
+            background: 'radial-gradient(ellipse 80% 60% at 50% 85%, rgba(255,170,40,0.35) 0%, rgba(230,130,20,0.18) 35%, rgba(200,100,10,0.06) 60%, transparent 80%)',
+            filter: 'blur(8px)',
             animation: 'emberPulse 4s ease-in-out infinite alternate',
           }}
         />
@@ -670,11 +709,11 @@ export default function CodexShelf({
           className="absolute z-[4]"
           style={{
             bottom: '5%',
-            left: '25%',
-            width: '50%',
-            height: '12%',
-            background: 'radial-gradient(ellipse 40% 50% at 35% 70%, rgba(255,180,40,0.3) 0%, transparent 70%), radial-gradient(ellipse 30% 40% at 65% 60%, rgba(255,200,60,0.22) 0%, transparent 70%)',
-            filter: 'blur(5px)',
+            left: '20%',
+            width: '60%',
+            height: '14%',
+            background: 'radial-gradient(ellipse 40% 50% at 30% 70%, rgba(255,180,40,0.35) 0%, transparent 70%), radial-gradient(ellipse 35% 45% at 70% 60%, rgba(255,200,60,0.28) 0%, transparent 70%)',
+            filter: 'blur(4px)',
             animation: 'emberPulse 4s ease-in-out infinite alternate-reverse',
           }}
         />
