@@ -58,8 +58,8 @@ const JOURNAL_2_CDN = "https://files.manuscdn.com/user_upload_by_module/session_
    SPINE_WIDTH  — how thick/wide the cartridge spine is on the shelf (px)
    SPINE_GAP    — horizontal space between cartridges (px, negative = overlap)
 */
-const SPINE_HEIGHT = 250;   // ← cartridge height on shelf in px
-const SPINE_WIDTH  = 65;    // ← cartridge thickness on shelf in px
+const SPINE_HEIGHT = 270;   // ← cartridge height on shelf in px
+const SPINE_WIDTH  = 195;   // ← cartridge thickness on shelf in px
 const SPINE_GAP    = -8;    // ← spacing between cartridges (negative = overlap)
 // Internal: the image container is horizontal, then rotated 90°
 // Container W = shelf height, Container H = shelf width
