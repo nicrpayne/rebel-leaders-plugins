@@ -546,17 +546,31 @@ export default function CodexShelf({
           width: '48%',
           bottom: '2%',
           right: '-12%',
+          overflow: 'visible',
         }}
       >
+        {/* The statue image — relative so it establishes container height */}
+        <img
+          src={STATUE_CDN}
+          alt="The Sword-Bearer"
+          className="relative z-[2] block"
+          style={{
+            width: '100%',
+            height: 'auto',
+            filter: 'brightness(0.85) contrast(1.12) saturate(0.9)',
+          }}
+          draggable={false}
+        />
+
         {/* Backlight halo — warm golden rim light behind the statue */}
         <div
-          className="absolute z-[0]"
+          className="absolute z-[1]"
           style={{
             top: '5%',
             left: '15%',
             width: '70%',
             height: '90%',
-            background: 'radial-gradient(ellipse 60% 70% at 50% 45%, rgba(210,160,60,0.14) 0%, rgba(180,130,40,0.07) 35%, transparent 70%)',
+            background: 'radial-gradient(ellipse 60% 70% at 50% 45%, rgba(210,160,60,0.18) 0%, rgba(180,130,40,0.09) 35%, transparent 70%)',
             filter: 'blur(20px)',
           }}
         />
@@ -569,7 +583,7 @@ export default function CodexShelf({
             left: '15%',
             width: '85%',
             height: '55%',
-            background: 'radial-gradient(ellipse 50% 80% at 55% 75%, rgba(120,240,255,0.45) 0%, rgba(80,220,240,0.2) 25%, rgba(60,200,220,0.08) 50%, transparent 75%)',
+            background: 'radial-gradient(ellipse 50% 80% at 55% 75%, rgba(120,240,255,0.5) 0%, rgba(80,220,240,0.25) 25%, rgba(60,200,220,0.1) 50%, transparent 75%)',
             filter: 'blur(12px)',
             animation: 'swordPulse 3s ease-in-out infinite alternate',
           }}
@@ -582,7 +596,7 @@ export default function CodexShelf({
             left: '30%',
             width: '40%',
             height: '30%',
-            background: 'radial-gradient(ellipse 30% 70% at 55% 80%, rgba(200,250,255,0.5) 0%, rgba(140,235,250,0.15) 40%, transparent 70%)',
+            background: 'radial-gradient(ellipse 30% 70% at 55% 80%, rgba(220,255,255,0.6) 0%, rgba(140,235,250,0.2) 40%, transparent 70%)',
             filter: 'blur(6px)',
             animation: 'swordPulse 3s ease-in-out infinite alternate',
           }}
@@ -592,11 +606,11 @@ export default function CodexShelf({
         <div
           className="absolute z-[3]"
           style={{
-            top: '-20%',
-            left: '38%',
-            width: '24%',
-            height: '35%',
-            background: 'linear-gradient(to top, rgba(120,240,255,0.12) 0%, rgba(100,220,240,0.04) 60%, transparent 100%)',
+            top: '-25%',
+            left: '36%',
+            width: '28%',
+            height: '40%',
+            background: 'linear-gradient(to top, rgba(120,240,255,0.15) 0%, rgba(100,220,240,0.06) 50%, transparent 100%)',
             filter: 'blur(8px)',
             animation: 'swordPulse 3s ease-in-out infinite alternate',
           }}
@@ -610,13 +624,13 @@ export default function CodexShelf({
             left: '-15%',
             width: '130%',
             height: '75%',
-            background: 'radial-gradient(ellipse 70% 60% at 55% 50%, rgba(80,220,240,0.1) 0%, rgba(60,200,220,0.04) 40%, transparent 70%)',
+            background: 'radial-gradient(ellipse 70% 60% at 55% 50%, rgba(80,220,240,0.12) 0%, rgba(60,200,220,0.05) 40%, transparent 70%)',
             filter: 'blur(30px)',
           }}
         />
 
         {/* Floating dust particles — CSS animated */}
-        <div className="absolute z-[6] overflow-hidden" style={{ top: '-10%', left: '10%', width: '80%', height: '95%' }}>
+        <div className="absolute z-[6]" style={{ top: '0%', left: '10%', width: '80%', height: '100%', overflow: 'visible' }}>
           {[...Array(18)].map((_, i) => (
             <div
               key={`dust-${i}`}
@@ -627,10 +641,10 @@ export default function CodexShelf({
                 left: `${8 + (i * 5.2) % 84}%`,
                 bottom: `${5 + (i * 7.3) % 80}%`,
                 background: i % 3 === 0
-                  ? 'rgba(200,250,255,0.6)'
+                  ? 'rgba(200,250,255,0.7)'
                   : i % 3 === 1
-                    ? 'rgba(220,180,80,0.5)'
-                    : 'rgba(255,255,255,0.35)',
+                    ? 'rgba(220,180,80,0.6)'
+                    : 'rgba(255,255,255,0.45)',
                 animation: `dustFloat${i % 4} ${4 + (i % 3) * 2}s ease-in-out infinite`,
                 animationDelay: `${(i * 0.7) % 5}s`,
               }}
@@ -646,7 +660,7 @@ export default function CodexShelf({
             left: '15%',
             width: '70%',
             height: '25%',
-            background: 'radial-gradient(ellipse 80% 60% at 50% 80%, rgba(220,160,40,0.2) 0%, rgba(200,120,20,0.1) 35%, rgba(180,100,10,0.04) 60%, transparent 80%)',
+            background: 'radial-gradient(ellipse 80% 60% at 50% 80%, rgba(220,160,40,0.25) 0%, rgba(200,120,20,0.12) 35%, rgba(180,100,10,0.05) 60%, transparent 80%)',
             filter: 'blur(10px)',
             animation: 'emberPulse 4s ease-in-out infinite alternate',
           }}
@@ -659,7 +673,7 @@ export default function CodexShelf({
             left: '25%',
             width: '50%',
             height: '12%',
-            background: 'radial-gradient(ellipse 40% 50% at 35% 70%, rgba(255,180,40,0.25) 0%, transparent 70%), radial-gradient(ellipse 30% 40% at 65% 60%, rgba(255,200,60,0.18) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse 40% 50% at 35% 70%, rgba(255,180,40,0.3) 0%, transparent 70%), radial-gradient(ellipse 30% 40% at 65% 60%, rgba(255,200,60,0.22) 0%, transparent 70%)',
             filter: 'blur(5px)',
             animation: 'emberPulse 4s ease-in-out infinite alternate-reverse',
           }}
@@ -673,26 +687,12 @@ export default function CodexShelf({
             left: '5%',
             width: '90%',
             height: '18%',
-            background: 'radial-gradient(ellipse 80% 50% at 50% 20%, rgba(80,220,240,0.12) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse 80% 50% at 50% 20%, rgba(80,220,240,0.15) 0%, transparent 70%)',
             filter: 'blur(14px)',
             animation: 'swordPulse 3s ease-in-out infinite alternate',
           }}
         />
 
-        {/* The statue image */}
-        <img
-          src={STATUE_CDN}
-          alt="The Sword-Bearer"
-          className="absolute z-[2]"
-          style={{
-            width: '100%',
-            height: 'auto',
-            bottom: '0',
-            right: '0',
-            filter: 'brightness(0.85) contrast(1.12) saturate(0.9)',
-          }}
-          draggable={false}
-        />
         {/* Warm ambient overlay on statue to blend with scene */}
         <div
           className="absolute bottom-0 right-0 z-[3] pointer-events-none"
