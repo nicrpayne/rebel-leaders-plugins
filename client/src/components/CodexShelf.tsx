@@ -228,22 +228,23 @@ function CartridgeSpine({
               !isLoaded && "group-hover:-translate-y-2"
             )}
           >
-            {/* Amber/gold glow overlay — fades in on hover, sits above image, below text */}
+            {/* Inner-lamp glow — sits behind the image, blurs outward like internal warmth */}
             <div
               className={cn(
-                "absolute inset-0 rounded-[3px] pointer-events-none z-[5]",
-                "transition-opacity duration-[400ms] ease-out",
+                "absolute inset-0 pointer-events-none transition-opacity duration-500",
                 !isLoaded ? "opacity-0 [button:hover_&]:opacity-100" : "opacity-0"
               )}
               style={{
-                background: "radial-gradient(ellipse 80% 90% at 50% 60%, rgba(210,148,40,0.22) 0%, rgba(190,120,20,0.10) 50%, transparent 80%)",
-                boxShadow: "0 0 18px 4px rgba(200,138,30,0.18), inset 0 0 12px 2px rgba(220,160,40,0.10)",
+                background: 'radial-gradient(ellipse 60% 80% at 50% 60%, rgba(210,160,40,0.6) 0%, rgba(180,130,30,0.2) 45%, transparent 75%)',
+                filter: 'blur(8px)',
+                zIndex: 0,
               }}
             />
             {/* Inner image container: horizontal image rotated 90° to stand upright */}
             <div
               className="absolute top-1/2 left-1/2 overflow-hidden rounded-[3px]"
               style={{
+                zIndex: 1,
                 width: `${_CTR_W}px`,
                 height: `${_CTR_H}px`,
                 transform: "translate(-50%, -50%) rotate(90deg)",
