@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef } from "react";
 import { cn } from "@/lib/utils";
 import { CodexEntry } from "@/lib/codex-schema";
 import { FlywheelNode } from "@/lib/codex-schema";
@@ -18,8 +18,6 @@ const BOTTOM_SHELF_SECTIONS: { key: FlywheelNode; label: string }[] = [
   { key: "Culture", label: "CULTURE" },
 ];
 
-const ALL_SECTIONS = [...TOP_SHELF_SECTIONS, ...BOTTOM_SHELF_SECTIONS];
-
 /* ─────────────────────────────────────────────
    HELPER: Group entries by primary flywheel node
    ───────────────────────────────────────────── */
@@ -38,281 +36,262 @@ function groupByFlywheel(entries: CodexEntry[]): Record<FlywheelNode, CodexEntry
 }
 
 /* ─────────────────────────────────────────────
-   SPINE CARTRIDGE (Vertical, standing on shelf)
-   Uses the exact cartridge spine image from the Load Bay
+   ASSET URLs
    ───────────────────────────────────────────── */
-const SPINE_CDN_OLD = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/codex_cartridge_spine_transparent_95539dfa.png";
 const SPINE_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/CsmUKCVLeilIqNNJ.png";
 const STATUE_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/FLleLCCpIbXNFGAi.png";
-const JOURNAL_1_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/zWRQfTmONtObpdxL.png"; // Parable of the Shipwrecked Leaders
-const JOURNAL_2_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/azSuVoekkFnNjqzv.png"; // Rebellious Hope
+const JOURNAL_1_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/zWRQfTmONtObpdxL.png";
+const JOURNAL_2_CDN = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663030438402/azSuVoekkFnNjqzv.png";
 
-/* ── GLOBAL CARTRIDGE SIZING ──
-   Dead simple: SPINE_HEIGHT and SPINE_WIDTH are what you see on screen.
-   No rotation math, no ratio locking. You say 200, you get 200px.
+/* ─────────────────────────────────────────────
+   GLOBAL CARTRIDGE SIZING
+   Change these to resize every cartridge at once.
 
-   Internally the image is rendered into a horizontal container then
-   rotated 90°, but you never need to think about that.
+   SPINE_HEIGHT — how tall each cartridge stands (px)
+   SPINE_WIDTH  — how wide/thick each cartridge is (px)
+   SPINE_GAP    — default gap between cartridges (px, negative = overlap)
+   ───────────────────────────────────────────── */
+const SPINE_HEIGHT = 270;
+const SPINE_WIDTH  = 145;
+const SPINE_GAP    = -8;
 
-   SPINE_HEIGHT — how tall the cartridge stands on the shelf (px)
-   SPINE_WIDTH  — how thick/wide the cartridge spine is on the shelf (px)
-   SPINE_GAP    — horizontal space between cartridges (px, negative = overlap)
-*/
-const SPINE_HEIGHT   = 270;  // ← cartridge height on shelf in px
-const SPINE_WIDTH    = 145;  // ← actual visual width of cartridge (used for image container)
-const SPINE_HIT_W    = 100;  // ← button hit-area width (narrower than visual, visual overflows)
-const SPINE_GAP      = 2;    // ← spacing between cartridge hit areas
-// Internal: the image container is horizontal, then rotated 90°
-// Container W = shelf height, Container H = visual width
+// The spine image is horizontal — we rotate it 90° to make it stand upright.
+// These are the inner image container dimensions (swapped from the above).
 const _CTR_W = SPINE_HEIGHT;
 const _CTR_H = SPINE_WIDTH;
 
+/* ─────────────────────────────────────────────
+   CARTRIDGE ARRANGEMENT TYPE
+   Controls the artistic placement of each cartridge.
+
+   tilt      — lean in degrees. + = right, - = left.
+   offsetY   — nudge up/down in px. + = down, - = up.
+   offsetX   — nudge left/right in px. + = right, - = left.
+               This is PURELY VISUAL — it does not affect the hitbox or neighbors.
+               Use gapBefore to create real layout spacing instead.
+   gapBefore — overrides the default SPINE_GAP before this cartridge only (px).
+               Use this to create a visible gap at section breaks, or to
+               pull a cartridge closer to its neighbor.
+   useCenter — rotates from center instead of bottom. Use for flat/laid cartridges.
+   ───────────────────────────────────────────── */
+interface CartridgeArrangement {
+  tilt: number;
+  offsetY: number;
+  offsetX: number;
+  gapBefore?: number;
+  useCenter?: boolean;
+}
+
+/* ─────────────────────────────────────────────
+   TOP SHELF ARRANGEMENT
+   Fresh baseline — all offsetX zeroed.
+   Tilts and offsetY preserved from original art direction.
+   gapBefore used for section break between Identity and Relationship.
+
+   Tune from here. Small numbers — think ±5 to ±20 for fine nudges.
+   ───────────────────────────────────────────── */
+const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
+  // === IDENTITY SECTION ===
+  MOVE_NAME_THE_COST:            { tilt: 0,    offsetY: 4,  offsetX: 0 },
+  MOVE_CLARITY_CONTRACT:         { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: -6 },
+  MOVE_FEEDFORWARD:              { tilt: 0.3,  offsetY: 4,  offsetX: 0, gapBefore: -8 },
+  MOVE_BOUNDARY_NO_WITH_YES:     { tilt: -13,  offsetY: -2, offsetX: 0, gapBefore: -18 },
+
+  // === RELATIONSHIP SECTION ===
+  // gapBefore: 16 creates a visible section break
+  MOVE_REPAIR_48H:               { tilt: 0.2,  offsetY: 0,  offsetX: 0, gapBefore: 16 },
+  MOVE_MINORITY_REPORT:          { tilt: 0,    offsetY: 0,  offsetX: 0, gapBefore: -8 },
+  MOVE_FRIDGE_RIGHTS_AUDIT:      { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: -8 },
+  MOVE_THE_MIRROR:               { tilt: 18,   offsetY: -1, offsetX: 0, gapBefore: -22 },
+  MOVE_TRUST_MICRO_DEPOSIT:      { tilt: 20,   offsetY: -3, offsetX: 0, gapBefore: -26 },
+  MOVE_COACHING_3_QUESTIONS:     { tilt: 0,    offsetY: 0,  offsetX: 0, gapBefore: -12 },
+  MOVE_FEEDBACK_SBI:             { tilt: 0.3,  offsetY: 0,  offsetX: 0, gapBefore: -8 },
+  MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -1.0, offsetY: 1,  offsetX: 0, gapBefore: -8 },
+  MOVE_RECOVER_AFTER_MISS:       { tilt: 1.2,  offsetY: 0,  offsetX: 0, gapBefore: -8 },
+};
+
+/* ─────────────────────────────────────────────
+   BOTTOM SHELF ARRANGEMENT
+   Bottom shelf was already clean (offsetX: 0 throughout).
+   Preserved exactly as-is.
+   ───────────────────────────────────────────── */
+const BOTTOM_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
+  // === VISION SECTION ===
+  // First 3 laid flat, stacked like a pile
+  MOVE_DECISION_RIGHTS_MAP:  { tilt: -90, offsetY: 55,  offsetX: 0, useCenter: true },
+  MOVE_STOP_LIST:            { tilt: -90, offsetY: 22,  offsetX: 0, useCenter: true },
+  MOVE_DISAGREE_AND_COMMIT:  { tilt: -90, offsetY: -10, offsetX: 0, useCenter: true },
+  // Remaining Vision standing upright
+  MOVE_THE_ONE_THING:        { tilt: 0,    offsetY: 0, offsetX: 0 },
+  MOVE_NORTH_STAR_SENTENCE:  { tilt: 0.3,  offsetY: 0, offsetX: 0 },
+  MOVE_KILL_THE_GHOST_GOAL:  { tilt: 0,    offsetY: 2, offsetX: 0 },
+  MOVE_WIN_CONDITION:        { tilt: -0.5, offsetY: 0, offsetX: 0 },
+  MOVE_TRADEOFF_TALK:        { tilt: 0.3,  offsetY: 1, offsetX: 0 },
+  // === CULTURE SECTION ===
+  MOVE_TRUTH_WEATHER:        { tilt: 0,    offsetY: 0, offsetX: 0 },
+  MOVE_MEETING_REWRITE:      { tilt: 0.5,  offsetY: 0, offsetX: 0 },
+  MOVE_PERMISSION_SLIP:      { tilt: 0,    offsetY: 2, offsetX: 0 },
+  MOVE_SHADOW_NORMS:         { tilt: -0.3, offsetY: 0, offsetX: 0 },
+  MOVE_ENERGY_LEAK_CHECK:    { tilt: 0,    offsetY: 1, offsetX: 0 },
+  MOVE_SAFE_TO_SAY:          { tilt: 0.5,  offsetY: 0, offsetX: 0 },
+};
+
+/* ─────────────────────────────────────────────
+   CARTRIDGE SPINE — 3-layer architecture
+
+   Layer 1: <div> layout shell
+     - Sets width, height, marginLeft (real layout spacing)
+     - Never transforms. Hitbox lives here, permanently.
+
+   Layer 2: <button> hitbox
+     - Fills the layout shell exactly (absolute inset-0)
+     - Handles click, disabled, cursor
+     - Never transforms
+
+   Layer 3: <div> visual
+     - Gets all the transforms: tilt, offsetY, offsetX
+     - Gets the hover lift animation
+     - Gets the image and label inside it
+     - Transforms here are purely cosmetic — they never
+       move the clickable area
+
+   This means: no matter how tilted, shifted, or animated
+   a cartridge looks, hovering and clicking always works
+   exactly where the cartridge visually appears.
+   ───────────────────────────────────────────── */
 interface SpineProps {
   entry: CodexEntry;
   isLoaded: boolean;
   onClick: () => void;
   tilt?: number;
   offsetY?: number;
-  offsetX?: number;      // visual-only horizontal shift (translateX) — does NOT affect neighbors
-  gapBefore?: number;    // real layout gap (marginLeft override) — DOES push neighbors
-  useCenter?: boolean;   // use center center transform origin (for flat/laid cartridges)
-  zIndex?: number;       // stacking order — higher = on top for hover priority
+  offsetX?: number;
+  gapBefore?: number;
+  useCenter?: boolean;
 }
 
-function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offsetX = 0, gapBefore, useCenter = false, zIndex }: SpineProps) {
-  const [hovered, setHovered] = React.useState(false);
+function CartridgeSpine({
+  entry,
+  isLoaded,
+  onClick,
+  tilt = 0,
+  offsetY = 0,
+  offsetX = 0,
+  gapBefore,
+  useCenter = false,
+}: SpineProps) {
+  const marginLeft = gapBefore !== undefined
+    ? `${gapBefore}px`
+    : `${SPINE_GAP}px`;
 
-  // Build the transform string — only include components that are non-zero
-  // IMPORTANT: if we include any transform here, it overrides ALL Tailwind hover transforms.
-  // So we handle the hover lift (translateY -8px) via JS state too.
-  const buildTransform = () => {
-    if (isLoaded) return undefined;
-    const parts: string[] = [];
-    if (hovered) parts.push('translateY(-8px)');
-    else if (offsetY !== 0) parts.push(`translateY(${offsetY}px)`);
-    if (offsetX !== 0) parts.push(`translateX(${offsetX}px)`);
-    if (tilt !== 0) parts.push(`rotate(${tilt}deg)`);
-    return parts.length > 0 ? parts.join(' ') : undefined;
-  };
-
-  const brightness = hovered ? 'brightness(1.25)' : undefined;
+  const transformOrigin = tilt !== 0
+    ? (useCenter ? "center center" : "bottom center")
+    : undefined;
 
   return (
-    <button
-      onClick={onClick}
-      disabled={isLoaded}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className={cn(
-        "relative flex-shrink-0 group cursor-pointer",
-        "mb-0",
-        isLoaded
-          ? "opacity-0 pointer-events-none scale-95"
-          : "opacity-100"
-      )}
+    <div
+      className="relative flex-shrink-0"
       style={{
-        width: `${SPINE_HIT_W}px`,
+        width: `${SPINE_WIDTH}px`,
         height: `${SPINE_HEIGHT}px`,
-        marginLeft: gapBefore !== undefined ? `${gapBefore}px` : `${SPINE_GAP}px`,
-        transform: buildTransform(),
-        transformOrigin: tilt !== 0 ? (useCenter ? "center center" : "bottom center") : undefined,
-        filter: brightness,
-        transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-        zIndex: hovered ? 50 : (zIndex ?? undefined),
-        overflow: 'visible',
+        marginLeft,
       }}
-      title={entry.title}
     >
-      {/* Inner container: horizontal image rotated 90° to stand upright */}
-      <div
-        className="absolute top-1/2 left-1/2 overflow-hidden rounded-[3px]"
-        style={{
-          width: `${_CTR_W}px`,
-          height: `${_CTR_H}px`,
-          transform: "translate(-50%, -50%) rotate(90deg)",
-        }}
+      {/* ── LAYER 2: Button hitbox — fills the shell exactly, never transforms ── */}
+      <button
+        onClick={onClick}
+        disabled={isLoaded}
+        title={entry.title}
+        className={cn(
+          "absolute inset-0 cursor-pointer",
+          isLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
+        )}
       >
-        <img
-          src={SPINE_CDN}
-          alt={entry.title}
-          className="absolute inset-0 w-full h-full object-fill drop-shadow-[2px_4px_8px_rgba(0,0,0,0.7)]"
-          draggable={false}
-        />
-        {/* Text overlay on the parchment label area */}
+        {/* ── LAYER 3: Visual — gets all transforms, hover, tilt, offsetX/Y ── */}
         <div
-          className="absolute flex flex-col items-center justify-center text-center z-10 pointer-events-none"
+          className={cn(
+            "absolute inset-0 transition-all duration-300 ease-out",
+            !isLoaded && "group-hover:brightness-125",
+          )}
           style={{
-            top: '10%',
-            height: '80%',
-            left: '10%',
-            width: '58%',
+            transform: isLoaded
+              ? undefined
+              : `translateY(${offsetY}px) translateX(${offsetX}px) rotate(${tilt}deg)`,
+            transformOrigin,
+            transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
           }}
         >
-          <span
-            className="uppercase leading-tight px-1 line-clamp-2"
-            style={{
-              fontFamily: "'Courier New', 'Courier', monospace",
-              fontSize: '9px',
-              fontWeight: 900,
-              color: '#1a120a',
-              letterSpacing: '0.1em',
-              textShadow: '0 0 2px rgba(230,220,195,0.8)',
-            }}
+          {/* Hover lift — wraps the image so lift doesn't fight with tilt origin */}
+          <div
+            className={cn(
+              "absolute inset-0 transition-transform duration-300 ease-out",
+              !isLoaded && "group-hover:-translate-y-2"
+            )}
           >
-            {entry.title}
-          </span>
-          <span
-            style={{
-              fontFamily: "'Courier New', 'Courier', monospace",
-              fontSize: '5px',
-              fontWeight: 700,
-              color: 'rgba(42,29,16,0.7)',
-              letterSpacing: '0.08em',
-              textShadow: '0 0 2px rgba(230,220,195,0.8)',
-              marginTop: '2px',
-            }}
-          >
-            {entry.id}
-          </span>
+            {/* Inner image container: horizontal image rotated 90° to stand upright */}
+            <div
+              className="absolute top-1/2 left-1/2 overflow-hidden rounded-[3px]"
+              style={{
+                width: `${_CTR_W}px`,
+                height: `${_CTR_H}px`,
+                transform: "translate(-50%, -50%) rotate(90deg)",
+              }}
+            >
+              <img
+                src={SPINE_CDN}
+                alt={entry.title}
+                className="absolute inset-0 w-full h-full object-fill drop-shadow-[2px_4px_8px_rgba(0,0,0,0.7)]"
+                draggable={false}
+              />
+              {/* Text label on the parchment area */}
+              <div
+                className="absolute flex flex-col items-center justify-center text-center z-10 pointer-events-none"
+                style={{
+                  top: "10%",
+                  height: "80%",
+                  left: "10%",
+                  width: "58%",
+                }}
+              >
+                <span
+                  className="uppercase leading-tight px-1 line-clamp-2"
+                  style={{
+                    fontFamily: "'Courier New', 'Courier', monospace",
+                    fontSize: "9px",
+                    fontWeight: 900,
+                    color: "#1a120a",
+                    letterSpacing: "0.1em",
+                    textShadow: "0 0 2px rgba(230,220,195,0.8)",
+                  }}
+                >
+                  {entry.title}
+                </span>
+                <span
+                  style={{
+                    fontFamily: "'Courier New', 'Courier', monospace",
+                    fontSize: "5px",
+                    fontWeight: 700,
+                    color: "rgba(42,29,16,0.7)",
+                    letterSpacing: "0.08em",
+                    textShadow: "0 0 2px rgba(230,220,195,0.8)",
+                    marginTop: "2px",
+                  }}
+                >
+                  {entry.id}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </button>
+      </button>
+    </div>
   );
 }
 
 /* ─────────────────────────────────────────────
-   FLAT CARTRIDGE (Horizontal, laid on shelf)
-   Same spine image, natural horizontal orientation
+   SHELF FILTER BAR
+   Unchanged from original.
    ───────────────────────────────────────────── */
-interface FlatSpineProps {
-  entry: CodexEntry;
-  isLoaded: boolean;
-  onClick: () => void;
-  tilt?: number;
-}
-
-function CartridgeFlat({ entry, isLoaded, onClick, tilt = 0 }: FlatSpineProps) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={isLoaded}
-      className={cn(
-        "relative flex-shrink-0 group transition-all duration-300 ease-out cursor-pointer",
-        "w-[145px] md:w-[168px] lg:w-[190px] h-[44px] md:h-[52px] lg:h-[56px]",
-        isLoaded
-          ? "opacity-0 pointer-events-none scale-95"
-          : "opacity-100 hover:translate-x-[4px] hover:brightness-125 active:scale-95"
-      )}
-      style={{ transform: `rotate(${tilt}deg)` }}
-      title={entry.title}
-    >
-      <div className="absolute inset-0 overflow-hidden rounded-[3px]">
-        <img
-          src={SPINE_CDN}
-          alt={entry.title}
-          className="absolute inset-0 w-full h-full object-fill drop-shadow-[2px_4px_8px_rgba(0,0,0,0.7)]"
-          draggable={false}
-        />
-      </div>
-      {/* Text overlay — positioned on the parchment label area (left ~75% of cartridge) */}
-      <div
-        className="absolute top-0 left-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none"
-        style={{ width: '75%', height: '100%' }}
-      >
-        <span className="font-serif text-[#1a120a] text-[7px] md:text-[8px] lg:text-[9px] font-black uppercase leading-tight tracking-wider px-2 drop-shadow-[0_0_3px_rgba(230,220,195,1)] drop-shadow-[0_1px_0_rgba(255,255,255,0.6)] line-clamp-1">
-          {entry.title}
-        </span>
-        <span className="font-mono text-[4.5px] md:text-[5.5px] text-[#2a1d10]/70 mt-0.5 tracking-tight font-bold drop-shadow-[0_0_2px_rgba(230,220,195,1)]">
-          {entry.id}
-        </span>
-      </div>
-    </button>
-  );
-}
-
-/* ─────────────────────────────────────────────
-   TOP SHELF ARRANGEMENT — per-cartridge personality
-   Subtle tilts, vertical offsets, and spacing gaps
-   to create a lived-in, organic look.
-   tilt:      degrees of rotation (+ = lean right, - = lean left)
-   offsetY:   vertical shift in px (+ = down, - = up)
-   offsetX:   visual-only horizontal shift via translateX — does NOT affect neighbors
-   gapBefore: real layout spacing via marginLeft — DOES push/pull neighbors
-   ───────────────────────────────────────────── */
-interface CartridgeArrangement {
-  tilt: number;
-  offsetY: number;
-  offsetX: number;       // translateX — visual only, no layout impact
-  gapBefore?: number;    // marginLeft override — layout impact, pushes neighbors
-  useCenter?: boolean;   // use center center transform origin (for flat/laid cartridges)
-}
-
-const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
-  // === IDENTITY SECTION (positions 1-4) ===
-  // 1. Name the Cost — straight, anchoring the left wall, nudged forward
-  MOVE_NAME_THE_COST:          { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: 45 },
-  // 2. Clarity Contract — straight, nudged forward, touching #3
-  MOVE_CLARITY_CONTRACT:       { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: -55 },
-  // 3. Feedforward — slight tilt, nudged forward, touching #2
-  MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 4,  offsetX: 0, gapBefore: -57 },
-  // 4. No With a Clean Yes — leaning left onto #3, slid left to nestle against it
-  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -13, offsetY: -2, offsetX: 0, gapBefore: -11 },
-
-  // === RELATIONSHIP SECTION (positions 5-13) ===
-  // 5. Repair in 48 Hours — small real gap before it (section break), mostly straight
-  MOVE_REPAIR_48H:             { tilt: 0.2,  offsetY: 0,  offsetX: 0, gapBefore: 51 },
-  // 6. Minority Report — straight
-  MOVE_MINORITY_REPORT:        { tilt: 0,    offsetY: 0,  offsetX: 0, gapBefore: -90 },
-  // 7. Fridge Rights Audit — straight, nudged forward
-  MOVE_FRIDGE_RIGHTS_AUDIT:    { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: -61 },
-  // 8. The Mirror Move — domino lean right, slid right to close gap with #9
-  MOVE_THE_MIRROR:             { tilt: 18,   offsetY: -1, offsetX: 0, gapBefore: -90 },
-  // 9. Trust Micro-Deposit — domino lean right, slid right to lean into #10
-  MOVE_TRUST_MICRO_DEPOSIT:    { tilt: 20,   offsetY: -3, offsetX: 0, gapBefore: -16 },
-  // 10. 3 Coaching Questions — the backstop, straight and sturdy
-  MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  offsetX: 0, gapBefore: 17 },
-  // 11. SBI Feedback — straight
-  MOVE_FEEDBACK_SBI:           { tilt: 0.3,  offsetY: 0,  offsetX: 0, gapBefore: -58 },
-  // 12. Accountability With Care — slight lean
-  MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -1.0, offsetY: 1, offsetX: 0, gapBefore: -58 },
-  // 13. Recover After You Missed It — end of row, slight lean right (resting against nothing)
-  MOVE_RECOVER_AFTER_MISS:     { tilt: -7.5,  offsetY: 0,  offsetX: 0, gapBefore: -43 },
-};
-
-/* ─────────────────────────────────────────────
-   BOTTOM SHELF ARRANGEMENT — per-cartridge personality
-   Same system as top shelf: tilt, offsetX, offsetY, gapBefore
-   ───────────────────────────────────────────── */
-const BOTTOM_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
-  // === VISION SECTION ===
-  // First 3 laid flat (-90°), stacked like a pile
-  MOVE_DECISION_RIGHTS_MAP:    { tilt: -90, offsetY: 55, offsetX: 0, useCenter: true },
-  MOVE_STOP_LIST:              { tilt: -90, offsetY: 22, offsetX: 0, useCenter: true },
-  MOVE_DISAGREE_AND_COMMIT:    { tilt: -90, offsetY: -10, offsetX: 0, useCenter: true },
-  // Remaining Vision cartridges standing upright
-  MOVE_THE_ONE_THING:          { tilt: 0, offsetY: 0, offsetX: 0 },
-  MOVE_NORTH_STAR_SENTENCE:    { tilt: 0.3, offsetY: 0, offsetX: 0 },
-  MOVE_KILL_THE_GHOST_GOAL:    { tilt: 0, offsetY: 2, offsetX: 0 },
-  MOVE_WIN_CONDITION:          { tilt: -0.5, offsetY: 0, offsetX: 0 },
-  MOVE_TRADEOFF_TALK:          { tilt: 0.3, offsetY: 1, offsetX: 0 },
-  // === CULTURE SECTION ===
-  MOVE_TRUTH_WEATHER:          { tilt: 0, offsetY: 0, offsetX: 0 },
-  MOVE_MEETING_REWRITE:        { tilt: 0.5, offsetY: 0, offsetX: 0 },
-  MOVE_PERMISSION_SLIP:        { tilt: 0, offsetY: 2, offsetX: 0 },
-  MOVE_SHADOW_NORMS:           { tilt: -0.3, offsetY: 0, offsetX: 0 },
-  MOVE_ENERGY_LEAK_CHECK:      { tilt: 0, offsetY: 1, offsetX: 0 },
-  MOVE_SAFE_TO_SAY:            { tilt: 0.5, offsetY: 0, offsetX: 0 },
-};
-
-/* ─────────────────────────────────────────────
-   SHELF FILTER BAR (Built into the shelf trim)
-   Uses generated bronze/wood trim texture image
-   Embossed text with warm amber light bleed
-   ───────────────────────────────────────────── */
-/* ── Per-tab "lighting personality" ──
-   Each tab has unique imperfections — like old backlit labels
-   where each bulb has aged differently, some bezels are more
-   worn, some reflectors sit slightly off-center.              */
 const FILTER_TABS = [
   { key: "ALL",          label: "ALL",
     glow: { cx: 48, cy: 48, rx: 32, ry: 45, op: 0.13, ambRx: 55, ambOp: 0.055 },
@@ -355,7 +334,6 @@ function ShelfFilterBar({
 }) {
   return (
     <div className="relative w-full">
-      {/* Trim texture background — the physical molding strip */}
       <div
         className="relative flex items-stretch justify-center gap-0 overflow-hidden"
         style={{
@@ -363,37 +341,29 @@ function ShelfFilterBar({
           backgroundSize: "cover",
           backgroundPosition: "center",
           boxShadow: [
-            "0 4px 12px rgba(0,0,0,0.5)",          // cast shadow below onto shelf
-            "0 8px 24px rgba(0,0,0,0.3)",           // softer, wider shadow spread
-            "inset 0 2px 4px rgba(0,0,0,0.3)",      // top inner shadow (recessed top edge)
-            "inset 0 -1px 3px rgba(0,0,0,0.2)",     // bottom inner shadow
+            "0 4px 12px rgba(0,0,0,0.5)",
+            "0 8px 24px rgba(0,0,0,0.3)",
+            "inset 0 2px 4px rgba(0,0,0,0.3)",
+            "inset 0 -1px 3px rgba(0,0,0,0.2)",
           ].join(", "),
         }}
       >
-        {/* Darken overlay to ensure text readability */}
         <div className="absolute inset-0 bg-black/20 pointer-events-none z-0" />
-
-        {/* ── TOP EDGE: dark recess ── */}
         <div
           className="absolute top-0 left-0 right-0 h-[3px] pointer-events-none z-[2]"
-          style={{
-            background: "linear-gradient(to bottom, rgba(10,7,4,0.7) 0%, rgba(15,10,6,0.3) 100%)",
-          }}
+          style={{ background: "linear-gradient(to bottom, rgba(10,7,4,0.7) 0%, rgba(15,10,6,0.3) 100%)" }}
         />
-        {/* ── BOTTOM EDGE: dark recess ── */}
         <div
           className="absolute bottom-0 left-0 right-0 h-[3px] pointer-events-none z-[2]"
-          style={{
-            background: "linear-gradient(to top, rgba(10,7,4,0.7) 0%, rgba(15,10,6,0.3) 100%)",
-          }}
+          style={{ background: "linear-gradient(to top, rgba(10,7,4,0.7) 0%, rgba(15,10,6,0.3) 100%)" }}
         />
 
-        {FILTER_TABS.map((tab, idx) => {
+        {FILTER_TABS.map((tab) => {
           const isActive = activeCategory === tab.key;
-          const g = tab.glow;   // per-tab glow personality
-          const s = tab.strip;  // per-tab gold strip personality
-          const sp = tab.spill; // per-tab bottom spill personality
-          const t = tab.text;   // per-tab text glow personality
+          const g = tab.glow;
+          const s = tab.strip;
+          const sp = tab.spill;
+          const t = tab.text;
           return (
             <button
               key={tab.key}
@@ -403,8 +373,6 @@ function ShelfFilterBar({
                 isActive ? "z-10" : ""
               )}
             >
-              {/* ── PER-TAB GOLD STRIPS with unique wear/brightness ── */}
-              {/* Top gold strip — unique opacity & center per tab */}
               <div
                 className="absolute top-[3px] left-[-2px] right-[-2px] h-[2px] pointer-events-none z-[3] transition-all duration-500"
                 style={{
@@ -413,7 +381,6 @@ function ShelfFilterBar({
                     : `linear-gradient(to right, transparent 0%, rgba(165,120,45,${s.topOp * 0.25}) 20%, rgba(175,130,50,${s.topOp * 0.38}) ${s.topShift}%, rgba(165,120,45,${s.topOp * 0.25}) 80%, transparent 100%)`,
                 }}
               />
-              {/* Top gold strip glow — unique position */}
               {isActive && (
                 <div
                   className="absolute top-[2px] left-[8%] right-[8%] h-[6px] pointer-events-none z-[2]"
@@ -423,7 +390,6 @@ function ShelfFilterBar({
                   }}
                 />
               )}
-              {/* Bottom gold strip — unique opacity & center per tab */}
               <div
                 className="absolute bottom-[3px] left-[-2px] right-[-2px] h-[2px] pointer-events-none z-[3] transition-all duration-500"
                 style={{
@@ -432,7 +398,6 @@ function ShelfFilterBar({
                     : `linear-gradient(to right, transparent 0%, rgba(165,120,45,${s.botOp * 0.25}) 20%, rgba(175,130,50,${s.botOp * 0.38}) ${s.botShift}%, rgba(165,120,45,${s.botOp * 0.25}) 80%, transparent 100%)`,
                 }}
               />
-              {/* Bottom gold strip glow — unique position */}
               {isActive && (
                 <div
                   className="absolute bottom-[2px] left-[8%] right-[8%] h-[6px] pointer-events-none z-[2]"
@@ -442,25 +407,16 @@ function ShelfFilterBar({
                   }}
                 />
               )}
-
-              {/* ── ACTIVE STATE: unique glow shape per tab ── */}
               {isActive && (
                 <>
-                  {/* Tight glow — unique size, position, opacity */}
                   <div
                     className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background: `radial-gradient(ellipse ${g.rx}% ${g.ry}% at ${g.cx}% ${g.cy}%, rgba(210,145,40,${g.op}) 0%, transparent 100%)`,
-                    }}
+                    style={{ background: `radial-gradient(ellipse ${g.rx}% ${g.ry}% at ${g.cx}% ${g.cy}%, rgba(210,145,40,${g.op}) 0%, transparent 100%)` }}
                   />
-                  {/* Ambient warmth — unique spread */}
                   <div
                     className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background: `radial-gradient(ellipse ${g.ambRx}% 70% at ${g.cx}% ${g.cy}%, rgba(195,130,35,${g.ambOp}) 0%, transparent 100%)`,
-                    }}
+                    style={{ background: `radial-gradient(ellipse ${g.ambRx}% 70% at ${g.cx}% ${g.cy}%, rgba(195,130,35,${g.ambOp}) 0%, transparent 100%)` }}
                   />
-                  {/* Bottom light spill — unique asymmetric spread */}
                   <div
                     className="absolute -bottom-[2px] h-[6px] rounded-full pointer-events-none"
                     style={{
@@ -472,18 +428,12 @@ function ShelfFilterBar({
                   />
                 </>
               )}
-
-              {/* ── INACTIVE STATE: subtle warmth — also slightly unique ── */}
               {!isActive && (
                 <div
                   className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background: `radial-gradient(ellipse at ${g.cx}% ${g.cy}%, rgba(110,80,35,0.04) 0%, transparent 70%)`,
-                  }}
+                  style={{ background: `radial-gradient(ellipse at ${g.cx}% ${g.cy}%, rgba(110,80,35,0.04) 0%, transparent 70%)` }}
                 />
               )}
-
-              {/* ── LABEL TEXT: embossed/engraved with unique glow intensity ── */}
               <span
                 className={cn(
                   "relative z-10 font-pixel tracking-[0.18em] uppercase transition-all duration-500",
@@ -492,11 +442,11 @@ function ShelfFilterBar({
                 style={isActive ? {
                   color: "#e8b84a",
                   textShadow: [
-                    `0 0 6px rgba(225,170,45,${t.hotOp})`,     // tight hot glow — unique intensity
-                    `0 0 14px rgba(210,148,40,${t.midOp})`,    // medium spread — unique
-                    `0 0 30px rgba(195,130,30,${t.outerOp})`,  // soft outer halo — unique
-                    "0 1px 0 rgba(0,0,0,0.6)",                // depth shadow (engraved)
-                    "0 -1px 0 rgba(240,200,120,0.2)",         // top highlight catch
+                    `0 0 6px rgba(225,170,45,${t.hotOp})`,
+                    `0 0 14px rgba(210,148,40,${t.midOp})`,
+                    `0 0 30px rgba(195,130,30,${t.outerOp})`,
+                    "0 1px 0 rgba(0,0,0,0.6)",
+                    "0 -1px 0 rgba(240,200,120,0.2)",
                   ].join(", "),
                 } : {
                   color: "#6b5a42",
@@ -518,66 +468,7 @@ function ShelfFilterBar({
 }
 
 /* ─────────────────────────────────────────────
-   SHELF RAIL (Front edge / lip of the shelf plank)
-   Uses the generated wood rail texture but blends
-   its top and bottom edges into the surrounding
-   shelf wood so it reads as one continuous piece.
-   ───────────────────────────────────────────── */
-function ShelfRail() {
-  return (
-    <div className="relative w-full h-[44px] md:h-[52px] lg:h-[60px] z-[3]">
-      {/* Rail container — clipped to match the shelf ledge width (~75%) */}
-      <div
-        className="relative h-full"
-        style={{ width: "75%" }}
-      >
-        {/* Texture layer — the real wood rail image */}
-        <div
-          className="absolute inset-0 overflow-hidden"
-          style={{
-            backgroundImage: "url('/assets/shelf_rail_texture.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "center 45%",
-          }}
-        />
-        {/* Top edge blend — fades the texture into the shelf above */}
-        <div
-          className="absolute top-0 left-0 right-0 h-[6px] md:h-[8px] pointer-events-none"
-          style={{
-            background: "linear-gradient(to bottom, rgba(30,22,14,0.7) 0%, transparent 100%)",
-          }}
-        />
-        {/* Top highlight — warm light catching the rounded lip */}
-        <div
-          className="absolute top-[2px] left-0 right-0 h-[1px] pointer-events-none"
-          style={{
-            background: "linear-gradient(to right, transparent 5%, rgba(160,130,80,0.35) 20%, rgba(180,145,90,0.4) 50%, rgba(160,130,80,0.35) 80%, transparent 95%)",
-          }}
-        />
-        {/* Right edge fade — rail fades out at its endpoint */}
-        <div
-          className="absolute top-0 right-0 bottom-0 w-[20px] pointer-events-none"
-          style={{
-            background: "linear-gradient(to left, rgba(15,12,8,0.9) 0%, rgba(20,15,10,0.4) 40%, transparent 100%)",
-          }}
-        />
-        {/* Bottom edge blend — fades the texture into the shelf below */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-[6px] md:h-[8px] pointer-events-none"
-          style={{
-            background: "linear-gradient(to top, rgba(10,8,5,0.8) 0%, rgba(20,15,10,0.4) 50%, transparent 100%)",
-          }}
-        />
-      </div>
-    </div>
-  );
-}
-
-/* ─────────────────────────────────────────────
    MAIN SHELF COMPONENT
-   Two shelves: Top (Identity + Relationship standing)
-                Bottom (Vision + Culture standing)
-   Filter bar integrated into the trim above top shelf
    ───────────────────────────────────────────── */
 interface CodexShelfProps {
   entries: CodexEntry[];
@@ -600,7 +491,6 @@ export default function CodexShelf({
   const scrollRefTop = useRef<HTMLDivElement>(null);
   const scrollRefBottom = useRef<HTMLDivElement>(null);
 
-  // Determine which sections are visible based on active filter
   const getVisibleSections = (shelfSections: typeof TOP_SHELF_SECTIONS) => {
     if (activeCategory === "ALL") return shelfSections;
     return shelfSections.filter((s) => s.key.toUpperCase() === activeCategory);
@@ -609,116 +499,31 @@ export default function CodexShelf({
   const topVisible = getVisibleSections(TOP_SHELF_SECTIONS);
   const bottomVisible = getVisibleSections(BOTTOM_SHELF_SECTIONS);
 
-  // Shelf structure is always visible — only contents change with filter
-
   return (
     <div className="relative w-full overflow-hidden rounded-sm">
-      {/* ── SWORD-BEARER STATUE (right side, spanning both shelves) ── */}
+
+      {/* ── SWORD-BEARER STATUE ── */}
       <div
         className="absolute z-[15] pointer-events-none"
-        style={{
-          width: '48%',
-          bottom: '5%',
-          right: '-12%',
-          overflow: 'visible',
-        }}
+        style={{ width: "48%", bottom: "5%", right: "-12%", overflow: "visible" }}
       >
-        {/* The statue image — relative so it establishes container height */}
         <img
           src={STATUE_CDN}
           alt="The Sword-Bearer"
           className="relative z-[2] block"
-          style={{
-            width: '100%',
-            height: 'auto',
-            filter: 'brightness(0.85) contrast(1.12) saturate(0.9)',
-          }}
+          style={{ width: "100%", height: "auto", filter: "brightness(0.85) contrast(1.12) saturate(0.9)" }}
           draggable={false}
         />
-
-        {/* Backlight halo — warm golden, focused on lower half (not head) */}
-        <div
-          className="absolute z-[1]"
-          style={{
-            top: '40%',
-            left: '10%',
-            width: '80%',
-            height: '60%',
-            background: 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(210,160,60,0.12) 0%, rgba(180,130,40,0.06) 40%, transparent 70%)',
-            filter: 'blur(18px)',
-          }}
-        />
-
-        {/* Sword glow — INTENSIFIED cyan, pulled UP away from head */}
-        <div
-          className="absolute z-[4]"
-          style={{
-            top: '-18%',
-            left: '20%',
-            width: '70%',
-            height: '40%',
-            background: 'radial-gradient(ellipse 50% 70% at 55% 80%, rgba(120,240,255,0.45) 0%, rgba(80,220,240,0.18) 30%, transparent 65%)',
-            filter: 'blur(10px)',
-            animation: 'swordPulse 3s ease-in-out infinite alternate',
-          }}
-        />
-        {/* Sword core — tight white-hot center, high up on sword only */}
-        <div
-          className="absolute z-[5]"
-          style={{
-            top: '-12%',
-            left: '32%',
-            width: '36%',
-            height: '22%',
-            background: 'radial-gradient(ellipse 25% 65% at 55% 85%, rgba(220,255,255,0.55) 0%, rgba(140,235,250,0.15) 45%, transparent 70%)',
-            filter: 'blur(5px)',
-            animation: 'swordPulse 3s ease-in-out infinite alternate',
-          }}
-        />
-        {/* Sword blade white overlay — subtle, tight on the blade edge */}
-        <div
-          className="absolute z-[6]"
-          style={{
-            top: '-5%',
-            left: '37%',
-            width: '12%',
-            height: '28%',
-            background: 'linear-gradient(to top, rgba(255,255,255,0.08) 0%, rgba(200,250,255,0.2) 40%, rgba(255,255,255,0.35) 70%, rgba(200,250,255,0.15) 100%)',
-            filter: 'blur(3px)',
-            borderRadius: '40%',
-            animation: 'swordPulse 3s ease-in-out infinite alternate',
-          }}
-        />
-
-        {/* Light shaft — vertical beam extending up from sword */}
-        <div
-          className="absolute z-[3]"
-          style={{
-            top: '-25%',
-            left: '36%',
-            width: '28%',
-            height: '40%',
-            background: 'linear-gradient(to top, rgba(120,240,255,0.15) 0%, rgba(100,220,240,0.06) 50%, transparent 100%)',
-            filter: 'blur(8px)',
-            animation: 'swordPulse 3s ease-in-out infinite alternate',
-          }}
-        />
-
-        {/* Secondary glow — reduced, pushed up to sword zone only */}
-        <div
-          className="absolute z-[0]"
-          style={{
-            top: '-10%',
-            left: '-5%',
-            width: '110%',
-            height: '45%',
-            background: 'radial-gradient(ellipse 60% 50% at 55% 70%, rgba(80,220,240,0.07) 0%, rgba(60,200,220,0.03) 40%, transparent 65%)',
-            filter: 'blur(25px)',
-          }}
-        />
-
-        {/* Floating dust particles — CSS animated */}
-        <div className="absolute z-[6]" style={{ top: '0%', left: '10%', width: '80%', height: '100%', overflow: 'visible' }}>
+        {/* Backlight halo */}
+        <div className="absolute z-[1]" style={{ top: "40%", left: "10%", width: "80%", height: "60%", background: "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(210,160,60,0.12) 0%, rgba(180,130,40,0.06) 40%, transparent 70%)", filter: "blur(18px)" }} />
+        {/* Sword glow */}
+        <div className="absolute z-[4]" style={{ top: "-18%", left: "20%", width: "70%", height: "40%", background: "radial-gradient(ellipse 50% 70% at 55% 80%, rgba(120,240,255,0.45) 0%, rgba(80,220,240,0.18) 30%, transparent 65%)", filter: "blur(10px)", animation: "swordPulse 3s ease-in-out infinite alternate" }} />
+        <div className="absolute z-[5]" style={{ top: "-12%", left: "32%", width: "36%", height: "22%", background: "radial-gradient(ellipse 25% 65% at 55% 85%, rgba(220,255,255,0.55) 0%, rgba(140,235,250,0.15) 45%, transparent 70%)", filter: "blur(5px)", animation: "swordPulse 3s ease-in-out infinite alternate" }} />
+        <div className="absolute z-[6]" style={{ top: "-5%", left: "37%", width: "12%", height: "28%", background: "linear-gradient(to top, rgba(255,255,255,0.08) 0%, rgba(200,250,255,0.2) 40%, rgba(255,255,255,0.35) 70%, rgba(200,250,255,0.15) 100%)", filter: "blur(3px)", borderRadius: "40%", animation: "swordPulse 3s ease-in-out infinite alternate" }} />
+        <div className="absolute z-[3]" style={{ top: "-25%", left: "36%", width: "28%", height: "40%", background: "linear-gradient(to top, rgba(120,240,255,0.15) 0%, rgba(100,220,240,0.06) 50%, transparent 100%)", filter: "blur(8px)", animation: "swordPulse 3s ease-in-out infinite alternate" }} />
+        <div className="absolute z-[0]" style={{ top: "-10%", left: "-5%", width: "110%", height: "45%", background: "radial-gradient(ellipse 60% 50% at 55% 70%, rgba(80,220,240,0.07) 0%, rgba(60,200,220,0.03) 40%, transparent 65%)", filter: "blur(25px)" }} />
+        {/* Dust particles */}
+        <div className="absolute z-[6]" style={{ top: "0%", left: "10%", width: "80%", height: "100%", overflow: "visible" }}>
           {[...Array(18)].map((_, i) => (
             <div
               key={`dust-${i}`}
@@ -728,93 +533,37 @@ export default function CodexShelf({
                 height: `${1.5 + (i % 4) * 0.8}px`,
                 left: `${8 + (i * 5.2) % 84}%`,
                 bottom: `${5 + (i * 7.3) % 80}%`,
-                background: i % 3 === 0
-                  ? 'rgba(200,250,255,0.7)'
-                  : i % 3 === 1
-                    ? 'rgba(220,180,80,0.6)'
-                    : 'rgba(255,255,255,0.45)',
+                background: i % 3 === 0 ? "rgba(200,250,255,0.7)" : i % 3 === 1 ? "rgba(220,180,80,0.6)" : "rgba(255,255,255,0.45)",
                 animation: `dustFloat${i % 4} ${4 + (i % 3) * 2}s ease-in-out infinite`,
                 animationDelay: `${(i * 0.7) % 5}s`,
               }}
             />
           ))}
         </div>
-
-        {/* ── WARM ORANGE AMBIENT — radiates from BEHIND the statue, center-mass ── */}
-        <div
-          className="absolute z-[1]"
-          style={{
-            top: '15%',
-            left: '-15%',
-            width: '130%',
-            height: '85%',
-            background: 'radial-gradient(ellipse 70% 70% at 50% 45%, rgba(255,130,20,0.5) 0%, rgba(240,110,15,0.25) 20%, rgba(210,90,10,0.12) 40%, rgba(180,80,10,0.04) 60%, transparent 80%)',
-            filter: 'blur(18px)',
-            animation: 'emberPulse 4s ease-in-out infinite alternate',
-          }}
-        />
-        {/* Orange ambient — wider fill behind statue, spreading to shelf walls */}
-        <div
-          className="absolute z-[0]"
-          style={{
-            top: '5%',
-            left: '-25%',
-            width: '150%',
-            height: '110%',
-            background: 'radial-gradient(ellipse 65% 70% at 50% 45%, rgba(255,150,30,0.2) 0%, rgba(230,120,20,0.08) 35%, rgba(200,90,10,0.03) 55%, transparent 75%)',
-            filter: 'blur(30px)',
-          }}
-        />
-
-        {/* Sword cyan reflection on shelf surface */}
-        <div
-          className="absolute z-[1]"
-          style={{
-            bottom: '0%',
-            left: '5%',
-            width: '90%',
-            height: '18%',
-            background: 'radial-gradient(ellipse 80% 50% at 50% 20%, rgba(80,220,240,0.15) 0%, transparent 70%)',
-            filter: 'blur(14px)',
-            animation: 'swordPulse 3s ease-in-out infinite alternate',
-          }}
-        />
-
+        {/* Orange ambient */}
+        <div className="absolute z-[1]" style={{ top: "15%", left: "-15%", width: "130%", height: "85%", background: "radial-gradient(ellipse 70% 70% at 50% 45%, rgba(255,130,20,0.5) 0%, rgba(240,110,15,0.25) 20%, rgba(210,90,10,0.12) 40%, rgba(180,80,10,0.04) 60%, transparent 80%)", filter: "blur(18px)", animation: "emberPulse 4s ease-in-out infinite alternate" }} />
+        <div className="absolute z-[0]" style={{ top: "5%", left: "-25%", width: "150%", height: "110%", background: "radial-gradient(ellipse 65% 70% at 50% 45%, rgba(255,150,30,0.2) 0%, rgba(230,120,20,0.08) 35%, rgba(200,90,10,0.03) 55%, transparent 75%)", filter: "blur(30px)" }} />
+        {/* Sword reflection on shelf */}
+        <div className="absolute z-[1]" style={{ bottom: "0%", left: "5%", width: "90%", height: "18%", background: "radial-gradient(ellipse 80% 50% at 50% 20%, rgba(80,220,240,0.15) 0%, transparent 70%)", filter: "blur(14px)", animation: "swordPulse 3s ease-in-out infinite alternate" }} />
       </div>
 
-      {/* ── JOURNALS (bottom shelf, to the left of statue) ── */}
+      {/* ── JOURNALS ── */}
       <img
         src={JOURNAL_1_CDN}
         alt="Parable of the Shipwrecked Leaders"
         className="absolute z-[14] pointer-events-none"
-        style={{
-          bottom: '1%',
-          right: '-7%',
-          height: '75%',
-          width: 'auto',
-          transform: 'rotate(-4deg)',
-          transformOrigin: 'bottom center',
-          filter: 'brightness(0.7) contrast(1.15) saturate(0.8)',
-        }}
+        style={{ bottom: "1%", right: "-7%", height: "75%", width: "auto", transform: "rotate(-4deg)", transformOrigin: "bottom center", filter: "brightness(0.7) contrast(1.15) saturate(0.8)" }}
         draggable={false}
       />
       <img
         src={JOURNAL_2_CDN}
         alt="Rebellious Hope"
         className="absolute z-[12] pointer-events-none"
-        style={{
-          bottom: '2%',
-          right: '-8%',
-          height: '65%',
-          width: 'auto',
-          transform: 'rotate(-3deg)',
-          transformOrigin: 'bottom center',
-          filter: 'brightness(0.7) contrast(1.15) saturate(0.8)',
-        }}
+        style={{ bottom: "2%", right: "-8%", height: "65%", width: "auto", transform: "rotate(-3deg)", transformOrigin: "bottom center", filter: "brightness(0.7) contrast(1.15) saturate(0.8)" }}
         draggable={false}
       />
 
-      {/* Animation keyframes — sword glow, dust particles, ember pulse */}
+      {/* Animation keyframes */}
       <style>{`
         @keyframes swordPulse {
           0% { opacity: 0.65; }
@@ -852,29 +601,22 @@ export default function CodexShelf({
         }
       `}</style>
 
-      {/* Shelf Background Image — full coverage */}
+      {/* Shelf background */}
       <div
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: "url('/assets/codex_shelf_bg.png')",
-          backgroundSize: "cover",
-        }}
+        style={{ backgroundImage: "url('/assets/codex_shelf_bg.png')", backgroundSize: "cover" }}
       />
 
-      {/* Dark vignette overlay — organic, not uniform */}
+      {/* Vignette overlays */}
       <div className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.5)_100%)] pointer-events-none" />
       <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/25 via-transparent to-black/40 pointer-events-none" />
 
-      {/* Content Container */}
+      {/* Content */}
       <div className="relative z-[2] flex flex-col">
 
-        {/* ── INTEGRATED FILTER BAR (bronze trim with backlit tabs) ── */}
-        <ShelfFilterBar
-          activeCategory={activeCategory}
-          onCategoryChange={onCategoryChange}
-        />
+        <ShelfFilterBar activeCategory={activeCategory} onCategoryChange={onCategoryChange} />
 
-        {/* ── TOP SHELF: Identity + Relationship cartridges (always rendered) ── */}
+        {/* ── TOP SHELF ── */}
         <div className="relative pl-0 pr-4 md:pr-5 lg:pr-6 pt-0">
           <div
             ref={scrollRefTop}
@@ -886,20 +628,19 @@ export default function CodexShelf({
               if (sectionEntries.length === 0) return null;
               return (
                 <div key={section.key} className="flex items-end gap-0">
-                  {sectionEntries.map((entry, idx) => {
-                    const arrangement = TOP_SHELF_ARRANGEMENT[entry.id] || { tilt: 0, offsetY: 0, offsetX: 0 };
+                  {sectionEntries.map((entry) => {
+                    const a = TOP_SHELF_ARRANGEMENT[entry.id] || { tilt: 0, offsetY: 0, offsetX: 0 };
                     return (
                       <CartridgeSpine
                         key={entry.id}
                         entry={entry}
                         isLoaded={loadedEntryId === entry.id}
                         onClick={() => onLoad(entry)}
-                        tilt={arrangement.tilt}
-                        offsetY={arrangement.offsetY}
-                        offsetX={arrangement.offsetX}
-                        gapBefore={arrangement.gapBefore}
-                        useCenter={arrangement.useCenter}
-                        zIndex={idx + 1}
+                        tilt={a.tilt}
+                        offsetY={a.offsetY}
+                        offsetX={a.offsetX}
+                        gapBefore={a.gapBefore}
+                        useCenter={a.useCenter}
                       />
                     );
                   })}
@@ -909,10 +650,7 @@ export default function CodexShelf({
           </div>
         </div>
 
-        {/* ── SHELF RAIL between top and bottom ── */}
-        {/* <ShelfRail /> */}
-
-        {/* ── BOTTOM SHELF: Vision + Culture cartridges (always rendered) ── */}
+        {/* ── BOTTOM SHELF ── */}
         <div className="relative pl-0 pr-4 md:pr-5 lg:pr-6 pb-0">
           <div
             ref={scrollRefBottom}
@@ -925,18 +663,18 @@ export default function CodexShelf({
               return (
                 <div key={section.key} className="flex items-end gap-0">
                   {sectionEntries.map((entry) => {
-                    const arrangement = BOTTOM_SHELF_ARRANGEMENT[entry.id] || { tilt: 0, offsetY: 0, offsetX: 0 };
+                    const a = BOTTOM_SHELF_ARRANGEMENT[entry.id] || { tilt: 0, offsetY: 0, offsetX: 0 };
                     return (
                       <CartridgeSpine
                         key={entry.id}
                         entry={entry}
                         isLoaded={loadedEntryId === entry.id}
                         onClick={() => onLoad(entry)}
-                        tilt={arrangement.tilt}
-                        offsetY={arrangement.offsetY}
-                        offsetX={arrangement.offsetX}
-                        gapBefore={arrangement.gapBefore}
-                        useCenter={arrangement.useCenter}
+                        tilt={a.tilt}
+                        offsetY={a.offsetY}
+                        offsetX={a.offsetX}
+                        gapBefore={a.gapBefore}
+                        useCenter={a.useCenter}
                       />
                     );
                   })}
@@ -946,8 +684,6 @@ export default function CodexShelf({
           </div>
         </div>
 
-        {/* ── BOTTOM RAIL (closes the cabinet) ── */}
-        {/* <ShelfRail /> */}
       </div>
     </div>
   );
