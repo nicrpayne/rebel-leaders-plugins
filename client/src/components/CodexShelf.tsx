@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { CodexEntry } from "@/lib/codex-schema";
 import { FlywheelNode } from "@/lib/codex-schema";
@@ -58,11 +58,12 @@ const JOURNAL_2_CDN = "https://files.manuscdn.com/user_upload_by_module/session_
    SPINE_WIDTH  — how thick/wide the cartridge spine is on the shelf (px)
    SPINE_GAP    — horizontal space between cartridges (px, negative = overlap)
 */
-const SPINE_HEIGHT = 270;   // ← cartridge height on shelf in px
-const SPINE_WIDTH  = 145;   // ← cartridge thickness on shelf in px
-const SPINE_GAP    = -8;    // ← spacing between cartridges (negative = overlap)
+const SPINE_HEIGHT   = 270;  // ← cartridge height on shelf in px
+const SPINE_WIDTH    = 145;  // ← actual visual width of cartridge (used for image container)
+const SPINE_HIT_W    = 100;  // ← button hit-area width (narrower than visual, visual overflows)
+const SPINE_GAP      = 2;    // ← spacing between cartridge hit areas
 // Internal: the image container is horizontal, then rotated 90°
-// Container W = shelf height, Container H = shelf width
+// Container W = shelf height, Container H = visual width
 const _CTR_W = SPINE_HEIGHT;
 const _CTR_H = SPINE_WIDTH;
 
@@ -75,27 +76,50 @@ interface SpineProps {
   offsetX?: number;      // visual-only horizontal shift (translateX) — does NOT affect neighbors
   gapBefore?: number;    // real layout gap (marginLeft override) — DOES push neighbors
   useCenter?: boolean;   // use center center transform origin (for flat/laid cartridges)
+  zIndex?: number;       // stacking order — higher = on top for hover priority
 }
 
-function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offsetX = 0, gapBefore, useCenter = false }: SpineProps) {
+function CartridgeSpine({ entry, isLoaded, onClick, tilt = 0, offsetY = 0, offsetX = 0, gapBefore, useCenter = false, zIndex }: SpineProps) {
+  const [hovered, setHovered] = React.useState(false);
+
+  // Build the transform string — only include components that are non-zero
+  // IMPORTANT: if we include any transform here, it overrides ALL Tailwind hover transforms.
+  // So we handle the hover lift (translateY -8px) via JS state too.
+  const buildTransform = () => {
+    if (isLoaded) return undefined;
+    const parts: string[] = [];
+    if (hovered) parts.push('translateY(-8px)');
+    else if (offsetY !== 0) parts.push(`translateY(${offsetY}px)`);
+    if (offsetX !== 0) parts.push(`translateX(${offsetX}px)`);
+    if (tilt !== 0) parts.push(`rotate(${tilt}deg)`);
+    return parts.length > 0 ? parts.join(' ') : undefined;
+  };
+
+  const brightness = hovered ? 'brightness(1.25)' : undefined;
+
   return (
     <button
       onClick={onClick}
       disabled={isLoaded}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       className={cn(
-        "relative flex-shrink-0 group transition-all duration-300 ease-out cursor-pointer",
+        "relative flex-shrink-0 group cursor-pointer",
         "mb-0",
         isLoaded
           ? "opacity-0 pointer-events-none scale-95"
-          : "opacity-100 hover:translate-y-[-8px] hover:brightness-125 active:scale-95"
+          : "opacity-100"
       )}
       style={{
-        width: `${SPINE_WIDTH}px`,
+        width: `${SPINE_HIT_W}px`,
         height: `${SPINE_HEIGHT}px`,
         marginLeft: gapBefore !== undefined ? `${gapBefore}px` : `${SPINE_GAP}px`,
-        transform: isLoaded ? undefined : `translateY(${offsetY}px) translateX(${offsetX}px) rotate(${tilt}deg)`,
+        transform: buildTransform(),
         transformOrigin: tilt !== 0 ? (useCenter ? "center center" : "bottom center") : undefined,
+        filter: brightness,
         transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        zIndex: hovered ? 50 : (zIndex ?? undefined),
+        overflow: 'visible',
       }}
       title={entry.title}
     >
@@ -226,33 +250,33 @@ interface CartridgeArrangement {
 const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   // === IDENTITY SECTION (positions 1-4) ===
   // 1. Name the Cost — straight, anchoring the left wall, nudged forward
-  MOVE_NAME_THE_COST:          { tilt: 0,    offsetY: 4,  offsetX: 0 },
+  MOVE_NAME_THE_COST:          { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: 45 },
   // 2. Clarity Contract — straight, nudged forward, touching #3
-  MOVE_CLARITY_CONTRACT:       { tilt: 0,    offsetY: 4,  offsetX: -100, gapBefore: 0 },
+  MOVE_CLARITY_CONTRACT:       { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: -55 },
   // 3. Feedforward — slight tilt, nudged forward, touching #2
-  MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 4,  offsetX: -202, gapBefore: 0 },
+  MOVE_FEEDFORWARD:            { tilt: 0.3,  offsetY: 4,  offsetX: 0, gapBefore: -57 },
   // 4. No With a Clean Yes — leaning left onto #3, slid left to nestle against it
-  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -13, offsetY: -2, offsetX: -250 },
+  MOVE_BOUNDARY_NO_WITH_YES:   { tilt: -13, offsetY: -2, offsetX: 0, gapBefore: -11 },
 
   // === RELATIONSHIP SECTION (positions 5-13) ===
   // 5. Repair in 48 Hours — small real gap before it (section break), mostly straight
-  MOVE_REPAIR_48H:             { tilt: 0.2,  offsetY: 0,  offsetX: -250, gapBefore: 6 },
+  MOVE_REPAIR_48H:             { tilt: 0.2,  offsetY: 0,  offsetX: 0, gapBefore: 51 },
   // 6. Minority Report — straight
-  MOVE_MINORITY_REPORT:        { tilt: 0,    offsetY: 0,  offsetX: -465 },
+  MOVE_MINORITY_REPORT:        { tilt: 0,    offsetY: 0,  offsetX: 0, gapBefore: -90 },
   // 7. Fridge Rights Audit — straight, nudged forward
-  MOVE_FRIDGE_RIGHTS_AUDIT:    { tilt: 0,    offsetY: 4,  offsetX: -475 },
+  MOVE_FRIDGE_RIGHTS_AUDIT:    { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: -61 },
   // 8. The Mirror Move — domino lean right, slid right to close gap with #9
-  MOVE_THE_MIRROR:             { tilt: 18,   offsetY: -1, offsetX: -625 },
+  MOVE_THE_MIRROR:             { tilt: 18,   offsetY: -1, offsetX: 0, gapBefore: -90 },
   // 9. Trust Micro-Deposit — domino lean right, slid right to lean into #10
-  MOVE_TRUST_MICRO_DEPOSIT:    { tilt: 20,   offsetY: -3, offsetX: -655 },
+  MOVE_TRUST_MICRO_DEPOSIT:    { tilt: 20,   offsetY: -3, offsetX: 0, gapBefore: -16 },
   // 10. 3 Coaching Questions — the backstop, straight and sturdy
-  MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  offsetX: -655 },
+  MOVE_COACHING_3_QUESTIONS:   { tilt: 0,    offsetY: 0,  offsetX: 0, gapBefore: 17 },
   // 11. SBI Feedback — straight
-  MOVE_FEEDBACK_SBI:           { tilt: 0.3,  offsetY: 0,  offsetX: -730 },
+  MOVE_FEEDBACK_SBI:           { tilt: 0.3,  offsetY: 0,  offsetX: 0, gapBefore: -58 },
   // 12. Accountability With Care — slight lean
-  MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -1.0, offsetY: 1, offsetX: -725 },
+  MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -1.0, offsetY: 1, offsetX: 0, gapBefore: -58 },
   // 13. Recover After You Missed It — end of row, slight lean right (resting against nothing)
-  MOVE_RECOVER_AFTER_MISS:     { tilt: 1.2,  offsetY: 0,  offsetX: -725 },
+  MOVE_RECOVER_AFTER_MISS:     { tilt: -7.5,  offsetY: 0,  offsetX: 0, gapBefore: -43 },
 };
 
 /* ─────────────────────────────────────────────
@@ -862,7 +886,7 @@ export default function CodexShelf({
               if (sectionEntries.length === 0) return null;
               return (
                 <div key={section.key} className="flex items-end gap-0">
-                  {sectionEntries.map((entry) => {
+                  {sectionEntries.map((entry, idx) => {
                     const arrangement = TOP_SHELF_ARRANGEMENT[entry.id] || { tilt: 0, offsetY: 0, offsetX: 0 };
                     return (
                       <CartridgeSpine
@@ -875,6 +899,7 @@ export default function CodexShelf({
                         offsetX={arrangement.offsetX}
                         gapBefore={arrangement.gapBefore}
                         useCenter={arrangement.useCenter}
+                        zIndex={idx + 1}
                       />
                     );
                   })}

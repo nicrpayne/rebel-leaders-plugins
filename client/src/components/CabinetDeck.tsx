@@ -692,21 +692,23 @@ startTicker(msg, 14000, () => {
       >
         {displayEntry && (
           <div
-            key={animPhase === "ejecting" ? displayEntry.id : displayEntry.id + "-active"}
-            className={cn(
-              "absolute z-10 flex items-center justify-center transform-gpu will-change-transform",
-              animPhase === "inserting" && "animate-in fade-in zoom-in-90 duration-300 ease-out",
-              animPhase === "ejecting" && "animate-out fade-out zoom-out-90 duration-300 ease-in fill-mode-forwards",
-              animPhase === "loaded" && "opacity-100 scale-100"
-            )}
+            className="absolute z-10"
             style={{
-              /* Center the cartridge within the slot — sized to look proportional */
               left: '65%',
               top: '80%',
               transform: 'translate(-50%, -50%)',
               width: '171%',
               height: '169%',
             }}
+          >
+          <div
+            key={animPhase === "ejecting" ? displayEntry.id : displayEntry.id + "-active"}
+            className={cn(
+              "w-full h-full flex items-center justify-center transform-gpu will-change-transform",
+              animPhase === "inserting" && "animate-in fade-in zoom-in-90 duration-300 ease-out",
+              animPhase === "ejecting" && "animate-out fade-out zoom-out-90 duration-300 ease-in fill-mode-forwards",
+              animPhase === "loaded" && "opacity-100 scale-100"
+            )}
           >
             <img
               src={SPINE_CDN}
@@ -745,6 +747,7 @@ startTicker(msg, 14000, () => {
                 {displayEntry.id}
               </span>
             </div>
+          </div>
           </div>
         )}
       </div>
