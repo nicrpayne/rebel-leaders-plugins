@@ -1,79 +1,75 @@
-# Project Context & Vision: Rebel Leaders Plugin Suite
+# Rebel OS Plugins: Strategic Context & Handoff Document
 
-**Last Updated:** March 2026
-**Repository:** `nicrpayne/rebel-leaders-plugins`
+This document is designed to give any developer, AI agent, or collaborator an exhaustive understanding of the "Rebel OS Plugins" project. It goes beyond technical implementation (which is covered in `README.md`) to explain the *why*, the aesthetic philosophy, the overarching goals, and the specific quirks of the codebase.
 
----
+## 1. The Big Picture: What Are We Building?
 
-## 1. The Mission: "Hope is an Act of Rebellion"
+This project is a suite of interactive, web-based tools designed for **leadership development and team coaching**. It is not a standard B2B SaaS product. It is designed to feel like an "underground," slightly subversive operating system for leaders who want to cut through corporate bullshit and build real culture.
 
-The **Rebel Leaders Plugin Suite** is not just a set of productivity tools; it is a digital workbench for the resistance. In a corporate world dominated by cynicism, burnout, and "default" leadership, we are building tools that help leaders reclaim their agency, humanity, and vision.
+The core message is: **"Hope is an act of rebellion."** The tools are designed to help leaders diagnose team dysfunction (Gravity Check) and prescribe specific, actionable interventions (The Codex).
 
-**Core Ethos:**
-*   **Tactile & Visceral:** Leadership is messy and physical. Our tools should feel like heavy, industrial machinery (switches, decks, cartridges), not sterile SaaS dashboards.
-*   **Ancient Wisdom x Retro-Future:** We blend the timeless insights of mystics and philosophers with a "Hi-Bit" cyberpunk aesthetic. It's *Blade Runner* meets *The Desert Fathers*.
-*   **Diagnosis -> Action:** We don't just show data; we prescribe "moves." Every diagnostic result leads to a specific, actionable protocol.
+### The "Rebel OS" Concept
+These plugins will eventually live inside a larger "Rebel OS" ecosystem (likely embedded in Webflow or a custom portal). They need to feel cohesive, tactile, and slightly mysterious.
 
----
+## 2. Aesthetic Philosophy: "Hi-Bit / Stained Glass Cyberpunk"
 
-## 2. The Architecture of the Suite
+The visual identity is paramount. We are actively avoiding the clean, flat, rounded-corner aesthetic of modern corporate software.
 
-The suite currently consists of two interconnected modules:
+*   **Skeuomorphism with Modern Lighting:** We use physical metaphors (VU meters, LCD screens, heavy metal chassis, worn journals, data cartridges). However, we render them using modern CSS capabilities—deep shadows, complex radial gradients, blurs, and glows.
+*   **"Stained Glass Cyberpunk":** This means dark, moody environments illuminated by warm, localized light sources. Think of the warm amber glow emanating from *inside* a data cartridge, or the harsh green glow of a CRT monitor against dark metal.
+*   **The 8-Bit / Pixel Art Influence:** There is a strong preference for pixel art elements (e.g., the "Truth Sword," the Nic sprite) mixed with high-resolution textures. This creates a unique "hi-bit" feel, similar to modern indie games like *Octopath Traveler*.
+*   **Tactility:** Interactions should feel heavy and deliberate. Buttons shouldn't just change color; they should feel like they are being pressed into a chassis.
 
-### A. GRAVITAS (The Diagnostic)
-*   **Purpose:** To visualize the invisible forces pulling a team apart.
-*   **Mechanic:** An "Orbital Mechanics" interface where users drag nodes (team members) to represent their distance from the leader and each other across 4 dimensions: *Identity, Relationship, Vision, Conflict*.
-*   **Output:** A "Gravity Score" and a specific "Bottleneck" (e.g., *Identity Drift*).
-*   **The Handoff:** Upon completion, GRAVITAS "transmits" a signal to The Codex, auto-unlocking the recommended protocol.
+## 3. The Core Modules
 
-### B. The Codex (The Solution)
-*   **Purpose:** A repository of "dangerous knowledge"—protocols, scripts, and coaching moves to break the bottleneck.
-*   **Aesthetic:** **The Archivist's Cabinet**. A dark, moody, industrial archive filled with data tapes and worn journals.
-*   **Key Features:**
-    *   **The Cabinet:** A mixed-media grid of vertical spines and horizontal stacks of cartridges.
-    *   **Coaching Pack:** A specialized filter for 1:1 development tools (Agency, Dependency, etc.).
-    *   **Reader Drawer:** A slide-out tactical panel with "Briefing" (Context) and "Run Mode" (Execution).
-    *   **Run Mode:** An interactive checklist that guides the leader through the protocol in real-time.
+### Module A: GRAVITAS (The Diagnostic)
+*   **Concept:** A heavy, retro-industrial piece of hardware used to "calibrate" a team's current state.
+*   **Mechanics:** Users answer 12 questions across four dimensions: Identity, Relationship, Vision, Culture.
+*   **Visuals:** Features a CRT-style LCD screen, a rotary knob, and a VU meter.
+*   **Output:** Generates a "Gravity Score," identifies the primary "Leak" (bottleneck), and suggests a "First Move" (protocol).
 
----
+### Module B: The Codex (The Archive)
+*   **Concept:** An "Archivist's Cabinet" where the actual leadership protocols (the "dangerous knowledge") are stored.
+*   **Mechanics:** A visual grid of data cartridges. Clicking a cartridge loads it into a "Reader Drawer" for execution.
+*   **Visuals:** Highly complex CSS layout. The cartridges are designed to look like physical tapes sitting on wooden shelves.
+*   **The Data:** Driven by `codex-data.ts`, containing scripts, "Use When" scenarios, and step-by-step execution plans.
 
-## 3. Design Philosophy & Aesthetic
+## 4. Technical Quirks & Hard Rules
 
-**"Hi-Bit" / "Stained Glass Cyberpunk"**
-*   **Visuals:** We use 8-bit pixel art but render it with high-end lighting, depth of field, and atmosphere. It's not "Minecraft"; it's "Octopath Traveler."
-*   **Assets:**
-    *   **Cartridges:** Physical data tapes (Black body, Yellow label) representing protocols.
-    *   **Props:** Worn journals, coffee cups, industrial frames, and the "Truth Sword."
-    *   **Lighting:** Warm lamp light amidst cool CRT glow.
-*   **Interaction:** Sounds of mechanical clicks, heavy slides, and CRT hums (future state).
+### The Cartridge Architecture (`CodexShelf.tsx`)
+This is the most complex UI element and has strict rules.
+*   **The Problem:** We needed cartridges to tilt and lift on hover, but CSS `transform: rotate()` changes the element's bounding box, causing the hover state to flicker rapidly if the mouse was near the edge.
+*   **The Solution (The 3-Layer Architecture):**
+    1.  **Layout Shell (`div.group`):** A fixed, non-moving container that handles spacing.
+    2.  **Hitbox (`button`):** `absolute inset-0 z-10`. This is the clickable area. It *never* moves or rotates.
+    3.  **Visual Layer (`div`):** Sits *behind* the hitbox (`z-0` or lower). This receives all the visual transforms (tilt, lift, glow).
+*   **HARD RULE:** **Do not touch the `CartridgeSpine` or `CartridgeFlat` layout architecture without explicit permission.** Spacing adjustments should only be made via the `TOP_SHELF_ARRANGEMENT` constants.
 
----
+### Asset Management (The CDN Strategy)
+*   **The Problem:** High-quality PNGs (like the cabinet frame or the swords) are large. Storing them in the repo slows down Git and breaks static deployment limits.
+*   **The Solution:** All large assets are hosted on a CDN (`files.manuscdn.com`).
+*   **How it works for AI Contexts:** When spinning up a new conversation, you **do not need to re-upload the assets**. The code references the permanent web URLs. The local Vite server will fetch them directly from the CDN.
+*   **Source Assets:** A zip file of the original, uncompressed assets exists for the user's safekeeping, but they are not needed for development.
 
-## 4. Technical Overview
+### Development Preferences
+*   **Modular Design:** Components must be isolated. Changes to the Reader Drawer should not break the Shelf.
+*   **Mobile-First:** The user expects most traffic to be mobile. Always ensure the layout degrades gracefully (e.g., the complex cabinet becomes a simpler list or grid on small screens).
+*   **Preservation:** Never overwrite complex, working code (like the 3-layer cartridge) just to try a new idea. Branch it, comment it out, or ask first.
 
-*   **Stack:** Vite + React + Tailwind CSS (Static Site).
-*   **Deployment:** Designed for Vercel/Netlify.
-*   **Data:**
-    *   `codex-data.ts`: JSON-based database of all protocols.
-    *   `codex-schema.ts`: TypeScript definitions ensuring data integrity.
-*   **Asset Strategy:**
-    *   **Live Site:** Uses optimized CDN URLs for large assets (>1MB) to ensure fast loading.
-    *   **Source Repo:** Contains a `_source_assets/` folder with the high-quality original PNGs for ownership and future editing.
+## 5. Current State & Immediate Roadmap
 
----
+As of this handoff, the core visual architecture for both GRAVITAS and The Codex is in place. The data model is wired up. The complex hover states on the cartridges are fixed.
 
-## 5. The Future Roadmap
+**What needs to be done next:**
 
-**Immediate Next Steps:**
-1.  **Unlockables:** Implement a "Profile" or "Trophy Case" where users can display the **Truth Sword** (asset already generated) after completing a streak of coaching sessions.
-2.  **Shareable Results:** A "Mission Report" card generated at the end of GRAVITAS for social sharing.
-3.  **Timer/Notes in Run Mode:** Add a simple countdown timer and a text area for leaders to jot down observations during a protocol.
+1.  **The Handoff Mechanism:** Currently, GRAVITAS gives a result, but it doesn't *actually* auto-open the corresponding protocol in The Codex. We need to build the state management (likely via URL parameters or a shared context) to make that "Signal Received" transition seamless.
+2.  **Run Mode (The Checklist):** The Reader Drawer currently shows the "Briefing." We need to build out the "Run Mode"—an interactive, step-by-step checklist that the leader uses *during* the conversation.
+3.  **Unlockables / Gamification:** The user wants to integrate the "Truth Sword" pixel art. This needs a home—perhaps a "Trophy Case" or an "Inventory" screen that unlocks after completing a protocol.
+4.  **Final Polish:** Refer to `polish_todo.md` and `final_polish_todo.md` for micro-interactions (VU meter physics, button press states, typography tweaks).
 
-**Long-Term Vision:**
-*   **Multiplayer GRAVITAS:** Real-time collaboration where entire teams drag their own nodes to see the collective view.
-*   **The Residency:** A deeper, cohort-based learning module (placeholder exists in nav).
-*   **Mobile App:** A companion app for "pocket protocols" (though the web app is mobile-first).
+## 6. Tone & Voice Guidelines for Future Content
 
----
-
-**"The resistance starts here."**
+When writing new protocols or UI copy:
+*   **Avoid LLM Tropes:** No excessive em-dashes, no predictable triplet cadences ("innovate, iterate, elevate").
+*   **Tone:** Direct, slightly gritty, hopeful but grounded in reality. Use terms like "Leak," "Friction," "Protocol," "Signal."
+*   **Influences:** Blend practical leadership advice with ancient wisdom (e.g., referencing mystics or philosophy) to create a unique, non-corporate voice.

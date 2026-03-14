@@ -1,136 +1,89 @@
-# Rebel Leaders Plugins: Gravity Check & The Codex
+# Rebel OS Plugins: GRAVITAS & The Codex
 
-**Version:** 1.1.0 (Coaching Pack & Collector's Assets)
-**Project:** Rebel OS Plugin Suite
+Welcome to the Rebel OS Plugins repository. This project contains the front-end code and logic for two core interactive experiences designed for Rebel Leaders: **GRAVITAS** (a diagnostic tool) and **The Codex** (a repository of leadership protocols).
 
----
+This repository is built using a modern, static web stack designed to be embedded within a larger platform (like Webflow or a custom portal).
 
-## 1. Overview
+## 🚀 The Experience Flow
 
-This repository contains the source code, assets, and design documentation for the **Rebel Leaders Plugin Suite**, a set of interactive tools for leadership development. The suite currently includes two core modules:
+The user journey is designed as a continuous loop of diagnosis and prescription:
 
-1.  **Gravity Check:** An interactive diagnostic tool that assesses team health across four dimensions: *Identity, Relationship, Vision, and Conflict*. It uses a visual "orbital mechanics" interface to engage users in a tactile assessment.
-2.  **The Codex:** A digital archive of leadership protocols, "moves," and coaching scripts. It features a retro-futuristic "Archivist's Cabinet" aesthetic and includes a "Run Mode" for guiding users through real-time execution of these protocols.
+1.  **The Hub (Home):** The user starts at the "Workbench" (`/`), where they see available plugins. GRAVITAS is the entry point.
+2.  **GRAVITAS (`/gravity-check`):** A 12-question diagnostic tool disguised as a piece of retro-industrial hardware.
+    *   It measures four key forces: **Identity, Relationship, Vision, Culture**.
+    *   It calculates a "Gravity Score" and identifies the leader's primary "Leak" (bottleneck) and "Force" (strength).
+3.  **The Results (`/results`):** A diagnostic readout that categorizes the leader into an archetype (e.g., "Atmospheric Entry", "Low Earth Orbit") and recommends a specific "First Move".
+4.  **The Handoff:** The results page directs the user to **The Codex**, specifically unlocking the protocol recommended by GRAVITAS.
+5.  **The Codex (`/codex`):** An "Archivist's Cabinet" containing physical-looking data cartridges.
+    *   Users browse protocols by category (Identity, Relationship, Vision, Culture).
+    *   Clicking a cartridge loads it into the "Reader Drawer".
+    *   The Reader Drawer provides the tactical briefing, the exact script to use, and a step-by-step protocol.
 
-The project is built as a **static React application** (Vite + React + Tailwind CSS) designed for easy deployment and fast performance.
+## 🛠 Technical Architecture
 
----
+*   **Framework:** React 18 with TypeScript.
+*   **Build Tool:** Vite (fast HMR, optimized static builds).
+*   **Styling:** Tailwind CSS (utility-first, highly customized for the "Hi-Bit / Stained Glass Cyberpunk" aesthetic).
+*   **Routing:** `wouter` (lightweight, hook-based routing).
+*   **UI Components:** Radix UI primitives (headless, accessible) wrapped with custom Tailwind styling (shadcn/ui inspired).
+*   **Data Model:** Static JSON-like objects defined in `client/src/lib/codex-data.ts` and strongly typed via `client/src/lib/codex-schema.ts`.
 
-## 2. Key Features
+### Key Directories
 
-### Gravity Check (Diagnostic)
-*   **Visual Interface:** Interactive orbital map where users drag "planets" (team members) to represent distance and alignment.
-*   **Scoring Engine:** Calculates a "Gravity Score" based on user input, identifying the primary bottleneck (e.g., "Low Psychological Safety").
-*   **Recommendation Logic:** Automatically suggests specific Codex protocols based on the lowest-scoring dimension.
+*   `/client/src/pages/`: Top-level route components (`Home.tsx`, `GravityCheck.tsx`, `Results.tsx`, `Codex.tsx`).
+*   `/client/src/components/`: The core UI building blocks.
+    *   `CodexShelf.tsx`: The complex 3-layer architecture for the interactive cartridges.
+    *   `GravitasShell.tsx` & `CodexShell.tsx`: The main visual wrappers providing the hardware/cabinet aesthetic.
+    *   `ReaderDrawer.tsx`: The slide-out panel for reading protocols.
+*   `/client/src/lib/`: Business logic, data, and schemas.
+    *   `questions.ts`: The GRAVITAS question bank.
+    *   `scoring.ts`: The algorithm that calculates the Gravity Score and archetypes.
+    *   `codex-data.ts`: The actual content of the protocols.
 
-### The Codex (Knowledge Base)
-*   **Archivist's Cabinet UI:** A highly stylized, immersive interface resembling a physical cabinet of data tapes and journals.
-*   **Coaching Pack Integration:** Includes 24+ protocols, with a dedicated **"COACHING"** filter for leadership development tools.
-*   **Reader Drawer:** A tactical "slide-out" panel for reading protocols, featuring:
-    *   **Briefing Mode:** Mission objective, "Use When," and "Avoid" guidance.
-    *   **Script Mode:** Verbatim scripts for difficult conversations.
-    *   **Coaching Sequence (Run Mode):** An interactive checklist to guide leaders through a protocol step-by-step.
-*   **Search & Filter:** Real-time filtering by category (Conflict, Vision, Alignment, Culture, Coaching) and keyword search.
+## 🎨 Design Philosophy: "Hi-Bit / Stained Glass Cyberpunk"
 
----
+The visual language is crucial to the experience. It is not standard corporate SaaS.
 
-## 3. User Journey & Testing Path
+*   **Skeuomorphism with a Twist:** We use physical metaphors (VU meters, LCD screens, data cartridges, worn journals) but render them with modern lighting, glows, and depth.
+*   **Lighting:** Heavy use of radial gradients, box shadows, and blurs to simulate internal light sources (e.g., the warm amber glow emanating from inside a hovered cartridge, the green CRT scanlines on the GRAVITAS screen).
+*   **Typography:** A mix of clean sans-serifs for UI, monospace for data/terminals, and serif for physical labels.
 
-To fully experience the application as a user would, follow this path:
+### The Cartridge Architecture (`CodexShelf.tsx`)
 
-### Phase 1: The Diagnostic (Gravity Check)
-1.  **Start:** Navigate to the home page (`/`).
-2.  **Initiate:** Click **"INITIATE GRAVITY CHECK"**.
-3.  **Input:** Drag the orbital nodes to represent your team's current state across the 4 dimensions.
-4.  **Result:** View your **Gravity Score** and the identified **Bottleneck** (e.g., "Identity Drift").
-5.  **Transition:** Click **"ACCESS PROTOCOLS"** to move to the Codex. *Note: The system will simulate a "signal transmission" and auto-load a recommended protocol.*
+The data cartridges on the shelf use a specific 3-layer DOM structure to handle complex hover and tilt states without breaking interactivity:
 
-### Phase 2: The Archive (The Codex)
-1.  **Arrival:** You enter the **Codex**. If coming from Gravity Check, a "SIGNAL RECEIVED" overlay will appear, and the recommended protocol will auto-open.
-2.  **Browse:** Close the drawer to see the **Archivist's Cabinet**.
-    *   Hover over cartridges to see their labels.
-    *   Use the **"COACHING"** tab in the top bar to filter for coaching-specific tools.
-3.  **Select:** Click on a protocol (e.g., *"3 Coaching Questions"* or *"Truth Weather"*).
-4.  **Read:** The **Reader Drawer** opens. Review the **Briefing** (Objective, Use When).
-5.  **Execute:** Click **"INITIATE COACHING SEQUENCE"** (or "RUN MODE").
-    *   Follow the interactive checklist.
-    *   Click items to mark them as complete.
-    *   Finish the sequence to see the completion message.
+1.  **Layout Shell (`div.group`):** A fixed-size container that handles the grid layout and spacing. It has `pointer-events-none` (except for its children).
+2.  **Hitbox (`button`):** An absolutely positioned button that fills the shell (`inset-0`). This ensures the clickable area never moves or shrinks, even when the visual element tilts.
+3.  **Visual Layer (`div`):** Sits inside the button. It receives all CSS transforms (tilt, offset) and hover effects (lift, inner-lamp glow).
 
----
+## 🖼 Asset Management & CDNs
 
-## 4. Project Structure
+To keep the repository lightweight and load times fast, large image assets are hosted on a CDN.
 
-```
-/client
-  /public           # Static assets (favicons, robots.txt)
-  /src
-    /components     # React components
-      Codex.tsx     # Main Codex page logic
-      CodexGrid.tsx # The "Cabinet" layout grid
-      ReaderDrawer.tsx # The slide-out reading panel
-      ...
-    /lib
-      codex-data.ts # The database of all protocols (JSON format)
-      codex-schema.ts # TypeScript definitions for data
-    /pages          # Route pages (Home, Codex, etc.)
-    /assets         # Local images (if any)
-    index.css       # Global styles & Tailwind directives
-/_source_assets     # High-quality source files (excluded from build)
-/server             # (Placeholder for future backend)
-/shared             # Shared types/constants
-```
+**How Assets Work for Future Contexts:**
 
----
+You **do not** need to re-upload the image assets when starting a new conversation. The code references them via direct, permanent URLs (e.g., `https://files.manuscdn.com/...`).
 
-## 5. Development & Deployment
+*   **Live Assets:** The URLs are hardcoded in the relevant components (e.g., `SPINE_CDN` in `CodexShelf.tsx`). As long as the code remains, the new context will fetch the images directly from the web when it runs the dev server.
+*   **Source Assets:** For your own editing and safekeeping, you should download the original, uncompressed PNGs. (A zip file of these will be provided to your Google Drive).
 
-### Prerequisites
-*   Node.js (v18+)
-*   pnpm (recommended) or npm
+## 💻 Developer Commands
 
-### Installation
-```bash
-pnpm install
-```
+*   `npm run dev` or `pnpm dev`: Start the Vite development server (usually on port 3000 or 3004).
+*   `npm run build` or `pnpm build`: Create a production-ready static build in the `dist/public` folder.
+*   `npm run preview` or `pnpm preview`: Serve the production build locally to test it.
 
-### Local Development
-```bash
-pnpm dev
-```
-Access the app at `http://localhost:5173`.
+## 📝 Current Status & Next Steps
 
-### Building for Production
-```bash
-pnpm build
-```
-This generates a static `dist/` folder ready for deployment to Vercel, Netlify, or any static host.
+The core architecture, visual language, and data flow are established.
 
----
+**Recently Completed:**
+*   Full data model implementation for Codex entries.
+*   Complex 3-layer cartridge hover architecture (fixing hitbox issues).
+*   "Inner-lamp" amber glow effect on cartridges.
 
-## 6. Asset Management
-
-### Live Assets (CDN)
-To ensure fast load times and successful deployment on static hosts (which often have file size limits), the live application uses **optimized CDN URLs** for large assets like the cabinet frame, journals, and swords.
-
-### Source Assets (Local)
-The high-quality, original source files (>1MB) are stored in the `_source_assets/` directory in this repository. These files are **excluded from the build** but are preserved here for your ownership and future use.
-
-**Included Source Assets:**
-*   `cabinet_frame.png` (The heavy industrial border)
-*   `worn_journals.png` (The stack of research notes)
-*   `truth_sword_collector.png` (The "Collector's Edition" prop)
-*   `truth_sword_battle_worn.png` (The "Battle-Worn" variant)
-*   `truth_sword_desk_relic.png` (The "Desk Relic" variant)
-*   `truth_sword_wall_mount.png` (The "Wall Mount" variant)
-*   `truth_sword_tech_artifact.png` (The "Tech Artifact" variant)
-
-**How to Use Source Assets:**
-If you wish to self-host or modify these assets:
-1.  Copy the desired file from `_source_assets/` to `client/public/assets/`.
-2.  Update the code references in `client/src/components/` to point to the local path (e.g., `/assets/truth_sword_collector.png`) instead of the CDN URL.
-
----
-
-**Rebel Leaders Plugin Suite**
-*Tools for the Resistance.*
+**Pending / Roadmap (see `todo.md` and `polish_todo.md`):**
+*   **GRAVITAS to Codex Handoff:** The mechanism that takes the specific "Leak" identified in GRAVITAS and auto-opens the corresponding protocol in the Codex.
+*   **Unlockables:** Implementing a visual "Trophy Case" or inventory system (e.g., earning the Truth Sword).
+*   **Run Mode:** Building out the interactive checklist UI inside the Reader Drawer.
+*   **Final Visual Polish:** Adjusting VU meter physics, refining CRT text glow, adding press states to buttons.
