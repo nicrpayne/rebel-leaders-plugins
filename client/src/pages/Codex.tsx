@@ -28,6 +28,7 @@ export default function Codex() {
   const [gravitasScores, setGravitasScores] = useState<GravitasScores | null>(null);
   const [isReceivingSignal, setIsReceivingSignal] = useState(false);
   const [bottleneckCategory, setBottleneckCategory] = useState<string | null>(null);
+  const [firstMove, setFirstMove] = useState<string | null>(null);
 
   // Load recent entries from localStorage
   useEffect(() => {
@@ -51,10 +52,12 @@ export default function Codex() {
     const params = new URLSearchParams(window.location.search);
     const signal = params.get("signal");
     const bottleneck = params.get("bottleneck");
+    const firstMoveParam = params.get("firstMove");
 
     if (signal === "received") {
       setIsReceivingSignal(true);
       setBottleneckCategory(bottleneck);
+      if (firstMoveParam) setFirstMove(decodeURIComponent(firstMoveParam));
       import("@/lib/CodexAudio").then(({ codexAudio }) => {
         codexAudio.playLoad();
       });
@@ -175,6 +178,7 @@ export default function Codex() {
           gravitasScores={gravitasScores}
           isReceivingSignal={isReceivingSignal}
           bottleneckCategory={bottleneckCategory}
+          firstMove={firstMove}
         />
 
         {/* ── SHELVES (directly below cabinet, no gap) ── */}

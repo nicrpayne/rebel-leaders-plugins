@@ -87,6 +87,7 @@ interface CabinetDeckProps {
   gravitasScores: GravitasScores | null;
   isReceivingSignal: boolean;
   bottleneckCategory: string | null;
+  firstMove: string | null;
 }
 
 /* ── Ticker Tape Sub-component ──
@@ -378,6 +379,7 @@ export default function CabinetDeck({
   gravitasScores,
   isReceivingSignal,
   bottleneckCategory,
+  firstMove,
 }: CabinetDeckProps) {
   // Cartridge animation phases
   const [animPhase, setAnimPhase] = useState<"idle" | "inserting" | "loaded" | "ejecting">("idle");
@@ -560,11 +562,13 @@ startTicker(msg, 14000, () => {
   /* ── Build pager screen messages based on deck phase (static mode) ── */
   const getPagerMessages = useCallback(() => {
     if (isReceivingSignal) {
+      // Trim firstMove for pager display (e.g., "THE HORIZON CAST" → "HORIZON CAST")
+      const fmDisplay = firstMove?.replace(/^THE\s+/i, "").substring(0, 14).toUpperCase() || "";
       return [
         { line1: "INCOMING", line2: "SIGNAL!" },
         { line1: bottleneckCategory?.toUpperCase() || "SCAN", line2: "DETECTED" },
-        { line1: "LOADING", line2: "PROTOCOL..." },
-        { line1: "STAND", line2: "BY..." },
+        { line1: fmDisplay ? "FIRST MOVE:" : "LOADING", line2: fmDisplay || "PROTOCOL..." },
+        { line1: "PROTOCOL", line2: "READY" },
       ];
     }
 
@@ -592,6 +596,16 @@ startTicker(msg, 14000, () => {
         const diff = loadedEntry.difficulty || 0;
         const diffLabel = diff <= 2 ? "LOW" : diff <= 3 ? "MEDIUM" : "HIGH";
         const context = loadedEntry.context_tags?.[0]?.toUpperCase().replace(/_/g, " ") || "GENERAL";
+        // If Gravitas-routed, show bottleneck + firstMove context in scan results
+        if (firstMove && bottleneckCategory) {
+          const fmScan = firstMove.replace(/^THE\s+/i, "").substring(0, 14).toUpperCase();
+          return [
+            { line1: "BOTTLENECK:", line2: bottleneckCategory.toUpperCase() },
+            { line1: "FIRST MOVE:", line2: fmScan },
+            { line1: "MATCH:", line2: "HIGH" },
+            { line1: "READY", line2: "TO READ" },
+          ];
+        }
         return [
           { line1: "CATEGORY", line2: cat },
           { line1: "INTENSITY", line2: `${diff} ${diffLabel}` },
@@ -612,7 +626,7 @@ startTicker(msg, 14000, () => {
         return IDLE_MESSAGES;
       }
     }
-  }, [isReceivingSignal, loadedEntry, gravitasScores, bottleneckCategory, deckPhase, scanStep]);
+  }, [isReceivingSignal, loadedEntry, gravitasScores, bottleneckCategory, firstMove, deckPhase, scanStep]);
 
   const pagerMessages = getPagerMessages();
   const isActive = deckPhase !== "idle" || !!gravitasScores || isReceivingSignal;
@@ -898,6 +912,11 @@ startTicker(msg, 14000, () => {
           <div className="text-xl sm:text-2xl md:text-4xl mb-6 animate-pulse tracking-[0.2em] text-center px-4 text-amber-500">
             SIGNAL RECEIVED: {bottleneckCategory?.toUpperCase() || "UNKNOWN"}
           </div>
+          {firstMove && (
+            <div className="text-xs sm:text-sm md:text-base mb-2 text-amber-500/60 tracking-widest">
+              FIRST MOVE: {firstMove.toUpperCase()}
+            </div>
+          )}
           <div className="text-xs sm:text-sm md:text-base mb-4 text-amber-500/80 tracking-widest">
             AUTO-LOADING PROTOCOL...
           </div>

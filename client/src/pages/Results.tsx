@@ -137,7 +137,8 @@ export default function Results() {
         scores.sort((a, b) => a.val - b.val);
         bottleneck = scores[0].id;
       }
-      setLocation(`/codex?signal=received&bottleneck=${bottleneck}`);
+      const firstMove = results?.firstMove ? encodeURIComponent(results.firstMove) : "";
+      setLocation(`/codex?signal=received&bottleneck=${bottleneck}&firstMove=${firstMove}`);
     }, 1500);
   };
 
