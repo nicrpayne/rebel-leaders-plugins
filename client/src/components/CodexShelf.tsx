@@ -190,7 +190,7 @@ function CartridgeSpine({
 
   return (
     <div
-      className="relative flex-shrink-0"
+      className="relative flex-shrink-0 group"
       style={{
         width: `${SPINE_WIDTH}px`,
         height: `${SPINE_HEIGHT}px`,
@@ -228,6 +228,18 @@ function CartridgeSpine({
               !isLoaded && "group-hover:-translate-y-2"
             )}
           >
+            {/* Amber/gold glow overlay — fades in on hover, sits above image, below text */}
+            <div
+              className={cn(
+                "absolute inset-0 rounded-[3px] pointer-events-none z-[5]",
+                "transition-opacity duration-[400ms] ease-out",
+                !isLoaded ? "opacity-0 [button:hover_&]:opacity-100" : "opacity-0"
+              )}
+              style={{
+                background: "radial-gradient(ellipse 80% 90% at 50% 60%, rgba(210,148,40,0.22) 0%, rgba(190,120,20,0.10) 50%, transparent 80%)",
+                boxShadow: "0 0 18px 4px rgba(200,138,30,0.18), inset 0 0 12px 2px rgba(220,160,40,0.10)",
+              }}
+            />
             {/* Inner image container: horizontal image rotated 90° to stand upright */}
             <div
               className="absolute top-1/2 left-1/2 overflow-hidden rounded-[3px]"
