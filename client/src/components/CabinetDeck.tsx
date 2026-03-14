@@ -476,15 +476,15 @@ startTicker(msg, 14000, () => {
       setAnimPhase("inserting");
       setScanStep(0);
 
-      // Ticker on load
+      // Set deck phase immediately so SCAN button is available right away
+      setDeckPhase("loaded");
+
+      // Ticker on load (purely visual — does not gate button availability)
       const title = loadedEntry.title?.toUpperCase() || "UNKNOWN";
       const cat = loadedEntry.flywheel_node?.[0]?.toUpperCase() || "CODEX";
       startTicker(
         `>>> CARTRIDGE LOADED: ${title} ... ${cat} CLASS ... AWAITING SCAN ... PRESS SCAN TO ANALYZE >>>`,
-        12000,
-        () => {
-          setDeckPhase("loaded");
-        }
+        12000
       );
 
       const timer = setTimeout(() => setAnimPhase("loaded"), 400);
@@ -533,13 +533,14 @@ startTicker(msg, 14000, () => {
         const diffLabel = diff <= 2 ? "LOW" : diff <= 3 ? "MEDIUM" : "HIGH";
         const context = loadedEntry.context_tags?.[0]?.toUpperCase().replace(/_/g, " ") || "GENERAL";
 
+        // Set deck phase immediately so READ button is available right away
+        setDeckPhase("scanned");
+        setScanStep(0);
+
+        // Ticker on scan complete (purely visual — does not gate button availability)
         startTicker(
           `>>> SCAN COMPLETE ... ${cat} ... ${node} ... INTENSITY ${diff} ${diffLabel} ... ${context} ... PROTOCOL READY ... PRESS READ >>>`,
-          14000,
-          () => {
-            setDeckPhase("scanned");
-            setScanStep(0);
-          }
+          14000
         );
       }
     };
@@ -789,7 +790,21 @@ startTicker(msg, 14000, () => {
           padding: 0,
         }}
         title="READ PROTOCOL"
-      />
+      >
+        <img
+          src="/labels/label_read.png"
+          alt="READ"
+          className="absolute pointer-events-none select-none"
+          style={{
+            top: '62%',
+            left: '0%',
+            width: '140%',
+            height: 'auto',
+            transform: 'rotate(-2.1deg)',
+            filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.4))',
+          }}
+        />
+      </button>
       {/* SCAN */}
       <button
         onClick={handleScan}
@@ -809,7 +824,21 @@ startTicker(msg, 14000, () => {
           padding: 0,
         }}
         title="SCAN CARTRIDGE"
-      />
+      >
+        <img
+          src="/labels/label_scan.png"
+          alt="SCAN"
+          className="absolute pointer-events-none select-none"
+          style={{
+            top: '62%',
+            left: '0%',
+            width: '140%',
+            height: 'auto',
+            transform: 'rotate(1.4deg)',
+            filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.4))',
+          }}
+        />
+      </button>
       {/* EJECT */}
       <button
         onClick={() => { if (canEject) onEject(); }}
@@ -829,7 +858,21 @@ startTicker(msg, 14000, () => {
           padding: 0,
         }}
         title="EJECT CARTRIDGE"
-      />
+      >
+        <img
+          src="/labels/label_eject.png"
+          alt="EJECT"
+          className="absolute pointer-events-none select-none"
+          style={{
+            top: '62%',
+            left: '8%',
+            width: '140%',
+            height: 'auto',
+            transform: 'rotate(-0.6deg)',
+            filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.4))',
+          }}
+        />
+      </button>
 
       {/* ── STATUS GLOW (when cartridge loaded) ── */}
       <div
