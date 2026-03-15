@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { CodexEntry } from "@/lib/codex-schema";
 import { CODEX_ENTRIES } from "@/lib/codex-data";
+import { getBestCartridge, type GravitasSignal } from "@/lib/codex-ranking";
 import CabinetDeck from "@/components/CabinetDeck";
 import ReaderDrawer from "@/components/ReaderDrawer";
 import CodexShelf from "@/components/CodexShelf";
@@ -63,15 +64,47 @@ export default function Codex() {
       });
 
       if (bottleneck) {
-        let targetId = "";
-        switch (bottleneck) {
-          case "IDENTITY": targetId = "MOVE_NAME_THE_COST"; break;
-          case "RELATIONSHIP": targetId = "MOVE_REPAIR_48H"; break;
-          case "VISION": targetId = "MOVE_STOP_LIST"; break;
-          case "CULTURE": targetId = "MOVE_MEETING_REWRITE"; break;
-          default: targetId = "MOVE_REPAIR_48H";
+        // Build a GravitasSignal from stored results + URL params
+        const savedResults = localStorage.getItem("gravityCheckResults");
+        let gravitasSignal: GravitasSignal | null = null;
+        if (savedResults) {
+          try {
+            const r = JSON.parse(savedResults);
+            gravitasSignal = {
+              identity: r.identity ?? 3,
+              relationship: r.relationship ?? 3,
+              vision: r.vision ?? 3,
+              culture: r.culture ?? 3,
+              leak: bottleneck,
+              force: r.force ?? "",
+              firstMove: firstMoveParam ? decodeURIComponent(firstMoveParam) : (r.firstMove ?? ""),
+              total: r.total ?? 12,
+            };
+          } catch {}
         }
-        const targetEntry = CODEX_ENTRIES.find((e) => e.id === targetId) || CODEX_ENTRIES[0];
+
+        // Use ranking function if we have a full signal, otherwise fall back
+        let targetEntry: CodexEntry;
+        if (gravitasSignal) {
+          const best = getBestCartridge(CODEX_ENTRIES, gravitasSignal);
+          targetEntry = best ? best.entry : CODEX_ENTRIES[0];
+          // Log rationale for debugging/tuning
+          if (best) {
+            console.log("[Codex Ranking] Top cartridge:", best.entry.title, "Score:", best.score);
+            console.log("[Codex Ranking] Rationale:", best.rationale);
+          }
+        } else {
+          // Fallback: simple bottleneck mapping if no stored results
+          let targetId = "";
+          switch (bottleneck) {
+            case "IDENTITY": targetId = "MOVE_NAME_THE_COST"; break;
+            case "RELATIONSHIP": targetId = "MOVE_REPAIR_48H"; break;
+            case "VISION": targetId = "MOVE_STOP_LIST"; break;
+            case "CULTURE": targetId = "MOVE_MEETING_REWRITE"; break;
+            default: targetId = "MOVE_REPAIR_48H";
+          }
+          targetEntry = CODEX_ENTRIES.find((e) => e.id === targetId) || CODEX_ENTRIES[0];
+        }
         setTimeout(() => {
           handleLoad(targetEntry);
           setIsReceivingSignal(false);
