@@ -807,14 +807,15 @@ startTicker(msg, 14000, () => {
               style={{ left: '18%', width: '62%', height: '100%', marginTop: '-1%' }}
             >
               <h3
-                className="uppercase leading-tight px-3"
+                className="uppercase leading-tight px-2 line-clamp-3"
                 style={{
                   fontFamily: "'Courier New', 'Courier', monospace",
-                  fontSize: 'clamp(11px, 1.6vw, 18px)',
+                  fontSize: 'clamp(9px, 1.25vw, 14px)',
                   fontWeight: 900,
                   color: '#1a120a',
-                  letterSpacing: '0.12em',
+                  letterSpacing: '0.08em',
                   textShadow: '0 0 2px rgba(230,220,195,0.8), 0 1px 0 rgba(255,255,255,0.4)',
+                  wordBreak: 'break-word',
                 }}
               >
                 {displayEntry.title}

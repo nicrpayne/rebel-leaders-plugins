@@ -92,14 +92,14 @@ interface CartridgeArrangement {
    ───────────────────────────────────────────── */
 const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   // === IDENTITY SECTION ===
-  MOVE_NAME_THE_COST:            { tilt: 0,    offsetY: 4,  offsetX: 0 },
-  MOVE_CLARITY_CONTRACT:         { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: -6 },
-  MOVE_FEEDFORWARD:              { tilt: 0.3,  offsetY: 4,  offsetX: 0, gapBefore: -8 },
-  MOVE_BOUNDARY_NO_WITH_YES:     { tilt: -13,  offsetY: -2, offsetX: 0, gapBefore: -18 },
+  MOVE_NAME_THE_COST:            { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: -35 },
+  MOVE_CLARITY_CONTRACT:         { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: -105 },
+  MOVE_FEEDFORWARD:              { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: -100 },
+  MOVE_BOUNDARY_NO_WITH_YES:     { tilt: -13,  offsetY: -2, offsetX: 0, gapBefore: -55 },
 
   // === RELATIONSHIP SECTION ===
   // gapBefore: 16 creates a visible section break
-  MOVE_REPAIR_48H:               { tilt: 0.2,  offsetY: 0,  offsetX: 0, gapBefore: 16 },
+  MOVE_REPAIR_48H:               { tilt: 0.2,  offsetY: 0,  offsetX: 0, gapBefore: -110 },
   MOVE_MINORITY_REPORT:          { tilt: 0,    offsetY: 0,  offsetX: 0, gapBefore: -8 },
   MOVE_FRIDGE_RIGHTS_AUDIT:      { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: -8 },
   MOVE_THE_MIRROR:               { tilt: 18,   offsetY: -1, offsetX: 0, gapBefore: -22 },
@@ -168,6 +168,7 @@ interface SpineProps {
   offsetX?: number;
   gapBefore?: number;
   useCenter?: boolean;
+  zIndex?: number;
 }
 
 function CartridgeSpine({
@@ -179,6 +180,7 @@ function CartridgeSpine({
   offsetX = 0,
   gapBefore,
   useCenter = false,
+  zIndex,
 }: SpineProps) {
   const marginLeft = gapBefore !== undefined
     ? `${gapBefore}px`
@@ -190,113 +192,117 @@ function CartridgeSpine({
 
   return (
     <div
-      className="relative flex-shrink-0 group"
+      className="relative flex-shrink-0 group/spine pointer-events-none"
       style={{
         width: `${SPINE_WIDTH}px`,
         height: `${SPINE_HEIGHT}px`,
         marginLeft,
       }}
     >
-      {/* ── LAYER 2: Button hitbox — fills the shell exactly, never transforms ── */}
+      {/* ── LAYER 2: Invisible button hitbox — narrow, no children, pointer-events-auto ── */}
       <button
         onClick={onClick}
         disabled={isLoaded}
         title={entry.title}
         className={cn(
-          "absolute inset-0 cursor-pointer",
+          "absolute top-0 bottom-0 cursor-pointer pointer-events-auto z-10",
           isLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
         )}
+        style={{
+          left: '35px',
+          right: '18px',
+        }}
+      />
+
+      {/* ── LAYER 3: Visual — purely decorative, pointer-events-none, reacts via group-hover ── */}
+      <div
+        className={cn(
+          "absolute inset-0 pointer-events-none transition-all duration-300 ease-out",
+          !isLoaded && "group-hover/spine:brightness-125",
+        )}
+        style={{
+          transform: isLoaded
+            ? undefined
+            : `translateY(${offsetY}px) translateX(${offsetX}px) rotate(${tilt}deg)`,
+          transformOrigin,
+          transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        }}
       >
-        {/* ── LAYER 3: Visual — gets all transforms, hover, tilt, offsetX/Y ── */}
+        {/* Hover lift — wraps the image so lift doesn't fight with tilt origin */}
         <div
           className={cn(
-            "absolute inset-0 transition-all duration-300 ease-out",
-            !isLoaded && "group-hover:brightness-125",
+            "absolute inset-0 transition-transform duration-300 ease-out",
+            !isLoaded && "group-hover/spine:-translate-y-2"
           )}
-          style={{
-            transform: isLoaded
-              ? undefined
-              : `translateY(${offsetY}px) translateX(${offsetX}px) rotate(${tilt}deg)`,
-            transformOrigin,
-            transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-          }}
         >
-          {/* Hover lift — wraps the image so lift doesn't fight with tilt origin */}
+          {/* Inner-lamp glow — sits behind the image, blurs outward like internal warmth */}
           <div
             className={cn(
-              "absolute inset-0 transition-transform duration-300 ease-out",
-              !isLoaded && "group-hover:-translate-y-2"
+              "absolute inset-0 pointer-events-none transition-opacity duration-500",
+              !isLoaded ? "opacity-0 group-hover/spine:opacity-100" : "opacity-0"
             )}
+            style={{
+              background: 'radial-gradient(ellipse 60% 80% at 50% 60%, rgba(210,160,40,0.6) 0%, rgba(180,130,30,0.2) 45%, transparent 75%)',
+              filter: 'blur(8px)',
+              zIndex: 0,
+            }}
+          />
+          {/* Inner image container: horizontal image rotated 90° to stand upright */}
+          <div
+            className="absolute top-1/2 left-1/2 overflow-hidden rounded-[3px]"
+            style={{
+              zIndex: 1,
+              width: `${_CTR_W}px`,
+              height: `${_CTR_H}px`,
+              transform: "translate(-50%, -50%) rotate(90deg)",
+            }}
           >
-            {/* Inner-lamp glow — sits behind the image, blurs outward like internal warmth */}
-            <div
-              className={cn(
-                "absolute inset-0 pointer-events-none transition-opacity duration-500",
-                !isLoaded ? "opacity-0 [button:hover_&]:opacity-100" : "opacity-0"
-              )}
-              style={{
-                background: 'radial-gradient(ellipse 60% 80% at 50% 60%, rgba(210,160,40,0.6) 0%, rgba(180,130,30,0.2) 45%, transparent 75%)',
-                filter: 'blur(8px)',
-                zIndex: 0,
-              }}
+            <img
+              src={SPINE_CDN}
+              alt={entry.title}
+              className="absolute inset-0 w-full h-full object-fill drop-shadow-[2px_4px_8px_rgba(0,0,0,0.7)]"
+              draggable={false}
             />
-            {/* Inner image container: horizontal image rotated 90° to stand upright */}
+            {/* Text label on the parchment area */}
             <div
-              className="absolute top-1/2 left-1/2 overflow-hidden rounded-[3px]"
+              className="absolute flex flex-col items-center justify-center text-center z-10 pointer-events-none"
               style={{
-                zIndex: 1,
-                width: `${_CTR_W}px`,
-                height: `${_CTR_H}px`,
-                transform: "translate(-50%, -50%) rotate(90deg)",
+                top: "10%",
+                height: "80%",
+                left: "10%",
+                width: "58%",
               }}
             >
-              <img
-                src={SPINE_CDN}
-                alt={entry.title}
-                className="absolute inset-0 w-full h-full object-fill drop-shadow-[2px_4px_8px_rgba(0,0,0,0.7)]"
-                draggable={false}
-              />
-              {/* Text label on the parchment area */}
-              <div
-                className="absolute flex flex-col items-center justify-center text-center z-10 pointer-events-none"
+              <span
+                className="uppercase leading-tight px-1 line-clamp-2"
                 style={{
-                  top: "10%",
-                  height: "80%",
-                  left: "10%",
-                  width: "58%",
+                  fontFamily: "'Courier New', 'Courier', monospace",
+                  fontSize: "9px",
+                  fontWeight: 900,
+                  color: "#1a120a",
+                  letterSpacing: "0.1em",
+                  textShadow: "0 0 2px rgba(230,220,195,0.8)",
                 }}
               >
-                <span
-                  className="uppercase leading-tight px-1 line-clamp-2"
-                  style={{
-                    fontFamily: "'Courier New', 'Courier', monospace",
-                    fontSize: "9px",
-                    fontWeight: 900,
-                    color: "#1a120a",
-                    letterSpacing: "0.1em",
-                    textShadow: "0 0 2px rgba(230,220,195,0.8)",
-                  }}
-                >
-                  {entry.title}
-                </span>
-                <span
-                  style={{
-                    fontFamily: "'Courier New', 'Courier', monospace",
-                    fontSize: "5px",
-                    fontWeight: 700,
-                    color: "rgba(42,29,16,0.7)",
-                    letterSpacing: "0.08em",
-                    textShadow: "0 0 2px rgba(230,220,195,0.8)",
-                    marginTop: "2px",
-                  }}
-                >
-                  {entry.id}
-                </span>
-              </div>
+                {entry.title}
+              </span>
+              <span
+                style={{
+                  fontFamily: "'Courier New', 'Courier', monospace",
+                  fontSize: "5px",
+                  fontWeight: 700,
+                  color: "rgba(42,29,16,0.7)",
+                  letterSpacing: "0.08em",
+                  textShadow: "0 0 2px rgba(230,220,195,0.8)",
+                  marginTop: "2px",
+                }}
+              >
+                {entry.id}
+              </span>
             </div>
           </div>
         </div>
-      </button>
+      </div>
     </div>
   );
 }
@@ -641,7 +647,7 @@ export default function CodexShelf({
               if (sectionEntries.length === 0) return null;
               return (
                 <div key={section.key} className="flex items-end gap-0">
-                  {sectionEntries.map((entry) => {
+                  {sectionEntries.map((entry, idx) => {
                     const a = TOP_SHELF_ARRANGEMENT[entry.id] || { tilt: 0, offsetY: 0, offsetX: 0 };
                     return (
                       <CartridgeSpine
@@ -654,6 +660,7 @@ export default function CodexShelf({
                         offsetX={a.offsetX}
                         gapBefore={a.gapBefore}
                         useCenter={a.useCenter}
+                        zIndex={sectionEntries.length - idx}
                       />
                     );
                   })}
@@ -675,7 +682,7 @@ export default function CodexShelf({
               if (sectionEntries.length === 0) return null;
               return (
                 <div key={section.key} className="flex items-end gap-0">
-                  {sectionEntries.map((entry) => {
+                  {sectionEntries.map((entry, idx) => {
                     const a = BOTTOM_SHELF_ARRANGEMENT[entry.id] || { tilt: 0, offsetY: 0, offsetX: 0 };
                     return (
                       <CartridgeSpine
@@ -688,6 +695,7 @@ export default function CodexShelf({
                         offsetX={a.offsetX}
                         gapBefore={a.gapBefore}
                         useCenter={a.useCenter}
+                        zIndex={sectionEntries.length - idx}
                       />
                     );
                   })}
