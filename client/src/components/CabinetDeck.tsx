@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { CodexEntry } from "@/lib/codex-schema";
+import type { RankingRationale, GravitasSignal } from "@/lib/codex-ranking";
 
 /* ─────────────────────────────────────────────
    CABINET DECK — V7
@@ -88,6 +89,8 @@ interface CabinetDeckProps {
   isReceivingSignal: boolean;
   bottleneckCategory: string | null;
   firstMove: string | null;
+  rankingRationale: RankingRationale | null;
+  gravitasSignalData: GravitasSignal | null;
 }
 
 /* ── Ticker Tape Sub-component ──
@@ -380,6 +383,8 @@ export default function CabinetDeck({
   isReceivingSignal,
   bottleneckCategory,
   firstMove,
+  rankingRationale,
+  gravitasSignalData,
 }: CabinetDeckProps) {
   // Cartridge animation phases
   const [animPhase, setAnimPhase] = useState<"idle" | "inserting" | "loaded" | "ejecting">("idle");
@@ -484,10 +489,20 @@ startTicker(msg, 14000, () => {
       // Ticker on load (purely visual — does not gate button availability)
       const title = loadedEntry.title?.toUpperCase() || "UNKNOWN";
       const cat = loadedEntry.flywheel_node?.[0]?.toUpperCase() || "CODEX";
-      startTicker(
-        `>>> CARTRIDGE LOADED: ${title} ... ${cat} CLASS ... AWAITING SCAN ... PRESS SCAN TO ANALYZE >>>`,
-        12000
-      );
+      // Include match telemetry if ranking rationale is available
+      if (rankingRationale && gravitasSignalData) {
+        const matchPct = Math.min(Math.round((rankingRationale.total / 100) * 100), 99);
+        const leakLabel = gravitasSignalData.leak?.toUpperCase() || "UNKNOWN";
+        startTicker(
+          `>>> CARTRIDGE LOADED: ${title} ... ${cat} CLASS ... MATCH ${matchPct}% ... LEAK: ${leakLabel} ... PRESS SCAN TO ANALYZE >>>`,
+          13000
+        );
+      } else {
+        startTicker(
+          `>>> CARTRIDGE LOADED: ${title} ... ${cat} CLASS ... AWAITING SCAN ... PRESS SCAN TO ANALYZE >>>`,
+          12000
+        );
+      }
 
       const timer = setTimeout(() => setAnimPhase("loaded"), 400);
       prevLoadedIdRef.current = currentId;
@@ -508,7 +523,7 @@ startTicker(msg, 14000, () => {
       prevLoadedIdRef.current = undefined;
       return () => clearTimeout(timer);
     }
-  }, [loadedEntry, startTicker]);
+  }, [loadedEntry, startTicker, rankingRationale, gravitasSignalData]);
 
   // SCAN animation sequence
   const handleScan = useCallback(() => {
@@ -533,22 +548,34 @@ startTicker(msg, 14000, () => {
         const node = loadedEntry.flywheel_node?.[0]?.toUpperCase() || "—";
         const diff = loadedEntry.difficulty || 0;
         const diffLabel = diff <= 2 ? "LOW" : diff <= 3 ? "MEDIUM" : "HIGH";
-        const context = loadedEntry.context_tags?.[0]?.toUpperCase().replace(/_/g, " ") || "GENERAL";
 
         // Set deck phase immediately so READ button is available right away
         setDeckPhase("scanned");
         setScanStep(0);
 
-        // Ticker on scan complete (purely visual — does not gate button availability)
-        startTicker(
-          `>>> SCAN COMPLETE ... ${cat} ... ${node} ... INTENSITY ${diff} ${diffLabel} ... ${context} ... PROTOCOL READY ... PRESS READ >>>`,
-          14000
-        );
+        // Ticker on scan complete — include diagnostic telemetry when available
+        if (rankingRationale && gravitasSignalData) {
+          const matchPct = Math.min(Math.round((rankingRationale.total / 100) * 100), 99);
+          const leakCount = rankingRationale.leakOverlapDetails?.length || 0;
+          const forceCount = rankingRationale.forceOverlapDetails?.length || 0;
+          const topLeak = rankingRationale.leakOverlapDetails?.[0]?.toUpperCase() || "";
+          const bottleneck = gravitasSignalData.leak?.toUpperCase() || "";
+          startTicker(
+            `>>> SCAN COMPLETE ... ${cat} ... ${node} ... FIT ${matchPct}% ... ${leakCount} LEAK MATCH${leakCount !== 1 ? "ES" : ""} ... ${forceCount} FORCE ALIGN${forceCount !== 1 ? "S" : ""} ... BOTTLENECK: ${bottleneck} ... PROTOCOL READY ... PRESS READ >>>`,
+            15000
+          );
+        } else {
+          const context = loadedEntry.context_tags?.[0]?.toUpperCase().replace(/_/g, " ") || "GENERAL";
+          startTicker(
+            `>>> SCAN COMPLETE ... ${cat} ... ${node} ... INTENSITY ${diff} ${diffLabel} ... ${context} ... PROTOCOL READY ... PRESS READ >>>`,
+            14000
+          );
+        }
       }
     };
 
     scanTimerRef.current = setTimeout(advanceStep, stepDuration);
-  }, [loadedEntry, deckPhase, startTicker]);
+  }, [loadedEntry, deckPhase, startTicker, rankingRationale, gravitasSignalData]);
 
   // Clean up timers on unmount
   useEffect(() => {
@@ -560,15 +587,34 @@ startTicker(msg, 14000, () => {
   }, []);
 
   /* ── Build pager screen messages based on deck phase (static mode) ── */
+  const getSeverityLabel = (score: number) =>
+    score < 50 ? "CRITICAL" : score < 60 ? "LOW" : score < 70 ? "WATCH" : score < 80 ? "STABLE" : "STRONG";
+
+  // Short codenames for archetype pager display
+  const archetypeShortName = (name: string | null | undefined): string => {
+    if (!name) return "";
+    const upper = name.toUpperCase();
+    if (upper.includes("OXYGEN")) return "OXYGEN";
+    if (upper.includes("ALIGNMENT")) return "ALIGNMENT";
+    if (upper.includes("WEIGHT")) return "WEIGHT REDIST";
+    if (upper.includes("HORIZON")) return "HORIZON";
+    if (upper.includes("LEGACY")) return "LEGACY";
+    if (upper.includes("RESISTANCE")) return "RESISTANCE";
+    if (upper.includes("FIELD")) return "FIELD MANUAL";
+    return upper.replace(/^THE\s+/i, "").substring(0, 13);
+  };
+
   const getPagerMessages = useCallback(() => {
     if (isReceivingSignal) {
-      // Trim firstMove for pager display (e.g., "THE HORIZON CAST" → "HORIZON CAST")
-      const fmDisplay = firstMove?.replace(/^THE\s+/i, "").substring(0, 14).toUpperCase() || "";
+      const fmDisplay = archetypeShortName(firstMove);
+      // Show actual leak + force from signal data if available
+      const leakDisplay = gravitasSignalData?.leak?.toUpperCase() || "SCAN";
+      const forceDisplay = gravitasSignalData?.force?.toUpperCase() || "";
       return [
         { line1: "INCOMING", line2: "SIGNAL!" },
-        { line1: bottleneckCategory?.toUpperCase() || "SCAN", line2: "DETECTED" },
-        { line1: fmDisplay ? "FIRST MOVE:" : "LOADING", line2: fmDisplay || "PROTOCOL..." },
-        { line1: "PROTOCOL", line2: "READY" },
+        { line1: "LEAK:", line2: leakDisplay },
+        { line1: fmDisplay ? "ARCHETYPE:" : "LOADING", line2: fmDisplay || "PROTOCOL..." },
+        { line1: forceDisplay ? "FORCE:" : "ROUTING", line2: forceDisplay || "DATA..." },
       ];
     }
 
@@ -576,6 +622,17 @@ startTicker(msg, 14000, () => {
       case "loaded": {
         const cat = loadedEntry?.flywheel_node?.[0]?.toUpperCase() || "CODEX";
         const title = loadedEntry?.title?.substring(0, 14).toUpperCase() || "UNKNOWN";
+        // If we have rationale, show match score and top leak overlap
+        if (rankingRationale) {
+          const matchPct = Math.min(Math.round((rankingRationale.total / 100) * 100), 99);
+          const topLeak = rankingRationale.leakOverlapDetails?.[0]?.substring(0, 14).toUpperCase() || "—";
+          return [
+            { line1: "CARTRIDGE", line2: "LOADED" },
+            { line1: title, line2: cat },
+            { line1: "MATCH:", line2: `${matchPct}%` },
+            { line1: "SCAN TO", line2: "ANALYZE" },
+          ];
+        }
         return [
           { line1: "CARTRIDGE", line2: "LOADED" },
           { line1: title, line2: cat },
@@ -591,21 +648,26 @@ startTicker(msg, 14000, () => {
 
       case "scanned": {
         if (!loadedEntry) return IDLE_MESSAGES;
+        // If we have full rationale from ranking, show detailed telemetry
+        if (rankingRationale && gravitasSignalData) {
+          const matchPct = Math.min(Math.round((rankingRationale.total / 100) * 100), 99);
+          const leakCount = rankingRationale.leakOverlapDetails?.length || 0;
+          const forceCount = rankingRationale.forceOverlapDetails?.length || 0;
+          const bottleneckLabel = gravitasSignalData.leak?.toUpperCase() || "—";
+          const sevScore = gravitasSignalData[gravitasSignalData.leak?.toLowerCase() as keyof GravitasSignal] as number;
+          const sevLabel = typeof sevScore === "number" ? getSeverityLabel(sevScore) : "—";
+          return [
+            { line1: bottleneckLabel, line2: sevLabel },
+            { line1: `${leakCount} LEAK${leakCount !== 1 ? "S" : ""}`, line2: "MATCHED" },
+            { line1: `${forceCount} FORCE${forceCount !== 1 ? "S" : ""}`, line2: "ALIGNED" },
+            { line1: "FIT:", line2: `${matchPct}%` },
+          ];
+        }
+        // Fallback: basic cartridge info
         const cat = loadedEntry.category?.toUpperCase() || "UNKNOWN";
-        const node = loadedEntry.flywheel_node?.[0]?.toUpperCase() || "—";
         const diff = loadedEntry.difficulty || 0;
         const diffLabel = diff <= 2 ? "LOW" : diff <= 3 ? "MEDIUM" : "HIGH";
         const context = loadedEntry.context_tags?.[0]?.toUpperCase().replace(/_/g, " ") || "GENERAL";
-        // If Gravitas-routed, show bottleneck + firstMove context in scan results
-        if (firstMove && bottleneckCategory) {
-          const fmScan = firstMove.replace(/^THE\s+/i, "").substring(0, 14).toUpperCase();
-          return [
-            { line1: "BOTTLENECK:", line2: bottleneckCategory.toUpperCase() },
-            { line1: "FIRST MOVE:", line2: fmScan },
-            { line1: "MATCH:", line2: "HIGH" },
-            { line1: "READY", line2: "TO READ" },
-          ];
-        }
         return [
           { line1: "CATEGORY", line2: cat },
           { line1: "INTENSITY", line2: `${diff} ${diffLabel}` },
@@ -615,6 +677,15 @@ startTicker(msg, 14000, () => {
       }
 
       default: {
+        // Idle state: show GRAVITAS dimension scores with severity labels
+        if (gravitasSignalData) {
+          const dims = ["identity", "relationship", "vision", "culture"] as const;
+          return dims.map(d => {
+            const score = Math.round(gravitasSignalData[d] as number);
+            const label = getSeverityLabel(score);
+            return { line1: d.toUpperCase(), line2: `${score} ${label}` };
+          });
+        }
         if (gravitasScores) {
           const dims = ["identity", "relationship", "vision", "culture"] as const;
           return dims.map(d => {
@@ -626,7 +697,7 @@ startTicker(msg, 14000, () => {
         return IDLE_MESSAGES;
       }
     }
-  }, [isReceivingSignal, loadedEntry, gravitasScores, bottleneckCategory, firstMove, deckPhase, scanStep]);
+  }, [isReceivingSignal, loadedEntry, gravitasScores, gravitasSignalData, rankingRationale, bottleneckCategory, firstMove, deckPhase, scanStep]);
 
   const pagerMessages = getPagerMessages();
   const isActive = deckPhase !== "idle" || !!gravitasScores || isReceivingSignal;

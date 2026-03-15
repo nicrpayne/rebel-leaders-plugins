@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { CodexEntry } from "@/lib/codex-schema";
 import { CODEX_ENTRIES } from "@/lib/codex-data";
-import { getBestCartridge, type GravitasSignal } from "@/lib/codex-ranking";
+import { getBestCartridge, type GravitasSignal, type RankingRationale } from "@/lib/codex-ranking";
 import CabinetDeck from "@/components/CabinetDeck";
 import ReaderDrawer from "@/components/ReaderDrawer";
 import CodexShelf from "@/components/CodexShelf";
@@ -30,6 +30,8 @@ export default function Codex() {
   const [isReceivingSignal, setIsReceivingSignal] = useState(false);
   const [bottleneckCategory, setBottleneckCategory] = useState<string | null>(null);
   const [firstMove, setFirstMove] = useState<string | null>(null);
+  const [rankingRationale, setRankingRationale] = useState<RankingRationale | null>(null);
+  const [gravitasSignalData, setGravitasSignalData] = useState<GravitasSignal | null>(null);
 
   // Load recent entries from localStorage
   useEffect(() => {
@@ -88,11 +90,13 @@ export default function Codex() {
         if (gravitasSignal) {
           const best = getBestCartridge(CODEX_ENTRIES, gravitasSignal);
           targetEntry = best ? best.entry : CODEX_ENTRIES[0];
-          // Log rationale for debugging/tuning
+          // Store rationale for pager telemetry + log for debugging
           if (best) {
+            setRankingRationale(best.rationale);
             console.log("[Codex Ranking] Top cartridge:", best.entry.title, "Score:", best.score);
             console.log("[Codex Ranking] Rationale:", best.rationale);
           }
+          setGravitasSignalData(gravitasSignal);
         } else {
           // Fallback: simple bottleneck mapping if no stored results
           let targetId = "";
@@ -212,6 +216,8 @@ export default function Codex() {
           isReceivingSignal={isReceivingSignal}
           bottleneckCategory={bottleneckCategory}
           firstMove={firstMove}
+          rankingRationale={rankingRationale}
+          gravitasSignalData={gravitasSignalData}
         />
 
         {/* ── SHELVES (directly below cabinet, no gap) ── */}
