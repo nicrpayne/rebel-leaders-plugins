@@ -100,14 +100,14 @@ const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   // === RELATIONSHIP SECTION ===
   // gapBefore: 16 creates a visible section break
   MOVE_REPAIR_48H:               { tilt: 0.2,  offsetY: 0,  offsetX: 0, gapBefore: -110 },
-  MOVE_MINORITY_REPORT:          { tilt: 0,    offsetY: 0,  offsetX: 0, gapBefore: -8 },
-  MOVE_FRIDGE_RIGHTS_AUDIT:      { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: -8 },
-  MOVE_THE_MIRROR:               { tilt: 18,   offsetY: -1, offsetX: 0, gapBefore: -22 },
-  MOVE_TRUST_MICRO_DEPOSIT:      { tilt: 20,   offsetY: -3, offsetX: 0, gapBefore: -26 },
-  MOVE_COACHING_3_QUESTIONS:     { tilt: 0,    offsetY: 0,  offsetX: 0, gapBefore: -12 },
-  MOVE_FEEDBACK_SBI:             { tilt: 0.3,  offsetY: 0,  offsetX: 0, gapBefore: -8 },
-  MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -1.0, offsetY: 1,  offsetX: 0, gapBefore: -8 },
-  MOVE_RECOVER_AFTER_MISS:       { tilt: 1.2,  offsetY: 0,  offsetX: 0, gapBefore: -8 },
+  MOVE_MINORITY_REPORT:          { tilt: 0,    offsetY: 0,  offsetX: 0, gapBefore: -100 },
+  MOVE_FRIDGE_RIGHTS_AUDIT:      { tilt: 0,    offsetY: 4,  offsetX: 0, gapBefore: -100 },
+  MOVE_THE_MIRROR:               { tilt: 18,   offsetY: -1, offsetX: 0, gapBefore: -90 },
+  MOVE_TRUST_MICRO_DEPOSIT:      { tilt: 20,   offsetY: -3, offsetX: 0, gapBefore: -100 },
+  MOVE_COACHING_3_QUESTIONS:     { tilt: 0,    offsetY: 0,  offsetX: 0, gapBefore: -32 },
+  MOVE_FEEDBACK_SBI:             { tilt: 0.3,  offsetY: 0,  offsetX: 0, gapBefore: -105 },
+  MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -12,  offsetY: 1,  offsetX: 0, gapBefore: -58 },
+  MOVE_RECOVER_AFTER_MISS:       { tilt: 8,    offsetY: 0,  offsetX: 0, gapBefore: -8 },
 };
 
 /* ─────────────────────────────────────────────
