@@ -5,22 +5,42 @@ interface SectionIndicatorProps {
   total: number;
   /** Index of the currently active section (0-based) */
   activeIndex: number;
-  className?: string;
 }
 
+/*
+  Hole positions measured from the panel frame image (1792 x 2400):
+    Hole 1: x=15.40%, y=46.42%
+    Hole 2: x=15.40%, y=48.33%
+    Hole 3: x=15.40%, y=50.21%
+    Hole 4: x=15.40%, y=52.04%
+  Diameter: ~9-10px at native res → ~0.52% of image width
+
+  These percentages are relative to the panel container (which matches
+  the image dimensions exactly). Each dot is positioned absolutely
+  within the panel container so it sits inside its physical hole.
+*/
+const HOLE_POSITIONS = [
+  { top: "46.42%" },
+  { top: "48.33%" },
+  { top: "50.21%" },
+  { top: "52.04%" },
+];
+
 /**
- * Indicator dots on the left edge of the lantern panel frame.
+ * Indicator dots positioned inside the physical holes on the lantern panel frame.
  *
  * Behavior:
  *  - Dots at or below activeIndex are "lit" (amber glow, already passed)
  *  - The active dot pulses with a warm breathing glow
  *  - Unlit dots have a subtle idle breathing animation (dim, alive)
  *  - When activeIndex advances, the newly lit dot flares briefly
+ *
+ * Each dot is rendered as an absolutely-positioned element within the
+ * panel container (the parent must be position: relative).
  */
 export default function SectionIndicator({
   total,
   activeIndex,
-  className = "",
 }: SectionIndicatorProps) {
   const prevIndex = useRef(activeIndex);
   const [flareIndex, setFlareIndex] = useState(-1);
@@ -35,9 +55,11 @@ export default function SectionIndicator({
     }
   }, [activeIndex]);
 
+  const count = Math.min(total, HOLE_POSITIONS.length);
+
   return (
-    <div className={`flex flex-col gap-3 ${className}`}>
-      {Array.from({ length: total }).map((_, i) => {
+    <>
+      {Array.from({ length: count }).map((_, i) => {
         const isLit = i <= activeIndex;
         const isActive = i === activeIndex;
         const isFlaring = i === flareIndex;
@@ -45,8 +67,14 @@ export default function SectionIndicator({
         return (
           <div
             key={i}
-            className="relative"
-            style={{ width: "8px", height: "8px" }}
+            className="absolute z-30"
+            style={{
+              left: "15.40%",
+              top: HOLE_POSITIONS[i].top,
+              width: "0.55%",
+              paddingBottom: "0.55%", // square aspect via padding trick
+              transform: "translate(-50%, -50%)",
+            }}
           >
             {/* Outer glow ring (visible when lit) */}
             {isLit && (
@@ -89,7 +117,7 @@ export default function SectionIndicator({
         );
       })}
 
-      {/* Keyframe animations injected via style tag */}
+      {/* Keyframe animations */}
       <style>{`
         @keyframes indicator-pulse {
           0%, 100% {
@@ -124,6 +152,6 @@ export default function SectionIndicator({
           }
         }
       `}</style>
-    </div>
+    </>
   );
 }

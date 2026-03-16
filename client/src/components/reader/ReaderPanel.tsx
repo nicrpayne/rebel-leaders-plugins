@@ -232,17 +232,8 @@ export default function ReaderPanel({
           draggable={false}
         />
 
-        {/* Section Indicators */}
-        <div
-          className="absolute z-30"
-          style={{
-            left: "14%",
-            top: "50%",
-            transform: "translateY(-50%)",
-          }}
-        >
-          <SectionIndicator total={sections.length} activeIndex={activeSection} />
-        </div>
+        {/* Section Indicators — each dot is absolutely positioned to sit in its frame hole */}
+        <SectionIndicator total={sections.length} activeIndex={activeSection} />
 
         {/* Close Button */}
         <button
