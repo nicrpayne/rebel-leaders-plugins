@@ -328,8 +328,8 @@ export default function ReaderPanel({
                 {entry.briefing.avoid.length > 0 && (
                   <div className="mt-3 pt-3" style={{ borderTop: "1px solid rgba(138, 109, 59, 0.15)" }}>
                     <p
-                      className="font-serif font-medium text-sm md:text-base italic"
-                      style={{ color: "rgba(80, 50, 20, 0.7)" }}
+                      className="font-serif font-semibold text-sm md:text-base italic"
+                      style={{ color: "rgba(35, 18, 5, 0.85)" }}
                     >
                       Not when: {entry.briefing.avoid.join(" ")}
                     </p>
@@ -566,8 +566,8 @@ export default function ReaderPanel({
                         {entry.proof.books.map((book, i) => (
                           <p
                             key={i}
-                            className="font-serif font-medium text-sm md:text-base italic mb-1"
-                            style={{ color: "rgba(35, 18, 5, 0.7)" }}
+                            className="font-serif font-semibold text-sm md:text-base italic mb-1"
+                            style={{ color: "rgba(35, 18, 5, 0.85)" }}
                           >
                             {book.title} — {book.author}
                             {book.chapter ? ` (${book.chapter})` : ""}
