@@ -107,7 +107,7 @@ const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   MOVE_COACHING_3_QUESTIONS:     { tilt: 0,    offsetY: 0,  offsetX: 0, gapBefore: -32 },
   MOVE_FEEDBACK_SBI:             { tilt: 0.3,  offsetY: 0,  offsetX: 0, gapBefore: -105 },
   MOVE_ACCOUNTABILITY_WITH_CARE: { tilt: -12,  offsetY: 1,  offsetX: 0, gapBefore: -58 },
-  MOVE_RECOVER_AFTER_MISS:       { tilt: 8,    offsetY: 0,  offsetX: 0, gapBefore: -8 },
+  MOVE_RECOVER_AFTER_MISS:       { tilt: 12,   offsetY: 0,  offsetX: 0, gapBefore: -33 },
 };
 
 /* ─────────────────────────────────────────────
@@ -118,20 +118,20 @@ const TOP_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
 const BOTTOM_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   // === VISION SECTION ===
   // First 3 laid flat, stacked like a pile
-  MOVE_DECISION_RIGHTS_MAP:  { tilt: -90, offsetY: 55,  offsetX: 0, useCenter: true },
-  MOVE_STOP_LIST:            { tilt: -90, offsetY: 22,  offsetX: 0, useCenter: true },
-  MOVE_DISAGREE_AND_COMMIT:  { tilt: -90, offsetY: -10, offsetX: 0, useCenter: true },
+  MOVE_DECISION_RIGHTS_MAP:  { tilt: -90, offsetY: 55,  offsetX: 0, useCenter: true, gapBefore: 45 },
+  MOVE_STOP_LIST:            { tilt: -90, offsetY: 12,  offsetX: 0, useCenter: true, gapBefore: -130 },
+  MOVE_DISAGREE_AND_COMMIT:  { tilt: -90, offsetY: -35, offsetX: 0, useCenter: true, gapBefore: -150 },
   // Remaining Vision standing upright
-  MOVE_THE_ONE_THING:        { tilt: 0,    offsetY: 0, offsetX: 0 },
-  MOVE_NORTH_STAR_SENTENCE:  { tilt: 0.3,  offsetY: 0, offsetX: 0 },
-  MOVE_KILL_THE_GHOST_GOAL:  { tilt: 0,    offsetY: 2, offsetX: 0 },
-  MOVE_WIN_CONDITION:        { tilt: -0.5, offsetY: 0, offsetX: 0 },
-  MOVE_TRADEOFF_TALK:        { tilt: 0.3,  offsetY: 1, offsetX: 0 },
+  MOVE_THE_ONE_THING:        { tilt: 0,    offsetY: -27, offsetX: 0, gapBefore: -20 },
+  MOVE_NORTH_STAR_SENTENCE:  { tilt: 0.3,  offsetY: -25, offsetX: 0, gapBefore: -100 },
+  MOVE_KILL_THE_GHOST_GOAL:  { tilt: -90, offsetY: 55, offsetX: 0, useCenter: true },
+  MOVE_WIN_CONDITION:        { tilt: -90, offsetY: 14, offsetX: 0, useCenter: true, gapBefore: -143 },
+  MOVE_TRADEOFF_TALK:        { tilt: -90, offsetY: -30, offsetX: 0, useCenter: true, gapBefore: -147 },
   // === CULTURE SECTION ===
-  MOVE_TRUTH_WEATHER:        { tilt: 0,    offsetY: 0, offsetX: 0 },
-  MOVE_MEETING_REWRITE:      { tilt: 0.5,  offsetY: 0, offsetX: 0 },
-  MOVE_PERMISSION_SLIP:      { tilt: 0,    offsetY: 2, offsetX: 0 },
-  MOVE_SHADOW_NORMS:         { tilt: -0.3, offsetY: 0, offsetX: 0 },
+  MOVE_TRUTH_WEATHER:        { tilt: -90, offsetY: -73, offsetX: 0, useCenter: true, gapBefore: -148 },
+  MOVE_MEETING_REWRITE:      { tilt: -15,  offsetY: -30, offsetX: 0, gapBefore: 5 },
+  MOVE_PERMISSION_SLIP:      { tilt: -17,  offsetY: -28, offsetX: 0, gapBefore: -100 },
+  MOVE_SHADOW_NORMS:         { tilt: -90, offsetY: 55, offsetX: 0, useCenter: true, gapBefore: -30 },
   MOVE_ENERGY_LEAK_CHECK:    { tilt: 0,    offsetY: 1, offsetX: 0 },
   MOVE_SAFE_TO_SAY:          { tilt: 0.5,  offsetY: 0, offsetX: 0 },
 };
