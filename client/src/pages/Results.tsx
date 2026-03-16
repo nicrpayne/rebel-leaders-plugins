@@ -201,11 +201,11 @@ export default function Results() {
         onClick={handleSideChain}
         disabled={isTransmitting}
         className={cn(
-          "group flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-b from-[#1a1a20] to-[#141418] border border-[#2a2a32] rounded-[2px] shadow-[0_2px_4px_rgba(0,0,0,0.4)] transition-all duration-150",
+          "group flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-b from-[#1a1a20] to-[#141418] border rounded-[2px] transition-all duration-150",
           isTransmitting
-            ? "border-amber-500/40"
-            : "hover:border-[rgba(197,160,89,0.3)] hover:shadow-[0_0_12px_rgba(197,160,89,0.08)]",
-          "active:translate-y-[1px] active:shadow-none"
+            ? "border-amber-500/40 shadow-[0_2px_4px_rgba(0,0,0,0.4)]"
+            : "hover:border-[rgba(197,160,89,0.3)] hover:shadow-[0_0_12px_rgba(197,160,89,0.08)] active:translate-y-[1px] active:shadow-none",
+          !isTransmitting && "sidechain-glow"
         )}
       >
         <span
@@ -270,7 +270,7 @@ export default function Results() {
                 >
                   {results.archetype}
                 </div>
-                <div className="text-[7px] leading-[1.8] text-[#5a5a66] tracking-[0.05em]">
+                <div className="text-[8px] leading-[1.9] text-[#8a8a96] tracking-[0.05em]">
                   {results.description}
                 </div>
                 {/* Total Score */}
@@ -338,7 +338,7 @@ export default function Results() {
                     PRIMARY LEAK DETECTED
                   </span>
                 </div>
-                <div className="text-[7px] leading-[1.8] text-[#5a5a66] tracking-[0.05em]">
+                <div className="text-[8px] leading-[1.9] text-[#8a8a96] tracking-[0.05em]">
                   {results.leakDescription}
                 </div>
               </div>
@@ -356,7 +356,7 @@ export default function Results() {
                     DOMINANT FORCE
                   </span>
                 </div>
-                <div className="text-[7px] leading-[1.8] text-[#5a5a66] tracking-[0.05em]">
+                <div className="text-[8px] leading-[1.9] text-[#8a8a96] tracking-[0.05em]">
                   {results.forceDescription}
                 </div>
               </div>
@@ -381,7 +381,7 @@ export default function Results() {
               >
                 {results.firstMove}
               </div>
-              <div className="text-[7px] leading-[1.8] text-[#5a5a66] tracking-[0.05em]">
+              <div className="text-[8px] leading-[1.9] text-[#8a8a96] tracking-[0.05em]">
                 {results.firstMoveDescription}
               </div>
             </div>
@@ -398,7 +398,7 @@ export default function Results() {
         </div>
       </div>
 
-      {/* Custom scrollbar styles */}
+      {/* Custom scrollbar + sidechain glow styles */}
       <style>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 3px;
@@ -412,6 +412,19 @@ export default function Results() {
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: #2a2a32;
+        }
+        @keyframes sidechain-pulse {
+          0%, 100% {
+            border-color: rgba(197,160,89,0.15);
+            box-shadow: 0 0 6px rgba(197,160,89,0.06), 0 2px 4px rgba(0,0,0,0.4);
+          }
+          50% {
+            border-color: rgba(197,160,89,0.45);
+            box-shadow: 0 0 18px rgba(197,160,89,0.15), 0 0 40px rgba(197,160,89,0.06), 0 2px 4px rgba(0,0,0,0.4);
+          }
+        }
+        .sidechain-glow {
+          animation: sidechain-pulse 2.5s ease-in-out infinite;
         }
       `}</style>
     </GravitasShell>
