@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { CodexEntry } from "@/lib/codex-schema";
 import ReaderSection from "./ReaderSection";
 import SectionIndicator from "./SectionIndicator";
+import WordReveal from "./WordReveal";
 
 // Asset URLs
 const PANEL_FRAME_URL =
@@ -321,7 +322,12 @@ export default function ReaderPanel({
                       className="font-serif font-semibold text-base md:text-lg leading-relaxed"
                       style={{ color: "rgba(35, 18, 5, 0.9)" }}
                     >
-                      {item}
+                      <WordReveal
+                        text={item}
+                        delay={400 + i * 600}
+                        wordInterval={55}
+                        isActive={true}
+                      />
                     </p>
                   ))}
                 </div>
