@@ -274,43 +274,47 @@ function CartridgeSpine({
               className="absolute inset-0 w-full h-full object-fill drop-shadow-[2px_4px_8px_rgba(0,0,0,0.7)]"
               draggable={false}
             />
-            {/* Text label on the parchment area */}
-            <div
-              className="absolute flex flex-col items-center justify-center text-center z-10 pointer-events-none"
-              style={{
-                top: "10%",
-                height: "80%",
-                left: "10%",
-                width: "58%",
-              }}
-            >
-              <span
-                className="uppercase leading-tight px-1 line-clamp-2"
-                style={{
-                  fontFamily: "'Courier New', 'Courier', monospace",
-                  fontSize: "9px",
-                  fontWeight: 900,
-                  color: "#1a120a",
-                  letterSpacing: "0.1em",
-                  textShadow: "0 0 2px rgba(230,220,195,0.8)",
-                }}
-              >
-                {entry.title}
-              </span>
-              <span
-                style={{
-                  fontFamily: "'Courier New', 'Courier', monospace",
-                  fontSize: "5px",
-                  fontWeight: 700,
-                  color: "rgba(42,29,16,0.7)",
-                  letterSpacing: "0.08em",
-                  textShadow: "0 0 2px rgba(230,220,195,0.8)",
-                  marginTop: "2px",
-                }}
-              >
-                {entry.id}
-              </span>
-            </div>
+            {/* Text label on the parchment area — matches CabinetDeck label design */}
+            {(() => {
+              const len = entry.title.length;
+              // Dynamic font: short titles stay big, long titles shrink
+              const titleSize = len <= 12 ? '9px' : len <= 18 ? '8px' : len <= 24 ? '7px' : '6px';
+              const idSize = len <= 18 ? '5px' : '4.5px';
+              return (
+                <div
+                  className="absolute top-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none overflow-hidden"
+                  style={{ left: '18%', width: '62%', height: '100%', marginTop: '-1%' }}
+                >
+                  <span
+                    className="uppercase leading-tight px-2 line-clamp-3"
+                    style={{
+                      fontFamily: "'Courier New', 'Courier', monospace",
+                      fontSize: titleSize,
+                      fontWeight: 900,
+                      color: '#1a120a',
+                      letterSpacing: '0.08em',
+                      textShadow: '0 0 2px rgba(230,220,195,0.8), 0 1px 0 rgba(255,255,255,0.4)',
+                      wordBreak: 'break-word' as const,
+                    }}
+                  >
+                    {entry.title}
+                  </span>
+                  <span
+                    className="mt-0"
+                    style={{
+                      fontFamily: "'Courier New', 'Courier', monospace",
+                      fontSize: idSize,
+                      fontWeight: 700,
+                      color: 'rgba(42,29,16,0.7)',
+                      letterSpacing: '0.08em',
+                      textShadow: '0 0 2px rgba(230,220,195,0.8)',
+                    }}
+                  >
+                    {entry.id}
+                  </span>
+                </div>
+              );
+            })()}
           </div>
         </div>
       </div>
