@@ -57,7 +57,7 @@ export default function ReaderSection({
       <div
         className="font-serif text-base md:text-lg leading-relaxed"
         style={{
-          color: "rgba(60, 35, 15, 0.85)",
+          color: "rgba(35, 18, 5, 0.9)",
           transition: "opacity 0.5s ease",
           transitionDelay: `${index * 200 + 400}ms`,
           opacity: hasBeenSeen ? 1 : 0,

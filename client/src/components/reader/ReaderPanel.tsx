@@ -282,8 +282,8 @@ export default function ReaderPanel({
             {/* ── Title ── */}
             <div className="mb-5 md:mb-7">
               <h1
-                className="font-serif text-lg md:text-xl lg:text-2xl leading-tight mb-2"
-                style={{ color: "rgba(55, 30, 12, 0.9)" }}
+                className="font-serif font-semibold text-xl md:text-2xl lg:text-3xl leading-tight mb-2"
+                style={{ color: "rgba(35, 18, 5, 0.95)" }}
               >
                 {entry.title}
               </h1>
@@ -293,7 +293,7 @@ export default function ReaderPanel({
                   fontFamily: "var(--font-lcd)",
                   fontSize: "9px",
                   letterSpacing: "0.15em",
-                  color: "rgba(138, 109, 59, 0.65)",
+                  color: "rgba(100, 65, 30, 0.8)",
                 }}
               >
                 <span>{entry.id}</span>
@@ -318,8 +318,8 @@ export default function ReaderPanel({
                   {entry.briefing.use_when.map((item, i) => (
                     <p
                       key={i}
-                      className="font-serif text-sm md:text-base leading-relaxed"
-                      style={{ color: "rgba(55, 30, 12, 0.8)" }}
+                      className="font-serif font-semibold text-base md:text-lg leading-relaxed"
+                      style={{ color: "rgba(35, 18, 5, 0.9)" }}
                     >
                       {item}
                     </p>
@@ -328,8 +328,8 @@ export default function ReaderPanel({
                 {entry.briefing.avoid.length > 0 && (
                   <div className="mt-3 pt-3" style={{ borderTop: "1px solid rgba(138, 109, 59, 0.15)" }}>
                     <p
-                      className="font-serif text-xs md:text-sm italic"
-                      style={{ color: "rgba(100, 65, 30, 0.5)" }}
+                      className="font-serif font-medium text-sm md:text-base italic"
+                      style={{ color: "rgba(80, 50, 20, 0.7)" }}
                     >
                       Not when: {entry.briefing.avoid.join(" ")}
                     </p>
@@ -349,14 +349,14 @@ export default function ReaderPanel({
                 index={1}
               >
                 <p
-                  className="font-serif text-sm md:text-base leading-relaxed mb-3"
-                  style={{ color: "rgba(55, 30, 12, 0.85)" }}
+                  className="font-serif font-semibold text-base md:text-lg leading-relaxed mb-3"
+                  style={{ color: "rgba(35, 18, 5, 0.9)" }}
                 >
                   {entry.briefing.objective}
                 </p>
                 <p
-                  className="font-serif text-sm md:text-base leading-relaxed"
-                  style={{ color: "rgba(55, 30, 12, 0.75)" }}
+                  className="font-serif font-semibold text-base md:text-lg leading-relaxed"
+                  style={{ color: "rgba(35, 18, 5, 0.85)" }}
                 >
                   {entry.briefing.outcome}
                 </p>
@@ -400,8 +400,8 @@ export default function ReaderPanel({
                       }}
                     >
                       <p
-                        className="font-serif text-sm md:text-base leading-relaxed italic"
-                        style={{ color: "rgba(55, 30, 12, 0.85)" }}
+                        className="font-serif font-semibold text-base md:text-lg leading-relaxed italic"
+                        style={{ color: "rgba(35, 18, 5, 0.9)" }}
                       >
                         &ldquo;{entry.script}&rdquo;
                       </p>
@@ -422,8 +422,8 @@ export default function ReaderPanel({
                             {String(i + 1).padStart(2, "0")}
                           </span>
                           <p
-                            className="font-serif text-sm md:text-base leading-relaxed"
-                            style={{ color: "rgba(55, 30, 12, 0.8)" }}
+                            className="font-serif font-semibold text-base md:text-lg leading-relaxed"
+                            style={{ color: "rgba(35, 18, 5, 0.9)" }}
                           >
                             {step}
                           </p>
@@ -463,11 +463,11 @@ export default function ReaderPanel({
                           {checklist[i] ? "✓" : ""}
                         </div>
                         <p
-                          className="font-serif text-sm md:text-base leading-relaxed transition-all duration-300"
+                          className="font-serif font-semibold text-base md:text-lg leading-relaxed transition-all duration-300"
                           style={{
                             color: checklist[i]
-                              ? "rgba(55, 30, 12, 0.35)"
-                              : "rgba(55, 30, 12, 0.8)",
+                              ? "rgba(35, 18, 5, 0.35)"
+                              : "rgba(35, 18, 5, 0.9)",
                             textDecoration: checklist[i] ? "line-through" : "none",
                           }}
                         >
@@ -514,8 +514,8 @@ export default function ReaderPanel({
                     {entry.watch_for.map((item, i) => (
                       <p
                         key={i}
-                        className="font-serif text-sm md:text-base leading-relaxed"
-                        style={{ color: "rgba(55, 30, 12, 0.8)" }}
+                        className="font-serif font-semibold text-base md:text-lg leading-relaxed"
+                        style={{ color: "rgba(35, 18, 5, 0.9)" }}
                       >
                         {item}
                       </p>
@@ -541,8 +541,8 @@ export default function ReaderPanel({
                         {entry.proof.research.map((item, i) => (
                           <p
                             key={i}
-                            className="font-serif text-xs md:text-sm leading-relaxed mb-1"
-                            style={{ color: "rgba(55, 30, 12, 0.6)" }}
+                            className="font-serif font-medium text-sm md:text-base leading-relaxed mb-1"
+                            style={{ color: "rgba(35, 18, 5, 0.75)" }}
                           >
                             {item}
                           </p>
@@ -566,8 +566,8 @@ export default function ReaderPanel({
                         {entry.proof.books.map((book, i) => (
                           <p
                             key={i}
-                            className="font-serif text-xs md:text-sm italic mb-1"
-                            style={{ color: "rgba(55, 30, 12, 0.55)" }}
+                            className="font-serif font-medium text-sm md:text-base italic mb-1"
+                            style={{ color: "rgba(35, 18, 5, 0.7)" }}
                           >
                             {book.title} — {book.author}
                             {book.chapter ? ` (${book.chapter})` : ""}
@@ -592,8 +592,8 @@ export default function ReaderPanel({
                         {entry.proof.field_notes.map((note, i) => (
                           <p
                             key={i}
-                            className="font-serif text-xs md:text-sm leading-relaxed mb-1"
-                            style={{ color: "rgba(55, 30, 12, 0.6)" }}
+                            className="font-serif font-medium text-sm md:text-base leading-relaxed mb-1"
+                            style={{ color: "rgba(35, 18, 5, 0.75)" }}
                           >
                             {note}
                           </p>
