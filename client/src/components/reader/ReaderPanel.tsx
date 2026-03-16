@@ -204,8 +204,8 @@ export default function ReaderPanel({
           onClick={handleClose}
           className="absolute z-30 transition-all duration-200 hover:opacity-70"
           style={{
-            top: "10%",
-            right: "15%",
+            top: "19%",
+            right: "20%",
             fontFamily: "var(--font-lcd)",
             color: "rgba(100, 65, 30, 0.5)",
             fontSize: "13px",
@@ -226,7 +226,7 @@ export default function ReaderPanel({
         <div
           className="absolute z-30 flex gap-3"
           style={{
-            bottom: "6%",
+            bottom: "9%",
             left: "50%",
             transform: "translateX(-50%)",
           }}
@@ -266,10 +266,10 @@ export default function ReaderPanel({
           onScroll={handleScroll}
           className="absolute overflow-y-auto overflow-x-hidden"
           style={{
-            top: "12%",
+            top: "20%",
             left: "22%",
             width: "56%",
-            height: "72%",
+            height: "58%",
             scrollbarWidth: "none",
             msOverflowStyle: "none",
           }}
