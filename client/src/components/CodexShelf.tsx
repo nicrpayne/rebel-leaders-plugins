@@ -80,6 +80,7 @@ interface CartridgeArrangement {
   offsetX: number;
   gapBefore?: number;
   useCenter?: boolean;
+  zIndex?: number;
 }
 
 /* ─────────────────────────────────────────────
@@ -129,8 +130,8 @@ const BOTTOM_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   MOVE_TRADEOFF_TALK:        { tilt: -90, offsetY: -30, offsetX: 0, useCenter: true, gapBefore: -147 },
   // === CULTURE SECTION ===
   MOVE_TRUTH_WEATHER:        { tilt: -90, offsetY: -73, offsetX: 0, useCenter: true, gapBefore: -148 },
-  MOVE_MEETING_REWRITE:      { tilt: -15,  offsetY: -30, offsetX: 0, gapBefore: 5 },
-  MOVE_PERMISSION_SLIP:      { tilt: -17,  offsetY: -28, offsetX: 0, gapBefore: -100 },
+  MOVE_MEETING_REWRITE:      { tilt: -15,  offsetY: -30, offsetX: -5, gapBefore: 5, zIndex: 20 },
+  MOVE_PERMISSION_SLIP:      { tilt: -17,  offsetY: -28, offsetX: -5, gapBefore: -100, zIndex: 19 },
   MOVE_SHADOW_NORMS:         { tilt: -90, offsetY: 55, offsetX: 0, useCenter: true, gapBefore: -30 },
   MOVE_ENERGY_LEAK_CHECK:    { tilt: -90, offsetY: 14, offsetX: 0, useCenter: true, gapBefore: -149 },
   MOVE_SAFE_TO_SAY:          { tilt: -90, offsetY: -30, offsetX: 0, useCenter: true, gapBefore: -145 },
@@ -197,20 +198,30 @@ function CartridgeSpine({
         width: `${SPINE_WIDTH}px`,
         height: `${SPINE_HEIGHT}px`,
         marginLeft,
+        ...(zIndex !== undefined ? { zIndex } : {}),
       }}
     >
-      {/* ── LAYER 2: Invisible button hitbox — narrow, no children, pointer-events-auto ── */}
+      {/* ── LAYER 2: Invisible button hitbox — transforms match visual so hover/click
+           lands where the cartridge actually appears on screen ── */}
       <button
         onClick={onClick}
         disabled={isLoaded}
         title={entry.title}
         className={cn(
-          "absolute top-0 bottom-0 cursor-pointer pointer-events-auto z-10",
+          "absolute cursor-pointer pointer-events-auto z-10",
           isLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
         )}
         style={{
-          left: '35px',
-          right: '18px',
+          top: '32px',
+          bottom: '32px',
+          left: '54px',
+          right: '48px',
+          ...((tilt !== 0 || offsetY !== 0 || offsetX !== 0) && !isLoaded
+            ? {
+                transform: `translateY(${offsetY}px) translateX(${offsetX}px) rotate(${tilt}deg)`,
+                transformOrigin,
+              }
+            : {}),
         }}
       />
 
@@ -695,7 +706,7 @@ export default function CodexShelf({
                         offsetX={a.offsetX}
                         gapBefore={a.gapBefore}
                         useCenter={a.useCenter}
-                        zIndex={sectionEntries.length - idx}
+                        zIndex={a.zIndex ?? (sectionEntries.length - idx)}
                       />
                     );
                   })}
