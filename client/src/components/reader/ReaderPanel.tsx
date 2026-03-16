@@ -215,7 +215,7 @@ export default function ReaderPanel({
           height: "115vh",
           width: `calc(115vh * ${PANEL_ASPECT})`,
           maxWidth: "100vw",
-          marginTop: "5vh",
+          marginTop: "-2vh",
           opacity: isVisible ? 1 : 0,
           transition: "opacity 0.5s ease",
         }}
@@ -260,7 +260,7 @@ export default function ReaderPanel({
         <div
           className="absolute z-30 flex gap-3"
           style={{
-            bottom: "9%",
+            bottom: "11%",
             left: "50%",
             transform: "translateX(-50%)",
           }}
