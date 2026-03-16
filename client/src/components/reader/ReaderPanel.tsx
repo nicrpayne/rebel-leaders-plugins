@@ -38,6 +38,7 @@ export default function ReaderPanel({
   const [activeSection, setActiveSection] = useState(0);
   const [checklist, setChecklist] = useState<boolean[]>([]);
   const [isClosing, setIsClosing] = useState(false);
+  const [isEntering, setIsEntering] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -55,12 +56,19 @@ export default function ReaderPanel({
       setMode(initialMode);
       setActiveSection(0);
       setIsClosing(false);
+      setIsEntering(true);
       setChecklist(
         new Array(
           (entry.protocol || entry.script.split("\n").filter((l) => l.trim())).length
         ).fill(false)
       );
       document.body.style.overflow = "hidden";
+      // Trigger enter animation after mount
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsEntering(false);
+        });
+      });
     } else {
       document.body.style.overflow = "";
     }
@@ -73,7 +81,6 @@ export default function ReaderPanel({
   const handleScroll = useCallback(() => {
     if (!scrollRef.current) return;
     const container = scrollRef.current;
-    const scrollTop = container.scrollTop;
     const containerHeight = container.clientHeight;
 
     let closest = 0;
@@ -108,7 +115,7 @@ export default function ReaderPanel({
     setTimeout(() => {
       onClose();
       setIsClosing(false);
-    }, 400);
+    }, 350);
   };
 
   // Derive content from entry
@@ -118,11 +125,12 @@ export default function ReaderPanel({
 
   if (!isOpen) return null;
 
+  // Animation state
+  const isVisible = !isEntering && !isClosing;
+
   return createPortal(
     <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-400 ${
-        isClosing ? "opacity-0" : "opacity-100"
-      }`}
+      className="fixed inset-0 z-[9999] flex items-center justify-center"
       style={{ fontFamily: "var(--font-sans)" }}
     >
       {/* ── Background Scene ── */}
@@ -132,40 +140,57 @@ export default function ReaderPanel({
           backgroundImage: `url(${BACKGROUND_URL})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
+          opacity: isVisible ? 1 : 0,
+          transition: "opacity 0.5s ease",
         }}
         onClick={handleClose}
       />
 
       {/* Dim overlay on background */}
       <div
-        className="absolute inset-0 bg-black/30 pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "rgba(0,0,0,0.25)",
+          opacity: isVisible ? 1 : 0,
+          transition: "opacity 0.4s ease",
+        }}
       />
 
       {/* ── Panel Container ── */}
       <div
-        className={`relative flex items-center justify-center transition-all duration-500 ease-out ${
-          isClosing
-            ? "opacity-0 scale-95 translate-y-8"
-            : "opacity-100 scale-100 translate-y-0"
-        }`}
+        className="relative"
         style={{
-          width: "min(680px, 90vw)",
-          height: "95vh",
+          width: "min(780px, 95vw)",
+          height: "96vh",
+          opacity: isVisible ? 1 : 0,
+          transition: "opacity 0.5s ease",
         }}
       >
-        {/* Panel Frame Image */}
+        {/* Panel Frame Image — fills the container */}
         <img
           src={PANEL_FRAME_URL}
           alt=""
           className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none"
+          style={{ filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.5))" }}
           draggable={false}
         />
 
-        {/* Section Indicators — left edge of frame */}
+        {/*
+          The panel frame image has internal structure:
+          - The glass/parchment area sits roughly at:
+            top: ~5%, bottom: ~92%, left: ~10%, right: ~90%
+          - There's a nameplate strip at the very bottom (~92-97%)
+          - Small screws/indicators at corners
+          
+          All interactive elements must be positioned RELATIVE to the
+          panel container, within these bounds.
+        */}
+
+        {/* Section Indicators — inside left edge of glass */}
         <div
           className="absolute z-30"
           style={{
-            left: "4%",
+            left: "12%",
             top: "50%",
             transform: "translateY(-50%)",
           }}
@@ -173,32 +198,32 @@ export default function ReaderPanel({
           <SectionIndicator total={sections.length} activeIndex={activeSection} />
         </div>
 
-        {/* Close Button — top right of frame */}
+        {/* Close Button — inside top-right of glass area */}
         <button
           onClick={handleClose}
-          className="absolute z-30 transition-all duration-200 hover:scale-110"
+          className="absolute z-30 transition-all duration-200 hover:opacity-70"
           style={{
-            top: "3%",
-            right: "5%",
+            top: "6%",
+            right: "12%",
             fontFamily: "var(--font-lcd)",
-            color: "#8a6d3b",
-            fontSize: "14px",
+            color: "rgba(100, 65, 30, 0.5)",
+            fontSize: "13px",
             letterSpacing: "0.1em",
-            textShadow: "0 0 4px rgba(138,109,59,0.3)",
             background: "none",
             border: "none",
             cursor: "pointer",
+            padding: "4px 6px",
           }}
           title="Close"
         >
           [X]
         </button>
 
-        {/* Mode Toggle — bottom of frame nameplate area */}
+        {/* Mode Toggle — inside the nameplate area at bottom of frame */}
         <div
-          className="absolute z-30 flex gap-2"
+          className="absolute z-30 flex gap-3"
           style={{
-            bottom: "2.5%",
+            bottom: "4%",
             left: "50%",
             transform: "translateX(-50%)",
           }}
@@ -210,9 +235,9 @@ export default function ReaderPanel({
               className="transition-all duration-200"
               style={{
                 fontFamily: "var(--font-lcd)",
-                fontSize: "11px",
+                fontSize: "12px",
                 letterSpacing: "0.15em",
-                padding: "2px 10px",
+                padding: "2px 12px",
                 color: mode === m ? "#c5a059" : "#5d4037",
                 textShadow:
                   mode === m ? "0 0 4px rgba(197,160,89,0.4)" : "none",
@@ -227,34 +252,38 @@ export default function ReaderPanel({
         </div>
 
         {/* ── Glass Content Area ── */}
+        {/*
+          Positioned to sit inside the glass/parchment area of the frame image.
+          The frame has ~10% bezel on each side, ~5% at top, ~8% at bottom (above nameplate).
+        */}
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="absolute overflow-y-auto overflow-x-hidden scrollbar-thin"
+          className="absolute overflow-y-auto overflow-x-hidden"
           style={{
-            top: "7%",
-            left: "14%",
-            width: "72%",
-            height: "80%",
+            top: "6%",
+            bottom: "9%",
+            left: "15%",
+            right: "12%",
             /* Hide scrollbar for cleaner look */
             scrollbarWidth: "none",
             msOverflowStyle: "none",
           }}
         >
           <style>{`
-            .reader-scroll::-webkit-scrollbar { display: none; }
+            .reader-glass-scroll::-webkit-scrollbar { display: none; }
           `}</style>
-          <div className="reader-scroll px-4 md:px-6 py-6 md:py-8">
+          <div className="reader-glass-scroll px-3 md:px-5 py-5 md:py-7">
             {/* ── Title ── */}
-            <div className="mb-8 md:mb-10">
+            <div className="mb-6 md:mb-8">
               <h1
-                className="font-serif text-2xl md:text-3xl leading-tight mb-2"
+                className="font-serif text-xl md:text-2xl lg:text-3xl leading-tight mb-2"
                 style={{ color: "rgba(55, 30, 12, 0.9)" }}
               >
                 {entry.title}
               </h1>
               <div
-                className="flex items-center gap-2 mt-3"
+                className="flex flex-wrap items-center gap-2 mt-2"
                 style={{
                   fontFamily: "var(--font-lcd)",
                   fontSize: "10px",
@@ -273,7 +302,7 @@ export default function ReaderPanel({
             {/* ── Section 1: Why This Found You ── */}
             <div
               ref={(el) => { sectionRefs.current[0] = el; }}
-              className="mb-10 md:mb-12"
+              className="mb-8 md:mb-10"
             >
               <ReaderSection
                 heading="WHY THIS FOUND YOU"
@@ -284,7 +313,7 @@ export default function ReaderPanel({
                   {entry.briefing.use_when.map((item, i) => (
                     <p
                       key={i}
-                      className="font-serif text-base md:text-lg leading-relaxed"
+                      className="font-serif text-sm md:text-base leading-relaxed"
                       style={{ color: "rgba(55, 30, 12, 0.8)" }}
                     >
                       {item}
@@ -292,10 +321,10 @@ export default function ReaderPanel({
                   ))}
                 </div>
                 {entry.briefing.avoid.length > 0 && (
-                  <div className="mt-5 pt-4" style={{ borderTop: "1px solid rgba(138, 109, 59, 0.2)" }}>
+                  <div className="mt-4 pt-3" style={{ borderTop: "1px solid rgba(138, 109, 59, 0.15)" }}>
                     <p
-                      className="font-serif text-sm italic"
-                      style={{ color: "rgba(100, 65, 30, 0.6)" }}
+                      className="font-serif text-xs md:text-sm italic"
+                      style={{ color: "rgba(100, 65, 30, 0.5)" }}
                     >
                       Not when: {entry.briefing.avoid.join(" ")}
                     </p>
@@ -307,7 +336,7 @@ export default function ReaderPanel({
             {/* ── Section 2: What This Opens ── */}
             <div
               ref={(el) => { sectionRefs.current[1] = el; }}
-              className="mb-10 md:mb-12"
+              className="mb-8 md:mb-10"
             >
               <ReaderSection
                 heading="WHAT THIS OPENS"
@@ -315,29 +344,29 @@ export default function ReaderPanel({
                 index={1}
               >
                 <p
-                  className="font-serif text-base md:text-lg leading-relaxed mb-4"
+                  className="font-serif text-sm md:text-base leading-relaxed mb-3"
                   style={{ color: "rgba(55, 30, 12, 0.85)" }}
                 >
                   {entry.briefing.objective}
                 </p>
                 <p
-                  className="font-serif text-base md:text-lg leading-relaxed"
+                  className="font-serif text-sm md:text-base leading-relaxed"
                   style={{ color: "rgba(55, 30, 12, 0.75)" }}
                 >
                   {entry.briefing.outcome}
                 </p>
                 {/* Flywheel node tags */}
-                <div className="flex gap-2 mt-5">
+                <div className="flex flex-wrap gap-2 mt-4">
                   {entry.flywheel_node.map((node) => (
                     <span
                       key={node}
                       style={{
                         fontFamily: "var(--font-lcd)",
-                        fontSize: "10px",
+                        fontSize: "9px",
                         letterSpacing: "0.12em",
-                        color: "rgba(138, 109, 59, 0.7)",
-                        padding: "2px 6px",
-                        border: "1px solid rgba(138, 109, 59, 0.25)",
+                        color: "rgba(138, 109, 59, 0.6)",
+                        padding: "1px 5px",
+                        border: "1px solid rgba(138, 109, 59, 0.2)",
                       }}
                     >
                       {node.toUpperCase()}
@@ -350,7 +379,7 @@ export default function ReaderPanel({
             {/* ── Section 3: The Practice ── */}
             <div
               ref={(el) => { sectionRefs.current[2] = el; }}
-              className="mb-10 md:mb-12"
+              className="mb-8 md:mb-10"
             >
               <ReaderSection
                 heading="THE PRACTICE"
@@ -361,36 +390,37 @@ export default function ReaderPanel({
                   <>
                     {/* Script */}
                     <div
-                      className="mb-6 p-4 relative"
+                      className="mb-5 p-3 md:p-4 relative"
                       style={{
-                        background: "rgba(138, 109, 59, 0.08)",
-                        borderLeft: "2px solid rgba(138, 109, 59, 0.3)",
+                        background: "rgba(138, 109, 59, 0.06)",
+                        borderLeft: "2px solid rgba(138, 109, 59, 0.25)",
                       }}
                     >
                       <p
-                        className="font-serif text-base md:text-lg leading-relaxed italic"
+                        className="font-serif text-sm md:text-base leading-relaxed italic"
                         style={{ color: "rgba(55, 30, 12, 0.85)" }}
                       >
-                        "{entry.script}"
+                        &ldquo;{entry.script}&rdquo;
                       </p>
                     </div>
 
                     {/* Protocol Steps */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       {steps.map((step, i) => (
                         <div key={i} className="flex gap-3">
                           <span
+                            className="flex-shrink-0"
                             style={{
                               fontFamily: "var(--font-lcd)",
-                              fontSize: "12px",
-                              color: "rgba(138, 109, 59, 0.5)",
-                              minWidth: "24px",
+                              fontSize: "11px",
+                              color: "rgba(138, 109, 59, 0.45)",
+                              minWidth: "20px",
                             }}
                           >
                             {String(i + 1).padStart(2, "0")}
                           </span>
                           <p
-                            className="font-serif text-base leading-relaxed"
+                            className="font-serif text-sm md:text-base leading-relaxed"
                             style={{ color: "rgba(55, 30, 12, 0.8)" }}
                           >
                             {step}
@@ -401,7 +431,7 @@ export default function ReaderPanel({
                   </>
                 ) : (
                   /* RUN Mode — Interactive checklist */
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {steps.map((step, i) => (
                       <div
                         key={i}
@@ -410,33 +440,33 @@ export default function ReaderPanel({
                       >
                         {/* Checkbox */}
                         <div
-                          className="mt-1 flex-shrink-0 transition-all duration-300"
+                          className="mt-0.5 flex-shrink-0 transition-all duration-300"
                           style={{
-                            width: "18px",
-                            height: "18px",
+                            width: "16px",
+                            height: "16px",
                             border: `1px solid ${
                               checklist[i]
                                 ? "rgba(138, 109, 59, 0.6)"
                                 : "rgba(138, 109, 59, 0.3)"
                             }`,
                             background: checklist[i]
-                              ? "rgba(138, 109, 59, 0.15)"
+                              ? "rgba(138, 109, 59, 0.12)"
                               : "transparent",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             fontFamily: "var(--font-lcd)",
-                            fontSize: "12px",
+                            fontSize: "11px",
                             color: "rgba(138, 109, 59, 0.8)",
                           }}
                         >
                           {checklist[i] ? "✓" : ""}
                         </div>
                         <p
-                          className="font-serif text-base leading-relaxed transition-all duration-300"
+                          className="font-serif text-sm md:text-base leading-relaxed transition-all duration-300"
                           style={{
                             color: checklist[i]
-                              ? "rgba(55, 30, 12, 0.4)"
+                              ? "rgba(55, 30, 12, 0.35)"
                               : "rgba(55, 30, 12, 0.8)",
                             textDecoration: checklist[i] ? "line-through" : "none",
                           }}
@@ -449,16 +479,16 @@ export default function ReaderPanel({
                     {/* Completion state */}
                     {allChecked && (
                       <div
-                        className="mt-6 pt-4 text-center"
-                        style={{ borderTop: "1px solid rgba(138, 109, 59, 0.2)" }}
+                        className="mt-5 pt-3 text-center"
+                        style={{ borderTop: "1px solid rgba(138, 109, 59, 0.15)" }}
                       >
                         <p
                           style={{
                             fontFamily: "var(--font-lcd)",
-                            fontSize: "12px",
+                            fontSize: "11px",
                             letterSpacing: "0.15em",
-                            color: "rgba(138, 109, 59, 0.8)",
-                            textShadow: "0 0 4px rgba(197,160,89,0.3)",
+                            color: "rgba(138, 109, 59, 0.7)",
+                            textShadow: "0 0 4px rgba(197,160,89,0.2)",
                           }}
                         >
                           SEQUENCE COMPLETE
@@ -473,7 +503,7 @@ export default function ReaderPanel({
             {/* ── Section 4: What to Notice ── */}
             <div
               ref={(el) => { sectionRefs.current[3] = el; }}
-              className="mb-10 md:mb-12"
+              className="mb-8 md:mb-10"
             >
               <ReaderSection
                 heading="WHAT TO NOTICE"
@@ -482,11 +512,11 @@ export default function ReaderPanel({
               >
                 {/* Watch for items */}
                 {entry.watch_for && entry.watch_for.length > 0 && (
-                  <div className="space-y-3 mb-6">
+                  <div className="space-y-3 mb-5">
                     {entry.watch_for.map((item, i) => (
                       <p
                         key={i}
-                        className="font-serif text-base md:text-lg leading-relaxed"
+                        className="font-serif text-sm md:text-base leading-relaxed"
                         style={{ color: "rgba(55, 30, 12, 0.8)" }}
                       >
                         {item}
@@ -497,16 +527,16 @@ export default function ReaderPanel({
 
                 {/* Proof / Research */}
                 {entry.proof && (
-                  <div className="space-y-5">
+                  <div className="space-y-4">
                     {entry.proof.research && entry.proof.research.length > 0 && (
                       <div>
                         <div
                           style={{
                             fontFamily: "var(--font-lcd)",
-                            fontSize: "10px",
+                            fontSize: "9px",
                             letterSpacing: "0.12em",
-                            color: "rgba(138, 109, 59, 0.5)",
-                            marginBottom: "8px",
+                            color: "rgba(138, 109, 59, 0.45)",
+                            marginBottom: "6px",
                           }}
                         >
                           RESEARCH
@@ -514,8 +544,8 @@ export default function ReaderPanel({
                         {entry.proof.research.map((item, i) => (
                           <p
                             key={i}
-                            className="font-serif text-sm leading-relaxed mb-2"
-                            style={{ color: "rgba(55, 30, 12, 0.65)" }}
+                            className="font-serif text-xs md:text-sm leading-relaxed mb-2"
+                            style={{ color: "rgba(55, 30, 12, 0.6)" }}
                           >
                             {item}
                           </p>
@@ -528,10 +558,10 @@ export default function ReaderPanel({
                         <div
                           style={{
                             fontFamily: "var(--font-lcd)",
-                            fontSize: "10px",
+                            fontSize: "9px",
                             letterSpacing: "0.12em",
-                            color: "rgba(138, 109, 59, 0.5)",
-                            marginBottom: "8px",
+                            color: "rgba(138, 109, 59, 0.45)",
+                            marginBottom: "6px",
                           }}
                         >
                           SOURCES
@@ -539,8 +569,8 @@ export default function ReaderPanel({
                         {entry.proof.books.map((book, i) => (
                           <p
                             key={i}
-                            className="font-serif text-sm italic mb-1"
-                            style={{ color: "rgba(55, 30, 12, 0.6)" }}
+                            className="font-serif text-xs md:text-sm italic mb-1"
+                            style={{ color: "rgba(55, 30, 12, 0.55)" }}
                           >
                             {book.title} — {book.author}
                             {book.chapter ? ` (${book.chapter})` : ""}
@@ -554,10 +584,10 @@ export default function ReaderPanel({
                         <div
                           style={{
                             fontFamily: "var(--font-lcd)",
-                            fontSize: "10px",
+                            fontSize: "9px",
                             letterSpacing: "0.12em",
-                            color: "rgba(138, 109, 59, 0.5)",
-                            marginBottom: "8px",
+                            color: "rgba(138, 109, 59, 0.45)",
+                            marginBottom: "6px",
                           }}
                         >
                           FIELD NOTES
@@ -565,8 +595,8 @@ export default function ReaderPanel({
                         {entry.proof.field_notes.map((note, i) => (
                           <p
                             key={i}
-                            className="font-serif text-sm leading-relaxed mb-2"
-                            style={{ color: "rgba(55, 30, 12, 0.65)" }}
+                            className="font-serif text-xs md:text-sm leading-relaxed mb-2"
+                            style={{ color: "rgba(55, 30, 12, 0.6)" }}
                           >
                             {note}
                           </p>
@@ -580,12 +610,12 @@ export default function ReaderPanel({
 
             {/* ── End of File marker ── */}
             <div
-              className="text-center py-6"
+              className="text-center py-4"
               style={{
                 fontFamily: "var(--font-lcd)",
-                fontSize: "10px",
+                fontSize: "9px",
                 letterSpacing: "0.15em",
-                color: "rgba(138, 109, 59, 0.3)",
+                color: "rgba(138, 109, 59, 0.25)",
               }}
             >
               END OF FILE // {entry.id}
