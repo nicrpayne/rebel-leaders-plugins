@@ -1,12 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 
 interface WordRevealProps {
   /** The full text string to reveal word-by-word */
   text: string;
   /** Delay before the reveal starts (ms) */
   delay?: number;
-  /** Time between each word appearing (ms) */
+  /** Base time between each word appearing (ms) */
   wordInterval?: number;
+  /** Random jitter added to wordInterval (ms) — creates organic pacing */
+  jitter?: number;
   /** Whether the reveal should be active (trigger) */
   isActive?: boolean;
   /** Additional className for the container */
@@ -17,13 +19,15 @@ interface WordRevealProps {
 
 /**
  * Reveals text word-by-word like a pager receiving a transmission.
- * Each new word arrives with a brief amber glow pulse that fades,
- * giving the feeling of data being received rather than static text.
+ * Each new word arrives with a brief amber glow pulse that fades.
+ * Supports jitter so multiple instances run at slightly different paces —
+ * all lines populate left-to-right together but not quite in sync.
  */
 export default function WordReveal({
   text,
   delay = 300,
-  wordInterval = 55,
+  wordInterval = 90,
+  jitter = 25,
   isActive = true,
   className = "",
   style = {},
@@ -31,35 +35,43 @@ export default function WordReveal({
   const [visibleCount, setVisibleCount] = useState(0);
   const [glowIndex, setGlowIndex] = useState(-1);
   const hasStarted = useRef(false);
+  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  const words = text.split(/\s+/).filter(Boolean);
+  const words = useMemo(() => text.split(/\s+/).filter(Boolean), [text]);
 
   useEffect(() => {
     if (!isActive || hasStarted.current) return;
     hasStarted.current = true;
 
-    const startTimeout = setTimeout(() => {
-      let count = 0;
-      const interval = setInterval(() => {
-        count++;
-        if (count <= words.length) {
-          setVisibleCount(count);
-          setGlowIndex(count - 1);
+    // Pre-compute jittered timing for each word
+    let cumulative = delay;
+    const schedule: number[] = [];
+    for (let i = 0; i < words.length; i++) {
+      const jitterAmount = Math.round((Math.random() - 0.5) * 2 * jitter);
+      cumulative += wordInterval + jitterAmount;
+      schedule.push(cumulative);
+    }
 
-          // Clear glow after a short pulse
-          setTimeout(() => {
-            setGlowIndex((prev) => (prev === count - 1 ? -1 : prev));
-          }, 180);
-        } else {
-          clearInterval(interval);
-        }
-      }, wordInterval);
+    // Schedule each word reveal independently
+    schedule.forEach((time, i) => {
+      const t = setTimeout(() => {
+        setVisibleCount(i + 1);
+        setGlowIndex(i);
 
-      return () => clearInterval(interval);
-    }, delay);
+        // Clear glow after pulse
+        const g = setTimeout(() => {
+          setGlowIndex((prev) => (prev === i ? -1 : prev));
+        }, 200);
+        timeoutsRef.current.push(g);
+      }, time);
+      timeoutsRef.current.push(t);
+    });
 
-    return () => clearTimeout(startTimeout);
-  }, [isActive, words.length, delay, wordInterval]);
+    return () => {
+      timeoutsRef.current.forEach(clearTimeout);
+      timeoutsRef.current = [];
+    };
+  }, [isActive, words.length, delay, wordInterval, jitter]);
 
   return (
     <span className={className} style={style}>
@@ -68,7 +80,7 @@ export default function WordReveal({
           key={i}
           style={{
             opacity: i < visibleCount ? 1 : 0,
-            transition: "opacity 0.15s ease-out",
+            transition: "opacity 0.18s ease-out",
             textShadow:
               i === glowIndex
                 ? "0 0 8px rgba(197,160,89,0.6), 0 0 2px rgba(197,160,89,0.3)"

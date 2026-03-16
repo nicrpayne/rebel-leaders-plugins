@@ -324,8 +324,9 @@ export default function ReaderPanel({
                     >
                       <WordReveal
                         text={item}
-                        delay={400 + i * 600}
-                        wordInterval={55}
+                        delay={500}
+                        wordInterval={90}
+                        jitter={20 + i * 8}
                         isActive={true}
                       />
                     </p>
