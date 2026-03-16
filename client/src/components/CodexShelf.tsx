@@ -229,7 +229,7 @@ function CartridgeSpine({
       <div
         className={cn(
           "absolute inset-0 pointer-events-none transition-all duration-300 ease-out",
-          !isLoaded && "group-hover/spine:brightness-125",
+          isLoaded ? "opacity-0" : "group-hover/spine:brightness-125",
         )}
         style={{
           transform: isLoaded
