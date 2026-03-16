@@ -547,15 +547,7 @@ export default function ReaderPanel({
                       </div>
                     )}
 
-                    {/* Keys Notes */}
-                    {entry.keys_notes && (
-                      <p
-                        className="font-serif font-medium text-sm italic mt-2"
-                        style={{ color: BODY_SOFT }}
-                      >
-                        {entry.keys_notes}
-                      </p>
-                    )}
+
                   </>
                 ) : (
                   /* ── RUN MODE ── */
