@@ -260,7 +260,7 @@ export default function ReaderPanel({
         <div
           className="absolute z-30 flex gap-3"
           style={{
-            bottom: "14%",
+            bottom: "12%",
             left: "50%",
             transform: "translateX(-50%)",
           }}
