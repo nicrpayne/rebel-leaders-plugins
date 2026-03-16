@@ -132,8 +132,8 @@ const BOTTOM_SHELF_ARRANGEMENT: Record<string, CartridgeArrangement> = {
   MOVE_MEETING_REWRITE:      { tilt: -15,  offsetY: -30, offsetX: 0, gapBefore: 5 },
   MOVE_PERMISSION_SLIP:      { tilt: -17,  offsetY: -28, offsetX: 0, gapBefore: -100 },
   MOVE_SHADOW_NORMS:         { tilt: -90, offsetY: 55, offsetX: 0, useCenter: true, gapBefore: -30 },
-  MOVE_ENERGY_LEAK_CHECK:    { tilt: 0,    offsetY: 1, offsetX: 0 },
-  MOVE_SAFE_TO_SAY:          { tilt: 0.5,  offsetY: 0, offsetX: 0 },
+  MOVE_ENERGY_LEAK_CHECK:    { tilt: -90, offsetY: 14, offsetX: 0, useCenter: true, gapBefore: -149 },
+  MOVE_SAFE_TO_SAY:          { tilt: -90, offsetY: -30, offsetX: 0, useCenter: true, gapBefore: -145 },
 };
 
 /* ─────────────────────────────────────────────
