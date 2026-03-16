@@ -213,7 +213,7 @@ export default function Results() {
             "text-[8px] tracking-[0.2em] uppercase transition-colors",
             isTransmitting
               ? "text-amber-400 animate-pulse"
-              : "text-[#5a5a66] group-hover:text-[#c5a059]"
+              : "sidechain-glow-text group-hover:text-[#c5a059]"
           )}
         >
           {isTransmitting ? "TRANSMITTING..." : "SIDE-CHAIN TO CODEX"}
@@ -425,6 +425,19 @@ export default function Results() {
         }
         .sidechain-glow {
           animation: sidechain-pulse 2.5s ease-in-out infinite;
+        }
+        @keyframes sidechain-text-pulse {
+          0%, 100% {
+            color: #5a5a66;
+            text-shadow: none;
+          }
+          50% {
+            color: #c5a059;
+            text-shadow: 0 0 8px rgba(197,160,89,0.3);
+          }
+        }
+        .sidechain-glow-text {
+          animation: sidechain-text-pulse 2.5s ease-in-out infinite;
         }
       `}</style>
     </GravitasShell>

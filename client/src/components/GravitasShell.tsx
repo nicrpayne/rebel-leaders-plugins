@@ -206,7 +206,7 @@ export default function GravitasShell({
             </div>
 
             {/* Main Content — instruments go here */}
-            <div className="flex-1 relative z-10">{children}</div>
+            <div className="flex-1 relative z-10 overflow-y-auto overflow-x-hidden">{children}</div>
 
             {/* Calibration Readouts */}
             {!hideCalibration && (
