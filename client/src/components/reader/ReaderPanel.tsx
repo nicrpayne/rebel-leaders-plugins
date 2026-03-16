@@ -275,9 +275,11 @@ export default function ReaderPanel({
                 fontSize: "12px",
                 letterSpacing: "0.15em",
                 padding: "2px 12px",
-                color: mode === m ? "#c5a059" : "#5d4037",
+                color: mode === m ? "#c5a059" : "#3a2a1a",
                 textShadow:
-                  mode === m ? "0 0 4px rgba(197,160,89,0.4)" : "none",
+                  mode === m
+                    ? "0 0 4px rgba(197,160,89,0.4)"
+                    : "0 1px 2px rgba(0,0,0,0.6), 0 0 1px rgba(0,0,0,0.4)",
                 background: "none",
                 border: "none",
                 cursor: "pointer",
