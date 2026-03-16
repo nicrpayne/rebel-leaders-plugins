@@ -23,8 +23,20 @@ interface GravitasScores {
 
 export default function Codex() {
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
-  const [loadedEntry, setLoadedEntry] = useState<CodexEntry | null>(null);
-  const [isReaderOpen, setIsReaderOpen] = useState(false);
+  const [loadedEntry, setLoadedEntry] = useState<CodexEntry | null>(() => {
+    // Restore entry from URL hash on mount (e.g. #MOVE_REPAIR_48H)
+    const hash = window.location.hash.replace("#", "");
+    if (hash) {
+      const found = CODEX_ENTRIES.find((e) => e.id === hash);
+      if (found) return found;
+    }
+    return null;
+  });
+  const [isReaderOpen, setIsReaderOpen] = useState(() => {
+    // If we restored an entry from hash, open the reader immediately
+    const hash = window.location.hash.replace("#", "");
+    return !!hash && CODEX_ENTRIES.some((e) => e.id === hash);
+  });
   const [readerMode, setReaderMode] = useState<"READ" | "RUN">("READ");
   const [recentEntryIds, setRecentEntryIds] = useState<string[]>([]);
   const [gravitasScores, setGravitasScores] = useState<GravitasScores | null>(null);
@@ -179,12 +191,16 @@ export default function Codex() {
     setLoadedEntry(entry);
     addToRecent(entry.id);
     playSound("load");
+    // Persist entry ID in URL hash so refresh restores state
+    window.history.replaceState({}, "", `/codex#${entry.id}`);
   };
 
   const handleEject = () => {
     setLoadedEntry(null);
     setIsReaderOpen(false);
     playSound("eject");
+    // Clear hash on eject
+    window.history.replaceState({}, "", "/codex");
   };
 
   const handleRead = () => {
@@ -242,7 +258,10 @@ export default function Codex() {
         <ReaderPanel
           entry={loadedEntry}
           isOpen={isReaderOpen}
-          onClose={() => setIsReaderOpen(false)}
+          onClose={() => {
+          setIsReaderOpen(false);
+          // Keep hash (entry stays loaded in deck) but could clear if desired
+        }}
           initialMode={readerMode}
         />
       )}
