@@ -166,6 +166,7 @@ export default function ReaderPanel({
           height: "115vh",
           width: `calc(115vh * ${PANEL_ASPECT})`,
           maxWidth: "100vw",
+          marginTop: "5vh",
           opacity: isVisible ? 1 : 0,
           transition: "opacity 0.5s ease",
         }}
