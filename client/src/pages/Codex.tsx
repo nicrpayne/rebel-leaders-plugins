@@ -5,6 +5,7 @@ import { CODEX_ENTRIES } from "@/lib/codex-data";
 import { getBestCartridge, type GravitasSignal, type RankingRationale } from "@/lib/codex-ranking";
 import CabinetDeck from "@/components/CabinetDeck";
 import ReaderDrawer from "@/components/ReaderDrawer";
+import { ReaderPanel } from "@/components/reader";
 import CodexShelf from "@/components/CodexShelf";
 
 /* ─────────────────────────────────────────────
@@ -236,9 +237,9 @@ export default function Codex() {
         </div>
       </div>
 
-      {/* ── READER DRAWER ── */}
+      {/* ── READER PANEL (Lantern Panel) ── */}
       {loadedEntry && (
-        <ReaderDrawer
+        <ReaderPanel
           entry={loadedEntry}
           isOpen={isReaderOpen}
           onClose={() => setIsReaderOpen(false)}
