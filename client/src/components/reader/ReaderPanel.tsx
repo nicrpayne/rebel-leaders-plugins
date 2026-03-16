@@ -28,6 +28,8 @@ interface ReaderPanelProps {
   isOpen: boolean;
   onClose: () => void;
   initialMode?: "READ" | "RUN";
+  /** Skip the fade-in animation (used when restoring from URL hash) */
+  skipEnterAnimation?: boolean;
 }
 
 /**
@@ -40,12 +42,13 @@ export default function ReaderPanel({
   isOpen,
   onClose,
   initialMode = "READ",
+  skipEnterAnimation = false,
 }: ReaderPanelProps) {
   const [mode, setMode] = useState<"READ" | "RUN">(initialMode);
   const [activeSection, setActiveSection] = useState(0);
   const [checklist, setChecklist] = useState<boolean[]>([]);
   const [isClosing, setIsClosing] = useState(false);
-  const [isEntering, setIsEntering] = useState(true);
+  const [isEntering, setIsEntering] = useState(!skipEnterAnimation);
   const scrollRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -61,18 +64,20 @@ export default function ReaderPanel({
       setMode(initialMode);
       setActiveSection(0);
       setIsClosing(false);
-      setIsEntering(true);
+      setIsEntering(skipEnterAnimation ? false : true);
       setChecklist(
         new Array(
           (entry.protocol || entry.script.split("\n").filter((l) => l.trim())).length
         ).fill(false)
       );
       document.body.style.overflow = "hidden";
-      requestAnimationFrame(() => {
+      if (!skipEnterAnimation) {
         requestAnimationFrame(() => {
-          setIsEntering(false);
+          requestAnimationFrame(() => {
+            setIsEntering(false);
+          });
         });
-      });
+      }
     } else {
       document.body.style.overflow = "";
     }

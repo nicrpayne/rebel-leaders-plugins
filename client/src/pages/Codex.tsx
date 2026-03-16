@@ -37,6 +37,11 @@ export default function Codex() {
     const hash = window.location.hash.replace("#", "");
     return !!hash && CODEX_ENTRIES.some((e) => e.id === hash);
   });
+  // Track whether we restored from hash so we can skip the enter animation
+  const [restoredFromHash] = useState(() => {
+    const hash = window.location.hash.replace("#", "");
+    return !!hash && CODEX_ENTRIES.some((e) => e.id === hash);
+  });
   const [readerMode, setReaderMode] = useState<"READ" | "RUN">("READ");
   const [recentEntryIds, setRecentEntryIds] = useState<string[]>([]);
   const [gravitasScores, setGravitasScores] = useState<GravitasScores | null>(null);
@@ -129,7 +134,8 @@ export default function Codex() {
       } else {
         setTimeout(() => setIsReceivingSignal(false), 2500);
       }
-      window.history.replaceState({}, "", "/codex");
+      // Clear signal params but preserve any existing hash
+      window.history.replaceState({}, "", `/codex${window.location.hash}`);
     }
 
     // Parse GRAVITAS scores
@@ -259,10 +265,11 @@ export default function Codex() {
           entry={loadedEntry}
           isOpen={isReaderOpen}
           onClose={() => {
-          setIsReaderOpen(false);
-          // Keep hash (entry stays loaded in deck) but could clear if desired
-        }}
+            setIsReaderOpen(false);
+            // Keep hash (entry stays loaded in deck) but could clear if desired
+          }}
           initialMode={readerMode}
+          skipEnterAnimation={restoredFromHash}
         />
       )}
     </div>
