@@ -163,9 +163,9 @@ export default function ReaderPanel({
       <div
         className="relative"
         style={{
-          height: "97vh",
-          width: `calc(97vh * ${PANEL_ASPECT})`,
-          maxWidth: "95vw",
+          height: "100vh",
+          width: `calc(100vh * ${PANEL_ASPECT})`,
+          maxWidth: "98vw",
           opacity: isVisible ? 1 : 0,
           transition: "opacity 0.5s ease",
         }}
