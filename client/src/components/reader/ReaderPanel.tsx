@@ -23,6 +23,19 @@ const BACKGROUND_URL =
 */
 const PANEL_ASPECT = 1792 / 2400; // 0.747
 
+/* ── Shared style constants ── */
+const LCD_LABEL: React.CSSProperties = {
+  fontFamily: "var(--font-lcd)",
+  fontSize: "8px",
+  letterSpacing: "0.12em",
+  color: "rgba(138, 109, 59, 0.4)",
+  marginBottom: "5px",
+};
+
+const BODY_COLOR = "rgba(35, 18, 5, 0.9)";
+const BODY_SOFT = "rgba(35, 18, 5, 0.75)";
+const DIVIDER = "1px solid rgba(138, 109, 59, 0.15)";
+
 interface ReaderPanelProps {
   entry: CodexEntry;
   isOpen: boolean;
@@ -33,9 +46,13 @@ interface ReaderPanelProps {
 }
 
 /**
- * The Lantern Panel — an immersive reader that replaces the ReaderDrawer.
- * Renders the Codex entry content inside a warm amber glass panel
- * with the office/Codex station scene as a blurred background.
+ * The Lantern Panel — an immersive reader for Codex entries.
+ *
+ * Content architecture (4 sections):
+ *   1. WHY THIS FOUND YOU   — use_when, avoid, category
+ *   2. WHAT THIS OPENS       — objective, outcome, why_it_works, flywheel tags
+ *   3. THE PRACTICE           — script (with copy), protocol steps, keys, RUN mode
+ *   4. WHAT TO NOTICE         — keys_notes, why_it_works reflection, proof, resources
  */
 export default function ReaderPanel({
   entry,
@@ -49,8 +66,10 @@ export default function ReaderPanel({
   const [checklist, setChecklist] = useState<boolean[]>([]);
   const [isClosing, setIsClosing] = useState(false);
   const [isEntering, setIsEntering] = useState(!skipEnterAnimation);
+  const [scriptCopied, setScriptCopied] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const practiceRef = useRef<HTMLDivElement | null>(null);
 
   const sections = [
     "WHY THIS FOUND YOU",
@@ -59,17 +78,19 @@ export default function ReaderPanel({
     "WHAT TO NOTICE",
   ];
 
+  const steps =
+    entry.protocol || entry.script.split("\n").filter((line) => line.trim().length > 0);
+  const allChecked = checklist.length > 0 && checklist.every(Boolean);
+  const completedCount = checklist.filter(Boolean).length;
+
   useEffect(() => {
     if (isOpen) {
       setMode(initialMode);
       setActiveSection(0);
       setIsClosing(false);
       setIsEntering(skipEnterAnimation ? false : true);
-      setChecklist(
-        new Array(
-          (entry.protocol || entry.script.split("\n").filter((l) => l.trim())).length
-        ).fill(false)
-      );
+      setScriptCopied(false);
+      setChecklist(new Array(steps.length).fill(false));
       document.body.style.overflow = "hidden";
       if (!skipEnterAnimation) {
         requestAnimationFrame(() => {
@@ -124,13 +145,40 @@ export default function ReaderPanel({
     }, 350);
   };
 
-  const steps =
-    entry.protocol || entry.script.split("\n").filter((line) => line.trim().length > 0);
-  const allChecked = checklist.length > 0 && checklist.every(Boolean);
+  const handleCopyScript = () => {
+    navigator.clipboard.writeText(entry.script).then(() => {
+      setScriptCopied(true);
+      setTimeout(() => setScriptCopied(false), 2000);
+    });
+  };
+
+  const handleSwitchToRun = () => {
+    setMode("RUN");
+    // Auto-scroll to The Practice section
+    setTimeout(() => {
+      const practiceEl = sectionRefs.current[2];
+      if (practiceEl && scrollRef.current) {
+        practiceEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 100);
+  };
 
   if (!isOpen) return null;
 
   const isVisible = !isEntering && !isClosing;
+
+  /* ── Helper: check if "What to Notice" has any content ── */
+  const hasProof = entry.proof && (
+    (entry.proof.research && entry.proof.research.length > 0) ||
+    (entry.proof.books && entry.proof.books.length > 0) ||
+    (entry.proof.field_notes && entry.proof.field_notes.length > 0)
+  );
+  const hasResources = entry.resources && (
+    (entry.resources.videos && entry.resources.videos.length > 0) ||
+    (entry.resources.writings && entry.resources.writings.length > 0) ||
+    (entry.resources.links && entry.resources.links.length > 0)
+  );
+  const hasReflectionContent = entry.why_it_works || entry.keys_notes;
 
   return createPortal(
     <div
@@ -160,11 +208,7 @@ export default function ReaderPanel({
         }}
       />
 
-      {/* ── Panel Container ──
-          Locked to the panel image's aspect ratio.
-          Max height = 97vh, width derived from aspect ratio.
-          This ensures the image fills the container exactly — no letterboxing.
-      */}
+      {/* ── Panel Container ── */}
       <div
         className="relative"
         style={{
@@ -176,7 +220,7 @@ export default function ReaderPanel({
           transition: "opacity 0.5s ease",
         }}
       >
-        {/* Panel Frame Image — fills container exactly */}
+        {/* Panel Frame Image */}
         <img
           src={PANEL_FRAME_URL}
           alt=""
@@ -188,10 +232,7 @@ export default function ReaderPanel({
           draggable={false}
         />
 
-        {/* Section Indicators — inside left edge of glass
-            Glass left edge is at ~19% of image width.
-            Place indicators just inside at ~20%.
-        */}
+        {/* Section Indicators */}
         <div
           className="absolute z-30"
           style={{
@@ -203,9 +244,7 @@ export default function ReaderPanel({
           <SectionIndicator total={sections.length} activeIndex={activeSection} />
         </div>
 
-        {/* Close Button — inside top-right of glass area
-            Glass right edge ~80%, top ~18%
-        */}
+        {/* Close Button */}
         <button
           onClick={handleClose}
           className="absolute z-30 transition-all duration-200 hover:opacity-70"
@@ -226,9 +265,7 @@ export default function ReaderPanel({
           [X]
         </button>
 
-        {/* Mode Toggle — inside the nameplate area
-            Nameplate is at roughly 89-93% of image height
-        */}
+        {/* Mode Toggle — Nameplate area */}
         <div
           className="absolute z-30 flex gap-3"
           style={{
@@ -240,7 +277,7 @@ export default function ReaderPanel({
           {(["READ", "RUN"] as const).map((m) => (
             <button
               key={m}
-              onClick={() => setMode(m)}
+              onClick={() => m === "RUN" ? handleSwitchToRun() : setMode(m)}
               className="transition-all duration-200"
               style={{
                 fontFamily: "var(--font-lcd)",
@@ -260,13 +297,7 @@ export default function ReaderPanel({
           ))}
         </div>
 
-        {/* ── Glass Content Area ──
-            Positioned to match the amber glass area within the image.
-            Glass bounds (from analysis):
-              left: 19.1%, right: 80.6% → content left: 22%, right: 22% (width: 56%)
-              top: 18.2%, bottom: 79.5% → content top: 20%, bottom: 18% (height: 62%)
-            Adding padding inside for text breathing room.
-        */}
+        {/* ── Glass Content Area ── */}
         <div
           ref={scrollRef}
           onScroll={handleScroll}
@@ -284,6 +315,7 @@ export default function ReaderPanel({
             .reader-glass-scroll::-webkit-scrollbar { display: none; }
           `}</style>
           <div className="reader-glass-scroll px-2 md:px-4 py-4 md:py-6">
+
             {/* ── Title ── */}
             <div className="mb-5 md:mb-7">
               <h1
@@ -301,7 +333,7 @@ export default function ReaderPanel({
                   color: "rgba(100, 65, 30, 0.8)",
                 }}
               >
-                <span>{entry.id}</span>
+                <span>{entry.category.toUpperCase()}</span>
                 <span style={{ opacity: 0.4 }}>|</span>
                 <span>{entry.difficulty}/5</span>
                 <span style={{ opacity: 0.4 }}>|</span>
@@ -309,7 +341,11 @@ export default function ReaderPanel({
               </div>
             </div>
 
-            {/* ── Section 1: Why This Found You ── */}
+            {/* ════════════════════════════════════════════
+                SECTION 1: WHY THIS FOUND YOU
+                Recognition — "this surfaced for a reason"
+                Data: briefing.use_when, briefing.avoid
+               ════════════════════════════════════════════ */}
             <div
               ref={(el) => { sectionRefs.current[0] = el; }}
               className="mb-7 md:mb-9"
@@ -324,14 +360,14 @@ export default function ReaderPanel({
                     <p
                       key={i}
                       className="font-serif font-semibold text-base md:text-lg leading-relaxed"
-                      style={{ color: "rgba(35, 18, 5, 0.9)" }}
+                      style={{ color: BODY_COLOR }}
                     >
                       {item}
                     </p>
                   ))}
                 </div>
                 {entry.briefing.avoid.length > 0 && (
-                  <div className="mt-3 pt-3" style={{ borderTop: "1px solid rgba(138, 109, 59, 0.15)" }}>
+                  <div className="mt-3 pt-3" style={{ borderTop: DIVIDER }}>
                     <p
                       className="font-serif font-semibold text-sm md:text-base italic"
                       style={{ color: "rgba(35, 18, 5, 0.85)" }}
@@ -343,7 +379,12 @@ export default function ReaderPanel({
               </ReaderSection>
             </div>
 
-            {/* ── Section 2: What This Opens ── */}
+            {/* ════════════════════════════════════════════
+                SECTION 2: WHAT THIS OPENS
+                Orientation — "what this is really about"
+                Data: briefing.objective, briefing.outcome,
+                      why_it_works, flywheel_node tags
+               ════════════════════════════════════════════ */}
             <div
               ref={(el) => { sectionRefs.current[1] = el; }}
               className="mb-7 md:mb-9"
@@ -355,7 +396,7 @@ export default function ReaderPanel({
               >
                 <p
                   className="font-serif font-semibold text-base md:text-lg leading-relaxed mb-3"
-                  style={{ color: "rgba(35, 18, 5, 0.9)" }}
+                  style={{ color: BODY_COLOR }}
                 >
                   {entry.briefing.objective}
                 </p>
@@ -365,6 +406,21 @@ export default function ReaderPanel({
                 >
                   {entry.briefing.outcome}
                 </p>
+
+                {/* Why It Works — the deeper mechanism */}
+                {entry.why_it_works && (
+                  <div className="mt-4 pt-3" style={{ borderTop: DIVIDER }}>
+                    <div style={LCD_LABEL}>WHY IT WORKS</div>
+                    <p
+                      className="font-serif font-medium text-sm md:text-base leading-relaxed"
+                      style={{ color: BODY_SOFT }}
+                    >
+                      {entry.why_it_works}
+                    </p>
+                  </div>
+                )}
+
+                {/* Flywheel node tags */}
                 <div className="flex flex-wrap gap-2 mt-4">
                   {entry.flywheel_node.map((node) => (
                     <span
@@ -385,9 +441,18 @@ export default function ReaderPanel({
               </ReaderSection>
             </div>
 
-            {/* ── Section 3: The Practice ── */}
+            {/* ════════════════════════════════════════════
+                SECTION 3: THE PRACTICE
+                Practice — "what to try, gently and concretely"
+                Data: script (with copy), protocol steps,
+                      keys_primary, keys_secondary
+                Modes: READ (view) and RUN (interactive checklist)
+               ════════════════════════════════════════════ */}
             <div
-              ref={(el) => { sectionRefs.current[2] = el; }}
+              ref={(el) => {
+                sectionRefs.current[2] = el;
+                practiceRef.current = el;
+              }}
               className="mb-7 md:mb-9"
             >
               <ReaderSection
@@ -397,6 +462,7 @@ export default function ReaderPanel({
               >
                 {mode === "READ" ? (
                   <>
+                    {/* Verbatim Script */}
                     <div
                       className="mb-4 p-3 relative"
                       style={{
@@ -406,12 +472,30 @@ export default function ReaderPanel({
                     >
                       <p
                         className="font-serif font-semibold text-base md:text-lg leading-relaxed italic"
-                        style={{ color: "rgba(35, 18, 5, 0.9)" }}
+                        style={{ color: BODY_COLOR }}
                       >
                         &ldquo;{entry.script}&rdquo;
                       </p>
+                      {/* Copy button */}
+                      <button
+                        onClick={handleCopyScript}
+                        className="mt-2 transition-all duration-200 hover:opacity-80"
+                        style={{
+                          fontFamily: "var(--font-lcd)",
+                          fontSize: "8px",
+                          letterSpacing: "0.12em",
+                          color: scriptCopied ? "rgba(138, 109, 59, 0.8)" : "rgba(138, 109, 59, 0.4)",
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          padding: 0,
+                        }}
+                      >
+                        {scriptCopied ? "COPIED" : "COPY SCRIPT"}
+                      </button>
                     </div>
 
+                    {/* Protocol Steps */}
                     <div className="space-y-3">
                       {steps.map((step, i) => (
                         <div key={i} className="flex gap-2">
@@ -428,63 +512,172 @@ export default function ReaderPanel({
                           </span>
                           <p
                             className="font-serif font-semibold text-base md:text-lg leading-relaxed"
-                            style={{ color: "rgba(35, 18, 5, 0.9)" }}
+                            style={{ color: BODY_COLOR }}
                           >
                             {step}
                           </p>
                         </div>
                       ))}
                     </div>
+
+                    {/* Skill Keys */}
+                    {(entry.keys_primary || entry.keys_secondary) && (
+                      <div className="flex flex-wrap gap-2 mt-4 pt-3" style={{ borderTop: DIVIDER }}>
+                        {entry.keys_primary?.map((key) => (
+                          <span
+                            key={key}
+                            style={{
+                              fontFamily: "var(--font-lcd)",
+                              fontSize: "8px",
+                              letterSpacing: "0.12em",
+                              color: "rgba(138, 109, 59, 0.7)",
+                              padding: "1px 5px",
+                              border: "1px solid rgba(138, 109, 59, 0.3)",
+                            }}
+                          >
+                            {key.toUpperCase()}
+                          </span>
+                        ))}
+                        {entry.keys_secondary?.map((key) => (
+                          <span
+                            key={key}
+                            style={{
+                              fontFamily: "var(--font-lcd)",
+                              fontSize: "8px",
+                              letterSpacing: "0.12em",
+                              color: "rgba(138, 109, 59, 0.45)",
+                              padding: "1px 5px",
+                              border: "1px solid rgba(138, 109, 59, 0.15)",
+                            }}
+                          >
+                            {key.toUpperCase()}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Keys Notes */}
+                    {entry.keys_notes && (
+                      <p
+                        className="font-serif font-medium text-sm italic mt-2"
+                        style={{ color: BODY_SOFT }}
+                      >
+                        {entry.keys_notes}
+                      </p>
+                    )}
                   </>
                 ) : (
-                  <div className="space-y-3">
-                    {steps.map((step, i) => (
-                      <div
-                        key={i}
-                        className="flex gap-2 items-start cursor-pointer group"
-                        onClick={() => toggleStep(i)}
+                  /* ── RUN MODE ── */
+                  <div>
+                    {/* Progress header */}
+                    <div className="flex items-center justify-between mb-3">
+                      <span
+                        style={{
+                          fontFamily: "var(--font-lcd)",
+                          fontSize: "9px",
+                          letterSpacing: "0.15em",
+                          color: "rgba(138, 109, 59, 0.7)",
+                        }}
                       >
-                        <div
-                          className="mt-0.5 flex-shrink-0 transition-all duration-300"
-                          style={{
-                            width: "15px",
-                            height: "15px",
-                            border: `1px solid ${
-                              checklist[i]
-                                ? "rgba(138, 109, 59, 0.6)"
-                                : "rgba(138, 109, 59, 0.3)"
-                            }`,
-                            background: checklist[i]
-                              ? "rgba(138, 109, 59, 0.12)"
-                              : "transparent",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontFamily: "var(--font-lcd)",
-                            fontSize: "10px",
-                            color: "rgba(138, 109, 59, 0.8)",
-                          }}
-                        >
-                          {checklist[i] ? "✓" : ""}
-                        </div>
-                        <p
-                          className="font-serif font-semibold text-base md:text-lg leading-relaxed transition-all duration-300"
-                          style={{
-                            color: checklist[i]
-                              ? "rgba(35, 18, 5, 0.35)"
-                              : "rgba(35, 18, 5, 0.9)",
-                            textDecoration: checklist[i] ? "line-through" : "none",
-                          }}
-                        >
-                          {step}
-                        </p>
-                      </div>
-                    ))}
+                        {allChecked ? "SEQUENCE COMPLETE" : "EXECUTING"}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: "var(--font-lcd)",
+                          fontSize: "9px",
+                          letterSpacing: "0.1em",
+                          color: "rgba(138, 109, 59, 0.5)",
+                        }}
+                      >
+                        {String(completedCount).padStart(2, "0")} / {String(steps.length).padStart(2, "0")}
+                      </span>
+                    </div>
 
+                    {/* Progress bar */}
+                    <div
+                      className="mb-5 relative overflow-hidden"
+                      style={{
+                        height: "2px",
+                        background: "rgba(138, 109, 59, 0.12)",
+                      }}
+                    >
+                      <div
+                        className="absolute top-0 left-0 h-full transition-all duration-500 ease-out"
+                        style={{
+                          width: `${steps.length > 0 ? (completedCount / steps.length) * 100 : 0}%`,
+                          background: allChecked
+                            ? "rgba(197, 160, 89, 0.9)"
+                            : "rgba(197, 160, 89, 0.6)",
+                          boxShadow: allChecked
+                            ? "0 0 8px rgba(197, 160, 89, 0.4)"
+                            : "none",
+                        }}
+                      />
+                    </div>
+
+                    {/* Interactive checklist */}
+                    <div className="space-y-3">
+                      {steps.map((step, i) => {
+                        const isComplete = checklist[i];
+                        const isNext = !isComplete && checklist.slice(0, i).every(Boolean) && (i === 0 || checklist[i - 1]);
+
+                        return (
+                          <div
+                            key={i}
+                            className="flex gap-2 items-start cursor-pointer group"
+                            onClick={() => toggleStep(i)}
+                          >
+                            <div
+                              className="mt-0.5 flex-shrink-0 transition-all duration-300"
+                              style={{
+                                width: "15px",
+                                height: "15px",
+                                border: `1px solid ${
+                                  isComplete
+                                    ? "rgba(138, 109, 59, 0.6)"
+                                    : isNext
+                                    ? "rgba(197, 160, 89, 0.7)"
+                                    : "rgba(138, 109, 59, 0.3)"
+                                }`,
+                                background: isComplete
+                                  ? "rgba(138, 109, 59, 0.12)"
+                                  : "transparent",
+                                boxShadow: isNext
+                                  ? "0 0 6px rgba(197, 160, 89, 0.25)"
+                                  : "none",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontFamily: "var(--font-lcd)",
+                                fontSize: "10px",
+                                color: "rgba(138, 109, 59, 0.8)",
+                              }}
+                            >
+                              {isComplete ? "\u2713" : ""}
+                            </div>
+                            <p
+                              className="font-serif font-semibold text-base md:text-lg leading-relaxed transition-all duration-300"
+                              style={{
+                                color: isComplete
+                                  ? "rgba(35, 18, 5, 0.35)"
+                                  : isNext
+                                  ? BODY_COLOR
+                                  : "rgba(35, 18, 5, 0.55)",
+                                textDecoration: isComplete ? "line-through" : "none",
+                              }}
+                            >
+                              {step}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Completion message */}
                     {allChecked && (
                       <div
                         className="mt-4 pt-3 text-center"
-                        style={{ borderTop: "1px solid rgba(138, 109, 59, 0.15)" }}
+                        style={{ borderTop: DIVIDER }}
                       >
                         <p
                           style={{
@@ -497,6 +690,12 @@ export default function ReaderPanel({
                         >
                           SEQUENCE COMPLETE
                         </p>
+                        <p
+                          className="font-serif font-medium text-sm italic mt-2"
+                          style={{ color: BODY_SOFT }}
+                        >
+                          Trust the protocol. Review outcomes in 7 days.
+                        </p>
                       </div>
                     )}
                   </div>
@@ -504,7 +703,13 @@ export default function ReaderPanel({
               </ReaderSection>
             </div>
 
-            {/* ── Section 4: What to Notice ── */}
+            {/* ════════════════════════════════════════════
+                SECTION 4: WHAT TO NOTICE
+                Reflection — "what this may be revealing"
+                Data: why_it_works (reflection), keys_notes,
+                      proof (research, books, field_notes),
+                      resources (videos, writings, links)
+               ════════════════════════════════════════════ */}
             <div
               ref={(el) => { sectionRefs.current[3] = el; }}
               className="mb-7 md:mb-9"
@@ -514,13 +719,24 @@ export default function ReaderPanel({
                 isInView={activeSection >= 3}
                 index={3}
               >
+                {/* Reflection text — keys_notes as the contemplative seed */}
+                {entry.keys_notes && (
+                  <p
+                    className="font-serif font-semibold text-base md:text-lg leading-relaxed mb-4"
+                    style={{ color: BODY_COLOR }}
+                  >
+                    {entry.keys_notes}
+                  </p>
+                )}
+
+                {/* Legacy watch_for (currently 0 entries have this, but kept for safety) */}
                 {entry.watch_for && entry.watch_for.length > 0 && (
                   <div className="space-y-2 mb-4">
                     {entry.watch_for.map((item, i) => (
                       <p
                         key={i}
                         className="font-serif font-semibold text-base md:text-lg leading-relaxed"
-                        style={{ color: "rgba(35, 18, 5, 0.9)" }}
+                        style={{ color: BODY_COLOR }}
                       >
                         {item}
                       </p>
@@ -528,26 +744,17 @@ export default function ReaderPanel({
                   </div>
                 )}
 
-                {entry.proof && (
-                  <div className="space-y-4">
-                    {entry.proof.research && entry.proof.research.length > 0 && (
+                {/* ── Proof Section ── */}
+                {hasProof && (
+                  <div className="space-y-4 mt-4 pt-3" style={{ borderTop: DIVIDER }}>
+                    {entry.proof!.research && entry.proof!.research.length > 0 && (
                       <div>
-                        <div
-                          style={{
-                            fontFamily: "var(--font-lcd)",
-                            fontSize: "8px",
-                            letterSpacing: "0.12em",
-                            color: "rgba(138, 109, 59, 0.4)",
-                            marginBottom: "5px",
-                          }}
-                        >
-                          RESEARCH
-                        </div>
-                        {entry.proof.research.map((item, i) => (
+                        <div style={LCD_LABEL}>RESEARCH</div>
+                        {entry.proof!.research.map((item, i) => (
                           <p
                             key={i}
                             className="font-serif font-medium text-sm md:text-base leading-relaxed mb-1"
-                            style={{ color: "rgba(35, 18, 5, 0.75)" }}
+                            style={{ color: BODY_SOFT }}
                           >
                             {item}
                           </p>
@@ -555,56 +762,195 @@ export default function ReaderPanel({
                       </div>
                     )}
 
-                    {entry.proof.books && entry.proof.books.length > 0 && (
+                    {entry.proof!.books && entry.proof!.books.length > 0 && (
                       <div>
-                        <div
-                          style={{
-                            fontFamily: "var(--font-lcd)",
-                            fontSize: "8px",
-                            letterSpacing: "0.12em",
-                            color: "rgba(138, 109, 59, 0.4)",
-                            marginBottom: "5px",
-                          }}
-                        >
-                          SOURCES
-                        </div>
-                        {entry.proof.books.map((book, i) => (
-                          <p
-                            key={i}
-                            className="font-serif font-semibold text-sm md:text-base italic mb-1"
-                            style={{ color: "rgba(35, 18, 5, 0.85)" }}
-                          >
-                            {book.title} — {book.author}
-                            {book.chapter ? ` (${book.chapter})` : ""}
-                          </p>
+                        <div style={LCD_LABEL}>SOURCES</div>
+                        {entry.proof!.books.map((book, i) => (
+                          <div key={i} className="mb-1">
+                            {book.link ? (
+                              <a
+                                href={book.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-serif font-semibold text-sm md:text-base italic hover:opacity-70 transition-opacity"
+                                style={{ color: "rgba(35, 18, 5, 0.85)" }}
+                              >
+                                {book.title} — {book.author}
+                                {book.chapter ? ` (${book.chapter})` : ""}
+                              </a>
+                            ) : (
+                              <p
+                                className="font-serif font-semibold text-sm md:text-base italic"
+                                style={{ color: "rgba(35, 18, 5, 0.85)" }}
+                              >
+                                {book.title} — {book.author}
+                                {book.chapter ? ` (${book.chapter})` : ""}
+                              </p>
+                            )}
+                          </div>
                         ))}
                       </div>
                     )}
 
-                    {entry.proof.field_notes && entry.proof.field_notes.length > 0 && (
+                    {entry.proof!.field_notes && entry.proof!.field_notes.length > 0 && (
                       <div>
-                        <div
-                          style={{
-                            fontFamily: "var(--font-lcd)",
-                            fontSize: "8px",
-                            letterSpacing: "0.12em",
-                            color: "rgba(138, 109, 59, 0.4)",
-                            marginBottom: "5px",
-                          }}
-                        >
-                          FIELD NOTES
-                        </div>
-                        {entry.proof.field_notes.map((note, i) => (
+                        <div style={LCD_LABEL}>FIELD NOTES</div>
+                        {entry.proof!.field_notes.map((note, i) => (
                           <p
                             key={i}
                             className="font-serif font-medium text-sm md:text-base leading-relaxed mb-1"
-                            style={{ color: "rgba(35, 18, 5, 0.75)" }}
+                            style={{ color: BODY_SOFT }}
                           >
                             {note}
                           </p>
                         ))}
                       </div>
                     )}
+                  </div>
+                )}
+
+                {/* ── Extended Resources ── */}
+                {hasResources && (
+                  <div className="space-y-4 mt-4 pt-3" style={{ borderTop: DIVIDER }}>
+                    {/* Videos */}
+                    {entry.resources!.videos && entry.resources!.videos.length > 0 && (
+                      <div>
+                        <div style={LCD_LABEL}>WATCH</div>
+                        {entry.resources!.videos.map((video, i) => (
+                          <a
+                            key={i}
+                            href={video.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block mb-2 hover:opacity-70 transition-opacity"
+                          >
+                            <p
+                              className="font-serif font-semibold text-sm md:text-base"
+                              style={{ color: "rgba(35, 18, 5, 0.85)" }}
+                            >
+                              {video.title}
+                              {video.duration && (
+                                <span
+                                  style={{
+                                    fontFamily: "var(--font-lcd)",
+                                    fontSize: "8px",
+                                    color: "rgba(138, 109, 59, 0.4)",
+                                    marginLeft: "8px",
+                                  }}
+                                >
+                                  {video.duration}
+                                </span>
+                              )}
+                            </p>
+                            {video.description && (
+                              <p
+                                className="font-serif text-sm"
+                                style={{ color: BODY_SOFT }}
+                              >
+                                {video.description}
+                              </p>
+                            )}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Writings */}
+                    {entry.resources!.writings && entry.resources!.writings.length > 0 && (
+                      <div>
+                        <div style={LCD_LABEL}>READ</div>
+                        {entry.resources!.writings.map((writing, i) => (
+                          <div key={i} className="mb-2">
+                            {writing.url ? (
+                              <a
+                                href={writing.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:opacity-70 transition-opacity"
+                              >
+                                <p
+                                  className="font-serif font-semibold text-sm md:text-base"
+                                  style={{ color: "rgba(35, 18, 5, 0.85)" }}
+                                >
+                                  {writing.title}
+                                </p>
+                              </a>
+                            ) : (
+                              <p
+                                className="font-serif font-semibold text-sm md:text-base"
+                                style={{ color: "rgba(35, 18, 5, 0.85)" }}
+                              >
+                                {writing.title}
+                              </p>
+                            )}
+                            {writing.description && (
+                              <p
+                                className="font-serif text-sm"
+                                style={{ color: BODY_SOFT }}
+                              >
+                                {writing.description}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Links */}
+                    {entry.resources!.links && entry.resources!.links.length > 0 && (
+                      <div>
+                        <div style={LCD_LABEL}>EXPLORE</div>
+                        {entry.resources!.links.map((link, i) => (
+                          <a
+                            key={i}
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 mb-2 hover:opacity-70 transition-opacity"
+                          >
+                            <span
+                              style={{
+                                fontFamily: "var(--font-lcd)",
+                                fontSize: "7px",
+                                letterSpacing: "0.1em",
+                                color: "rgba(138, 109, 59, 0.4)",
+                                textTransform: "uppercase",
+                              }}
+                            >
+                              {link.type}
+                            </span>
+                            <p
+                              className="font-serif font-semibold text-sm md:text-base"
+                              style={{ color: "rgba(35, 18, 5, 0.85)" }}
+                            >
+                              {link.title}
+                            </p>
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* ── Coming Soon state ── */}
+                {!hasProof && !hasResources && !hasReflectionContent && (
+                  <p
+                    className="font-serif font-medium text-sm italic"
+                    style={{ color: "rgba(138, 109, 59, 0.35)" }}
+                  >
+                    Resources gathering. More to come.
+                  </p>
+                )}
+
+                {/* Coming Soon for resources specifically (when we have proof/reflection but no resources yet) */}
+                {!hasResources && (hasProof || hasReflectionContent) && (
+                  <div className="mt-4 pt-3" style={{ borderTop: DIVIDER }}>
+                    <p
+                      className="font-serif font-medium text-sm italic"
+                      style={{ color: "rgba(138, 109, 59, 0.3)" }}
+                    >
+                      Videos, writings, and deeper resources arriving soon.
+                    </p>
                   </div>
                 )}
               </ReaderSection>

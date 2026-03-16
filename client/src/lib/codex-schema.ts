@@ -36,11 +36,18 @@ export interface CodexEntry {
   keys_notes?: string;
   why_it_works?: string;
   
-  // Proof / Research (New Structure)
+  // Proof / Research / Resources
   proof?: {
     research?: string[]; // 2-4 bullet points (1-2 sentences each)
-    books?: { title: string; author: string; chapter?: string }[];
+    books?: { title: string; author: string; chapter?: string; link?: string }[];
     field_notes?: string[]; // Ancient wisdom / modern science tie-ins
+  };
+
+  // Extended Resources (populated over time)
+  resources?: {
+    videos?: { title: string; url: string; duration?: string; description?: string }[];
+    writings?: { title: string; url?: string; description?: string }[];
+    links?: { title: string; url: string; type: "article" | "podcast" | "video" | "tool" }[];
   };
   
   // Legacy fields (to be deprecated or mapped)
