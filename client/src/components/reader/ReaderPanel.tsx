@@ -163,9 +163,9 @@ export default function ReaderPanel({
       <div
         className="relative"
         style={{
-          height: "100vh",
-          width: `calc(100vh * ${PANEL_ASPECT})`,
-          maxWidth: "98vw",
+          height: "115vh",
+          width: `calc(115vh * ${PANEL_ASPECT})`,
+          maxWidth: "100vw",
           opacity: isVisible ? 1 : 0,
           transition: "opacity 0.5s ease",
         }}
@@ -204,7 +204,7 @@ export default function ReaderPanel({
           onClick={handleClose}
           className="absolute z-30 transition-all duration-200 hover:opacity-70"
           style={{
-            top: "19%",
+            top: "17%",
             right: "20%",
             fontFamily: "var(--font-lcd)",
             color: "rgba(100, 65, 30, 0.5)",
@@ -266,10 +266,10 @@ export default function ReaderPanel({
           onScroll={handleScroll}
           className="absolute overflow-y-auto overflow-x-hidden"
           style={{
-            top: "20%",
+            top: "18%",
             left: "22%",
             width: "56%",
-            height: "58%",
+            height: "60%",
             scrollbarWidth: "none",
             msOverflowStyle: "none",
           }}
