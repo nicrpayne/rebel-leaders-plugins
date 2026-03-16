@@ -554,6 +554,7 @@ startTicker(msg, 14000, () => {
         setScanStep(0);
 
         // Ticker on scan complete — include diagnostic telemetry when available
+        const nodeSegment = node && node !== cat ? ` ... ${node}` : "";
         if (rankingRationale && gravitasSignalData) {
           const matchPct = Math.min(Math.round((rankingRationale.total / 100) * 100), 99);
           const leakCount = rankingRationale.leakOverlapDetails?.length || 0;
@@ -561,13 +562,13 @@ startTicker(msg, 14000, () => {
           const topLeak = rankingRationale.leakOverlapDetails?.[0]?.toUpperCase() || "";
           const bottleneck = gravitasSignalData.leak?.toUpperCase() || "";
           startTicker(
-            `>>> SCAN COMPLETE ... ${cat} ... ${node} ... FIT ${matchPct}% ... ${leakCount} LEAK MATCH${leakCount !== 1 ? "ES" : ""} ... ${forceCount} FORCE ALIGN${forceCount !== 1 ? "S" : ""} ... BOTTLENECK: ${bottleneck} ... PROTOCOL READY ... PRESS READ >>>`,
+            `>>> SCAN COMPLETE ... ${cat}${nodeSegment} ... FIT ${matchPct}% ... ${leakCount} LEAK MATCH${leakCount !== 1 ? "ES" : ""} ... ${forceCount} FORCE ALIGN${forceCount !== 1 ? "S" : ""} ... BOTTLENECK: ${bottleneck} ... PROTOCOL READY ... PRESS READ >>>`,
             15000
           );
         } else {
           const context = loadedEntry.context_tags?.[0]?.toUpperCase().replace(/_/g, " ") || "GENERAL";
           startTicker(
-            `>>> SCAN COMPLETE ... ${cat} ... ${node} ... INTENSITY ${diff} ${diffLabel} ... ${context} ... PROTOCOL READY ... PRESS READ >>>`,
+            `>>> SCAN COMPLETE ... ${cat}${nodeSegment} ... INTENSITY ${diff} ${diffLabel} ... ${context} ... PROTOCOL READY ... PRESS READ >>>`,
             14000
           );
         }
