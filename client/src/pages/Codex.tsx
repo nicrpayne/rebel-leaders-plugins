@@ -23,18 +23,8 @@ interface GravitasScores {
 
 export default function Codex() {
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
-  const [loadedEntry, setLoadedEntry] = useState<CodexEntry | null>(() => {
-    // Restore entry from URL hash on mount (e.g. #MOVE_REPAIR_48H)
-    const hash = window.location.hash.replace("#", "");
-    if (hash) {
-      const found = CODEX_ENTRIES.find((e) => e.id === hash);
-      if (found) return found;
-    }
-    return null;
-  });
+  const [loadedEntry, setLoadedEntry] = useState<CodexEntry | null>(null);
   const [isReaderOpen, setIsReaderOpen] = useState(false);
-  // Track whether we restored from hash so we can skip the enter animation
-  const [restoredFromHash] = useState(false);
   const [readerMode, setReaderMode] = useState<"READ" | "RUN">("READ");
   const [recentEntryIds, setRecentEntryIds] = useState<string[]>([]);
   const [gravitasScores, setGravitasScores] = useState<GravitasScores | null>(null);
@@ -283,7 +273,7 @@ export default function Codex() {
             // Keep hash (entry stays loaded in deck) but could clear if desired
           }}
           initialMode={readerMode}
-          skipEnterAnimation={restoredFromHash}
+          skipEnterAnimation={false}
         />
       )}
     </div>
