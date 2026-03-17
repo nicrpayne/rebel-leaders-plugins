@@ -211,6 +211,16 @@ export default function GravityCheck() {
         progress={0}
         totalQuestions={20}
         hideCalibration
+        footerControls={
+          <a
+            href="/"
+            style={{ color: "rgba(160, 160, 180, 0.4)", fontFamily: "'VT323', monospace", fontSize: "13px", letterSpacing: "0.2em", textDecoration: "none", textTransform: "uppercase", transition: "color 0.2s" }}
+            onMouseEnter={e => (e.currentTarget.style.color = "rgba(160, 160, 180, 0.8)")}
+            onMouseLeave={e => (e.currentTarget.style.color = "rgba(160, 160, 180, 0.4)")}
+          >
+            WORKBENCH
+          </a>
+        }
       >
         <ModeSelect onSelect={(mode) => setScanMode(mode)} />
       </GravitasShell>
