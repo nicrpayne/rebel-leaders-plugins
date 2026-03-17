@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { CodexEntry } from "@/lib/codex-schema";
 import ReaderSection from "./ReaderSection";
@@ -83,7 +83,7 @@ export default function ReaderPanel({
   const allChecked = checklist.length > 0 && checklist.every(Boolean);
   const completedCount = checklist.filter(Boolean).length;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isOpen) {
       setMode(initialMode);
       setActiveSection(0);
@@ -141,7 +141,6 @@ export default function ReaderPanel({
     setIsClosing(true);
     setTimeout(() => {
       onClose();
-      setIsClosing(false);
     }, 350);
   };
 
