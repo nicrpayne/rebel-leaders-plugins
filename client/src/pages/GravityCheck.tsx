@@ -107,10 +107,10 @@ function ModeSelect({ onSelect }: { onSelect: (mode: ScanMode) => void }) {
               style={{ textShadow: "0 0 4px rgba(74, 222, 128, 0.3)" }}>
               SCAN
             </span>
-            <span className="text-[7px] tracking-[0.15em] text-[#5a5a6a] uppercase">
+            <span className="text-[7px] tracking-[0.15em] text-[#7a7a8a] uppercase">
               20 READINGS // ~4 MIN
             </span>
-            <span className="text-[6px] tracking-[0.1em] text-[#4a4a5a] uppercase mt-0.5 max-w-[120px] text-center leading-snug">
+            <span className="text-[6px] tracking-[0.1em] text-[#6a6a7a] uppercase mt-0.5 max-w-[120px] text-center leading-snug">
               SURFACE-LEVEL FIELD READING. FAST. DIRECTIONAL.
             </span>
           </div>
@@ -141,10 +141,10 @@ function ModeSelect({ onSelect }: { onSelect: (mode: ScanMode) => void }) {
               style={{ textShadow: "0 0 4px rgba(197, 160, 89, 0.3)" }}>
               DEEP SCAN
             </span>
-            <span className="text-[7px] tracking-[0.15em] text-[#5a5a6a] uppercase">
+            <span className="text-[7px] tracking-[0.15em] text-[#7a7a8a] uppercase">
               52 READINGS // ~12 MIN
             </span>
-            <span className="text-[6px] tracking-[0.1em] text-[#4a4a5a] uppercase mt-0.5 max-w-[120px] text-center leading-snug">
+            <span className="text-[6px] tracking-[0.1em] text-[#6a6a7a] uppercase mt-0.5 max-w-[120px] text-center leading-snug">
               FULL GRAVITATIONAL MAPPING. THOROUGH. REVELATORY.
             </span>
           </div>
