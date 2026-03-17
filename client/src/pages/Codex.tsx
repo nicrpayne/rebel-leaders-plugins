@@ -260,21 +260,23 @@ export default function Codex() {
       </div>
 
       {/* ── GRAVITAS FOOTER LINK ── */}
-      <div className="w-full text-center py-6 pb-10">
+      <div className="w-full flex items-center justify-center gap-8 py-6 pb-10">
+        <a
+          href="/"
+          style={{ color: "rgba(160, 160, 180, 0.4)", fontFamily: "'VT323', monospace", fontSize: "13px", letterSpacing: "0.25em", textDecoration: "none", textTransform: "uppercase", transition: "color 0.2s" }}
+          onMouseEnter={e => (e.currentTarget.style.color = "rgba(160, 160, 180, 0.8)")}
+          onMouseLeave={e => (e.currentTarget.style.color = "rgba(160, 160, 180, 0.4)")}
+        >
+          ◄ WORKBENCH
+        </a>
+        <span style={{ color: "rgba(100, 100, 120, 0.3)", fontFamily: "'VT323', monospace", fontSize: "13px" }}>|</span>
         <a
           href="/gravity-check"
-          className="inline-flex items-center gap-2 text-[9px] tracking-[0.3em] uppercase transition-all duration-300"
-          style={{
-            color: "rgba(197, 160, 89, 0.35)",
-            fontFamily: "'VT323', monospace",
-            letterSpacing: "0.3em",
-            textDecoration: "none",
-          }}
-          onMouseEnter={e => (e.currentTarget.style.color = "rgba(197, 160, 89, 0.75)")}
-          onMouseLeave={e => (e.currentTarget.style.color = "rgba(197, 160, 89, 0.35)")}
+          style={{ color: "rgba(197, 160, 89, 0.4)", fontFamily: "'VT323', monospace", fontSize: "13px", letterSpacing: "0.25em", textDecoration: "none", textTransform: "uppercase", transition: "color 0.2s" }}
+          onMouseEnter={e => (e.currentTarget.style.color = "rgba(197, 160, 89, 0.85)")}
+          onMouseLeave={e => (e.currentTarget.style.color = "rgba(197, 160, 89, 0.4)")}
         >
-          <span>◄</span>
-          <span>RUN GRAVITY CHECK</span>
+          RUN GRAVITY CHECK ►
         </a>
       </div>
 
