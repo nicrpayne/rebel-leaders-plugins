@@ -32,16 +32,9 @@ export default function Codex() {
     }
     return null;
   });
-  const [isReaderOpen, setIsReaderOpen] = useState(() => {
-    // If we restored an entry from hash, open the reader immediately
-    const hash = window.location.hash.replace("#", "");
-    return !!hash && CODEX_ENTRIES.some((e) => e.id === hash);
-  });
+  const [isReaderOpen, setIsReaderOpen] = useState(false);
   // Track whether we restored from hash so we can skip the enter animation
-  const [restoredFromHash] = useState(() => {
-    const hash = window.location.hash.replace("#", "");
-    return !!hash && CODEX_ENTRIES.some((e) => e.id === hash);
-  });
+  const [restoredFromHash] = useState(false);
   const [readerMode, setReaderMode] = useState<"READ" | "RUN">("READ");
   const [recentEntryIds, setRecentEntryIds] = useState<string[]>([]);
   const [gravitasScores, setGravitasScores] = useState<GravitasScores | null>(null);
