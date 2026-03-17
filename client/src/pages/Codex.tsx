@@ -267,7 +267,7 @@ export default function Codex() {
           onMouseEnter={e => (e.currentTarget.style.color = "rgba(160, 160, 180, 0.8)")}
           onMouseLeave={e => (e.currentTarget.style.color = "rgba(160, 160, 180, 0.4)")}
         >
-          ◄ WORKBENCH
+          WORKBENCH
         </a>
         <span style={{ color: "rgba(100, 100, 120, 0.3)", fontFamily: "'VT323', monospace", fontSize: "13px" }}>|</span>
         <a
@@ -276,7 +276,7 @@ export default function Codex() {
           onMouseEnter={e => (e.currentTarget.style.color = "rgba(197, 160, 89, 0.85)")}
           onMouseLeave={e => (e.currentTarget.style.color = "rgba(197, 160, 89, 0.4)")}
         >
-          RUN GRAVITY CHECK ►
+          RUN GRAVITAS
         </a>
       </div>
 
