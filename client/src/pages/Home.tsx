@@ -8,7 +8,7 @@ const PLUGINS = [
     category: "MIRROR",
     desc: "15 questions. 3 minutes. Reveal the hidden forces shaping your team's orbit.",
     status: "ACTIVE",
-    link: "/gravity-check",
+    link: "/gravitas",
     image: "https://d2xsxph8kpxj0f.cloudfront.net/310419663030438402/6XMovZHp9ctGFaj4XUiVdL/gravity_check_field_cover-hq3AnpZqCJZFJU9Wrxiwic.webp"
   },
   {

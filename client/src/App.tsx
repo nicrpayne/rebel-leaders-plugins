@@ -15,7 +15,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/gravity-check" component={GravityCheck} />
+      <Route path="/gravitas" component={GravityCheck} />
       <Route path="/results" component={Results} />
       <Route path="/codex" component={Codex} />
       <Route path="/assets" component={Assets} />

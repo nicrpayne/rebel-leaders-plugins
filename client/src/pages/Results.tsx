@@ -219,7 +219,7 @@ export default function Results() {
           {isTransmitting ? "TRANSMITTING..." : "SIDE-CHAIN TO CODEX"}
         </span>
       </button>
-      <Link href="/gravity-check">
+      <Link href="/gravitas">
         <span className="text-[7px] tracking-[0.15em] text-[#3a3a44] hover:text-[#5a5a66] cursor-pointer uppercase transition-colors">
           RE-SCAN
         </span>
