@@ -218,6 +218,15 @@ export default function GravityCheck() {
   }
 
   const footerControls = (
+    <>
+      <a
+        href="/"
+        style={{ color: "rgba(160, 160, 180, 0.4)", fontFamily: "'VT323', monospace", fontSize: "13px", letterSpacing: "0.2em", textDecoration: "none", textTransform: "uppercase", transition: "color 0.2s" }}
+        onMouseEnter={e => (e.currentTarget.style.color = "rgba(160, 160, 180, 0.8)")}
+        onMouseLeave={e => (e.currentTarget.style.color = "rgba(160, 160, 180, 0.4)")}
+      >
+        WORKBENCH
+      </a>
     <button
       onClick={handleNext}
       className={cn(
@@ -245,6 +254,7 @@ export default function GravityCheck() {
           : "border-[#5a5a66] group-hover:border-green-400"
       )} />
     </button>
+    </>
   );
 
   return (
@@ -381,17 +391,6 @@ export default function GravityCheck() {
       `}</style>
     </GravitasShell>
 
-      {/* ── WORKBENCH FOOTER LINK ── */}
-      <div className="w-full text-center py-6 pb-10">
-        <a
-          href="/"
-          style={{ color: "rgba(160, 160, 180, 0.4)", fontFamily: "'VT323', monospace", fontSize: "13px", letterSpacing: "0.25em", textDecoration: "none", textTransform: "uppercase", transition: "color 0.2s" }}
-          onMouseEnter={e => (e.currentTarget.style.color = "rgba(160, 160, 180, 0.8)")}
-          onMouseLeave={e => (e.currentTarget.style.color = "rgba(160, 160, 180, 0.4)")}
-        >
-          WORKBENCH
-        </a>
-      </div>
     </>
   );
 }
