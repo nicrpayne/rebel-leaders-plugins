@@ -211,7 +211,6 @@ export default function ReaderPanel({
       {/* ── Panel Container ── */}
       <div
         className="relative"
-        onClick={(e) => e.stopPropagation()}
         style={{
           height: "115vh",
           width: `calc(115vh * ${PANEL_ASPECT})`,
