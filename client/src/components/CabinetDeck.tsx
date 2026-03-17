@@ -921,7 +921,7 @@ startTicker(msg, 14000, () => {
             left: '0%',
             width: '140%',
             height: 'auto',
-            transform: 'rotate(1.4deg)',
+            transform: 'rotate(2.1deg)',
             filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.4))',
           }}
         />
