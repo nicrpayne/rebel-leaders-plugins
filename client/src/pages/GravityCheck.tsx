@@ -248,6 +248,7 @@ export default function GravityCheck() {
   );
 
   return (
+    <>
     <GravitasShell
       footerControls={footerControls}
       status={isLastQuestion ? "SIGNAL LOCKED" : "SEARCHING..."}
@@ -391,5 +392,6 @@ export default function GravityCheck() {
           WORKBENCH
         </a>
       </div>
+    </>
   );
 }
