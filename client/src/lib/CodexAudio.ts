@@ -6,6 +6,7 @@ class CodexAudioEngine {
   private ejectBuffer: AudioBuffer | null = null;
   private vhsButtonBuffer: AudioBuffer | null = null;
   private deviceButtonBuffer: AudioBuffer | null = null;
+  private preloadPromise: Promise<void> | null = null;
 
   constructor() {
     if (typeof window !== "undefined") {
@@ -18,7 +19,7 @@ class CodexAudioEngine {
     if (!this.ctx) {
       this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
       // Preload sound files immediately after context is created
-      this.preloadSounds();
+      this.preloadPromise = this.preloadSounds();
     }
     if (this.ctx.state === "suspended") {
       this.ctx.resume();
@@ -52,18 +53,29 @@ class CodexAudioEngine {
     }
   }
 
-  private playBuffer(buffer: AudioBuffer) {
+  private playBuffer(buffer: AudioBuffer, volume: number = 1.0) {
     if (!this.ctx) return;
     const source = this.ctx.createBufferSource();
     source.buffer = buffer;
-    source.connect(this.ctx.destination);
+    if (volume !== 1.0) {
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(volume, this.ctx.currentTime);
+      source.connect(gain);
+      gain.connect(this.ctx.destination);
+    } else {
+      source.connect(this.ctx.destination);
+    }
     source.start();
   }
 
-  // Load cartridge sound — uses file if preloaded, falls back to synthesized
-  playLoad() {
+  // Load cartridge sound — waits for preload on first call, falls back to synthesized
+  async playLoad() {
     this.init();
     if (!this.ctx) return;
+    // Wait for preload to finish if it's still in progress
+    if (this.preloadPromise && !this.loadBuffer) {
+      await this.preloadPromise;
+    }
     if (this.loadBuffer) {
       this.playBuffer(this.loadBuffer);
       return;
@@ -115,7 +127,7 @@ class CodexAudioEngine {
     this.init();
     if (!this.ctx) return;
     if (this.vhsButtonBuffer) {
-      this.playBuffer(this.vhsButtonBuffer);
+      this.playBuffer(this.vhsButtonBuffer, 2.5); // boosted volume to match load/eject
       return;
     }
     // Synthesized fallback
@@ -139,7 +151,7 @@ class CodexAudioEngine {
     this.init();
     if (!this.ctx) return;
     if (this.deviceButtonBuffer) {
-      this.playBuffer(this.deviceButtonBuffer);
+      this.playBuffer(this.deviceButtonBuffer, 2.5); // boosted volume to match load/eject
       return;
     }
     // Synthesized fallback
