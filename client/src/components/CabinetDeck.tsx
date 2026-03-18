@@ -531,12 +531,11 @@ startTicker(msg, 14000, () => {
   const handleScan = useCallback(() => {
     if (!loadedEntry || deckPhase !== "loaded") return;
 
-    // Button press + release (physical click)
+    // VHS cassette button press (recorded sample)
     playSound("buttonPress");
-    setTimeout(() => playSound("buttonRelease"), 80);
 
     // Start scan tone (sustained for full scan duration)
-    setTimeout(() => playSound("scanTone"), 120);
+    setTimeout(() => playSound("scanTone"), 200);
 
     setDeckPhase("scanning");
     setScanStep(0);

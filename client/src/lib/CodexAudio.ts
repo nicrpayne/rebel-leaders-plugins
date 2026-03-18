@@ -4,6 +4,8 @@ class CodexAudioEngine {
   private ctx: AudioContext | null = null;
   private loadBuffer: AudioBuffer | null = null;
   private ejectBuffer: AudioBuffer | null = null;
+  private vhsButtonBuffer: AudioBuffer | null = null;
+  private deviceButtonBuffer: AudioBuffer | null = null;
 
   constructor() {
     if (typeof window !== "undefined") {
@@ -26,17 +28,23 @@ class CodexAudioEngine {
   private async preloadSounds() {
     if (!this.ctx) return;
     try {
-      const [loadRes, ejectRes] = await Promise.all([
+      const [loadRes, ejectRes, vhsRes, deviceRes] = await Promise.all([
         fetch("/assets/sounds/cartridge-load.mp3"),
         fetch("/assets/sounds/cartridge-eject.mp3"),
+        fetch("/assets/sounds/vhs-button-press.mp3"),
+        fetch("/assets/sounds/device-button-press.mp3"),
       ]);
-      const [loadArr, ejectArr] = await Promise.all([
+      const [loadArr, ejectArr, vhsArr, deviceArr] = await Promise.all([
         loadRes.arrayBuffer(),
         ejectRes.arrayBuffer(),
+        vhsRes.arrayBuffer(),
+        deviceRes.arrayBuffer(),
       ]);
-      [this.loadBuffer, this.ejectBuffer] = await Promise.all([
+      [this.loadBuffer, this.ejectBuffer, this.vhsButtonBuffer, this.deviceButtonBuffer] = await Promise.all([
         this.ctx.decodeAudioData(loadArr),
         this.ctx.decodeAudioData(ejectArr),
+        this.ctx.decodeAudioData(vhsArr),
+        this.ctx.decodeAudioData(deviceArr),
       ]);
     } catch (e) {
       // Silently fall back to synthesized sounds if files fail to load
@@ -101,14 +109,17 @@ class CodexAudioEngine {
     this.init();
   }
 
-  // Physical button push-in — short, clunky mechanical click
-  // (placeholder synth — will be replaced with recorded sample)
+  // SCAN button press — VHS cassette mechanical click (recorded sample)
+  // Falls back to synthesized if file not loaded
   playButtonPress() {
     this.init();
     if (!this.ctx) return;
+    if (this.vhsButtonBuffer) {
+      this.playBuffer(this.vhsButtonBuffer);
+      return;
+    }
+    // Synthesized fallback
     const t = this.ctx.currentTime;
-
-    // Layer 1: sharp transient click (like a switch contact)
     const click = this.ctx.createOscillator();
     const clickGain = this.ctx.createGain();
     click.type = "square";
@@ -120,29 +131,19 @@ class CodexAudioEngine {
     clickGain.connect(this.ctx.destination);
     click.start(t);
     click.stop(t + 0.03);
-
-    // Layer 2: low thud body (the button bottoming out)
-    const thud = this.ctx.createOscillator();
-    const thudGain = this.ctx.createGain();
-    thud.type = "sine";
-    thud.frequency.setValueAtTime(120, t);
-    thud.frequency.exponentialRampToValueAtTime(50, t + 0.04);
-    thudGain.gain.setValueAtTime(0.2, t);
-    thudGain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
-    thud.connect(thudGain);
-    thudGain.connect(this.ctx.destination);
-    thud.start(t);
-    thud.stop(t + 0.07);
   }
 
-  // Physical button pop-out — lighter, springy release
-  // (placeholder synth — will be replaced with recorded sample)
+  // READ button press — device mechanical click (recorded sample)
+  // Falls back to synthesized if file not loaded
   playButtonRelease() {
     this.init();
     if (!this.ctx) return;
+    if (this.deviceButtonBuffer) {
+      this.playBuffer(this.deviceButtonBuffer);
+      return;
+    }
+    // Synthesized fallback
     const t = this.ctx.currentTime;
-
-    // Higher-pitched, lighter click — the spring pushing back
     const click = this.ctx.createOscillator();
     const clickGain = this.ctx.createGain();
     click.type = "triangle";

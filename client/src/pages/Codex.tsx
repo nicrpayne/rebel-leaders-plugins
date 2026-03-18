@@ -208,7 +208,7 @@ export default function Codex() {
     if (loadedEntry) {
       setReaderMode("READ");
       setIsReaderOpen(true);
-      playSound("click");
+      playSound("buttonRelease"); // device mechanical click
     }
   };
 
