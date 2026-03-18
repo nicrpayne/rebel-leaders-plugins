@@ -107,10 +107,18 @@ export default function ReaderPanel({
     };
   }, [isOpen, initialMode, entry]);
 
+  // Throttle ref — scroll handler runs at most every 16ms (60fps budget)
+  const scrollThrottleRef = useRef<number>(0);
+
   const handleScroll = useCallback(() => {
+    const now = performance.now();
+    if (now - scrollThrottleRef.current < 16) return;
+    scrollThrottleRef.current = now;
+
     if (!scrollRef.current) return;
     const container = scrollRef.current;
     const containerHeight = container.clientHeight;
+    const containerRect = container.getBoundingClientRect();
 
     let closest = 0;
     let closestDistance = Infinity;
@@ -118,7 +126,6 @@ export default function ReaderPanel({
     sectionRefs.current.forEach((ref, i) => {
       if (ref) {
         const rect = ref.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
         const relativeTop = rect.top - containerRect.top;
         const distance = Math.abs(relativeTop - containerHeight * 0.3);
         if (distance < closestDistance) {
