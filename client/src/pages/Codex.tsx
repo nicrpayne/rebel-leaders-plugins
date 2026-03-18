@@ -4,7 +4,7 @@ import { CodexEntry } from "@/lib/codex-schema";
 import { CODEX_ENTRIES } from "@/lib/codex-data";
 import { getBestCartridge, type GravitasSignal, type RankingRationale } from "@/lib/codex-ranking";
 import CabinetDeck from "@/components/CabinetDeck";
-import ReaderDrawer from "@/components/ReaderDrawer";
+
 import { ReaderPanel } from "@/components/reader";
 import CodexShelf from "@/components/CodexShelf";
 
@@ -58,6 +58,9 @@ export default function Codex() {
     const bottleneck = params.get("bottleneck");
     const firstMoveParam = params.get("firstMove");
 
+    // Read localStorage once — reused by both signal path and scores path below
+    const savedResults = localStorage.getItem("gravityCheckResults");
+
     if (signal === "received") {
       setIsReceivingSignal(true);
       setBottleneckCategory(bottleneck);
@@ -68,7 +71,6 @@ export default function Codex() {
 
       if (bottleneck) {
         // Build a GravitasSignal from stored results + URL params
-        const savedResults = localStorage.getItem("gravityCheckResults");
         let gravitasSignal: GravitasSignal | null = null;
         if (savedResults) {
           try {
@@ -121,8 +123,7 @@ export default function Codex() {
       window.history.replaceState({}, "", `/codex${window.location.hash}`);
     }
 
-    // Parse GRAVITAS scores
-    const savedResults = localStorage.getItem("gravityCheckResults");
+    // Parse GRAVITAS scores (reuses savedResults from above)
     if (savedResults) {
       try {
         const results = JSON.parse(savedResults);
