@@ -169,7 +169,8 @@ class CodexAudioEngine {
     click.stop(t + 0.025);
   }
 
-  // Sustained scan processing tone — warm, physical, rhythmic
+  // Scan processing tone — R2-D2 style chirp sequence
+  // Rapid melodic bleeps with personality, like a droid analyzing data
   // Returns a stop function to end the tone early if needed
   playScanTone(durationSec: number): () => void {
     this.init();
@@ -177,75 +178,94 @@ class CodexAudioEngine {
     const t = this.ctx.currentTime;
     const ctx = this.ctx;
 
-    // Master gain for the whole scan tone
+    // Master gain with fade in/out
     const master = ctx.createGain();
     master.gain.setValueAtTime(0, t);
-    master.gain.linearRampToValueAtTime(0.18, t + 0.3); // fade in
-    master.gain.setValueAtTime(0.18, t + durationSec - 0.4);
-    master.gain.linearRampToValueAtTime(0, t + durationSec); // fade out
+    master.gain.linearRampToValueAtTime(0.22, t + 0.08);
+    master.gain.setValueAtTime(0.22, t + durationSec - 0.3);
+    master.gain.linearRampToValueAtTime(0, t + durationSec);
     master.connect(ctx.destination);
 
-    // Layer 1: warm carrier hum — low sine with slow LFO wobble
-    const carrier = ctx.createOscillator();
-    carrier.type = "sine";
-    carrier.frequency.setValueAtTime(220, t); // A3
-    const lfo = ctx.createOscillator();
-    lfo.type = "sine";
-    lfo.frequency.setValueAtTime(3, t); // 3Hz wobble — like a machine idling
-    const lfoGain = ctx.createGain();
-    lfoGain.gain.setValueAtTime(8, t); // ±8Hz pitch wobble
-    lfo.connect(lfoGain);
-    lfoGain.connect(carrier.frequency);
-    carrier.connect(master);
-    carrier.start(t);
-    carrier.stop(t + durationSec);
-    lfo.start(t);
-    lfo.stop(t + durationSec);
+    // ── Chirp phrase generator ──
+    // Build a sequence of short melodic "phrases" like R2-D2 chatter.
+    // Each phrase is 3-6 rapid notes with pitch jumps, slides, and varied waveforms.
+    const notes: { start: number; freq: number; endFreq: number; dur: number; wave: OscillatorType; vol: number }[] = [];
 
-    // Layer 2: rhythmic pulse — soft clicks like a scanning head moving
-    const pulseInterval = 0.15; // ~6.7 clicks per second
-    const pulseNodes: OscillatorNode[] = [];
-    for (let i = 0; i < durationSec / pulseInterval; i++) {
-      const pt = t + i * pulseInterval;
-      if (pt >= t + durationSec - 0.2) break;
-      const pulse = ctx.createOscillator();
-      const pGain = ctx.createGain();
-      pulse.type = "triangle";
-      pulse.frequency.setValueAtTime(800 + Math.sin(i * 0.3) * 200, pt);
-      pGain.gain.setValueAtTime(0.03, pt);
-      pGain.gain.exponentialRampToValueAtTime(0.001, pt + 0.04);
-      pulse.connect(pGain);
-      pGain.connect(master);
-      pulse.start(pt);
-      pulse.stop(pt + 0.05);
-      pulseNodes.push(pulse);
+    // Pentatonic-ish scale for pleasant bleeps (C5-ish range)
+    const scale = [523, 587, 659, 784, 880, 1047, 1175, 1319, 1568, 1760];
+    const waves: OscillatorType[] = ["square", "sawtooth", "triangle", "sine"];
+
+    // Seed a pseudo-random sequence so it sounds consistent but organic
+    let seed = 42;
+    const rand = () => { seed = (seed * 16807 + 0) % 2147483647; return (seed - 1) / 2147483646; };
+
+    let cursor = 0.05; // start offset
+    const endTime = durationSec - 0.3;
+
+    while (cursor < endTime) {
+      // Each phrase: 3-6 rapid notes
+      const phraseLen = 3 + Math.floor(rand() * 4);
+      const wave = waves[Math.floor(rand() * waves.length)];
+      const baseIdx = Math.floor(rand() * 6); // start somewhere in the scale
+
+      for (let n = 0; n < phraseLen && cursor < endTime; n++) {
+        const noteIdx = Math.min(Math.max(baseIdx + Math.floor(rand() * 5) - 2, 0), scale.length - 1);
+        const freq = scale[noteIdx];
+        // Occasional pitch slide (the signature R2-D2 "whoop")
+        const slide = rand() > 0.65;
+        const endIdx = Math.min(Math.max(noteIdx + (rand() > 0.5 ? 3 : -3), 0), scale.length - 1);
+        const endFreq = slide ? scale[endIdx] : freq;
+        // Note duration: short staccato (40-100ms)
+        const dur = 0.04 + rand() * 0.06;
+        // Volume variation for expressiveness
+        const vol = 0.12 + rand() * 0.1;
+
+        notes.push({ start: cursor, freq, endFreq, dur, wave, vol });
+        cursor += dur + 0.01 + rand() * 0.02; // tiny gap between notes in a phrase
+      }
+
+      // Gap between phrases (80-200ms of silence)
+      cursor += 0.08 + rand() * 0.12;
     }
 
-    // Layer 3: filtered noise bed — like the machine vibrating
-    const noiseLen = ctx.sampleRate * durationSec;
-    const noiseBuf = ctx.createBuffer(1, noiseLen, ctx.sampleRate);
-    const noiseData = noiseBuf.getChannelData(0);
-    for (let i = 0; i < noiseLen; i++) noiseData[i] = Math.random() * 2 - 1;
-    const noise = ctx.createBufferSource();
-    noise.buffer = noiseBuf;
-    const noiseFilter = ctx.createBiquadFilter();
-    noiseFilter.type = "bandpass";
-    noiseFilter.frequency.setValueAtTime(300, t);
-    noiseFilter.Q.setValueAtTime(2, t);
-    const noiseGain = ctx.createGain();
-    noiseGain.gain.setValueAtTime(0.15, t);
-    noise.connect(noiseFilter);
-    noiseFilter.connect(noiseGain);
-    noiseGain.connect(master);
-    noise.start(t);
-    noise.stop(t + durationSec);
+    // ── Render all chirp notes ──
+    for (const note of notes) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = note.wave;
+      const nt = t + note.start;
+      osc.frequency.setValueAtTime(note.freq, nt);
+      if (note.endFreq !== note.freq) {
+        osc.frequency.exponentialRampToValueAtTime(note.endFreq, nt + note.dur);
+      }
+      // Snappy attack, quick decay — gives each note a "bleep" quality
+      gain.gain.setValueAtTime(0.001, nt);
+      gain.gain.linearRampToValueAtTime(note.vol, nt + 0.005);
+      gain.gain.setValueAtTime(note.vol, nt + note.dur * 0.6);
+      gain.gain.exponentialRampToValueAtTime(0.001, nt + note.dur);
+      osc.connect(gain);
+      gain.connect(master);
+      osc.start(nt);
+      osc.stop(nt + note.dur + 0.01);
+    }
+
+    // ── Subtle low hum underneath — gives it body/presence ──
+    const hum = ctx.createOscillator();
+    hum.type = "sine";
+    hum.frequency.setValueAtTime(110, t);
+    const humGain = ctx.createGain();
+    humGain.gain.setValueAtTime(0.04, t);
+    hum.connect(humGain);
+    humGain.connect(master);
+    hum.start(t);
+    hum.stop(t + durationSec);
 
     // Return stop function
     return () => {
       try {
         master.gain.cancelScheduledValues(ctx.currentTime);
         master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
-        master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.1);
+        master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.08);
       } catch (_) {}
     };
   }
