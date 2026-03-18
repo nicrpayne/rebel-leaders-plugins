@@ -54,9 +54,6 @@ const SCAN_SEQUENCE = [
   [{ line1: "SCANNING", line2: "..." }, { line1: "READING", line2: "HEADER..." }, { line1: "PARSING", line2: "METADATA" }, { line1: "STAND", line2: "BY..." }],
   [{ line1: "CATEGORY", line2: "FOUND" }, { line1: "ANALYZING", line2: "FIELD..." }, { line1: "CHECKING", line2: "CONTEXT" }, { line1: "ROUTING", line2: "DATA..." }],
   [{ line1: "DECODING", line2: "SIGNAL" }, { line1: "INTENSITY", line2: "CALC..." }, { line1: "MATCHING", line2: "PROFILE" }, { line1: "INDEXING", line2: "..." }],
-  [{ line1: "CROSS-REF", line2: "LEAK..." }, { line1: "MAPPING", line2: "FORCE" }, { line1: "BUILDING", line2: "MATRIX" }, { line1: "VERIFYING", line2: "..." }],
-  [{ line1: "PROTOCOL", line2: "LOCKED" }, { line1: "COMPILING", line2: "BRIEF..." }, { line1: "ENCODING", line2: "OUTPUT" }, { line1: "RESOLVING", line2: "..." }],
-  [{ line1: "ALIGNMENT", line2: "CHECK" }, { line1: "SIGNAL", line2: "STRONG" }, { line1: "LOCKING", line2: "TARGET" }, { line1: "ALMOST", line2: "THERE..." }],
 ];
 
 /* ── Pager screen idle messages ── */
@@ -547,7 +544,7 @@ startTicker(msg, 14000, () => {
     // Cycle through scan animation steps
     let step = 0;
     const totalSteps = SCAN_SEQUENCE.length;
-    const stepDuration = 830;
+    const stepDuration = 600;
 
     const advanceStep = () => {
       step++;

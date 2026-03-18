@@ -160,7 +160,7 @@ export default function Codex() {
       case "buttonRelease": codexAudio.playButtonRelease(); break;
       case "scanTone":
         if (scanStopRef.current) scanStopRef.current();
-        scanStopRef.current = codexAudio.playScanTone(5.2);
+        scanStopRef.current = codexAudio.playScanTone(2.6);
         break;
       case "scanComplete":
         if (scanStopRef.current) { scanStopRef.current(); scanStopRef.current = null; }
