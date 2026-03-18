@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { CodexEntry } from "@/lib/codex-schema";
 import { CODEX_ENTRIES } from "@/lib/codex-data";
 import { getBestCartridge, type GravitasSignal, type RankingRationale } from "@/lib/codex-ranking";
+import { codexAudio } from "@/lib/CodexAudio";
 import CabinetDeck from "@/components/CabinetDeck";
 
 import { ReaderPanel } from "@/components/reader";
@@ -148,34 +149,30 @@ export default function Codex() {
     }
   }, []);
 
-  // Sound Effects
+  // Sound Effects — static import, no async delay
   const scanStopRef = useRef<(() => void) | null>(null);
   const playSound = (type: "load" | "eject" | "click" | "buttonPress" | "buttonRelease" | "scanTone" | "scanComplete") => {
-    import("@/lib/CodexAudio").then(({ codexAudio }) => {
-      switch (type) {
-        case "load": codexAudio.playLoad(); break;
-        case "eject": codexAudio.playEject(); break;
-        case "click": codexAudio.playClick(); break;
-        case "buttonPress": codexAudio.playButtonPress(); break;
-        case "buttonRelease": codexAudio.playButtonRelease(); break;
-        case "scanTone":
-          if (scanStopRef.current) scanStopRef.current();
-          scanStopRef.current = codexAudio.playScanTone(2.6);
-          break;
-        case "scanComplete":
-          if (scanStopRef.current) { scanStopRef.current(); scanStopRef.current = null; }
-          codexAudio.playScanComplete();
-          break;
-      }
-    });
+    switch (type) {
+      case "load": codexAudio.playLoad(); break;
+      case "eject": codexAudio.playEject(); break;
+      case "click": codexAudio.playClick(); break;
+      case "buttonPress": codexAudio.playButtonPress(); break;
+      case "buttonRelease": codexAudio.playButtonRelease(); break;
+      case "scanTone":
+        if (scanStopRef.current) scanStopRef.current();
+        scanStopRef.current = codexAudio.playScanTone(5.2);
+        break;
+      case "scanComplete":
+        if (scanStopRef.current) { scanStopRef.current(); scanStopRef.current = null; }
+        codexAudio.playScanComplete();
+        break;
+    }
   };
 
   // Initialize Audio Context on first interaction
   useEffect(() => {
     const initAudio = () => {
-      import("@/lib/CodexAudio").then(({ codexAudio }) => {
-        codexAudio.resume();
-      });
+      codexAudio.resume();
       window.removeEventListener("click", initAudio);
       window.removeEventListener("keydown", initAudio);
     };
