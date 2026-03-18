@@ -84,6 +84,7 @@ interface CabinetDeckProps {
   onEject: () => void;
   onRead: () => void;
   onRun: () => void;
+  playSound: (type: "load" | "eject" | "click" | "buttonPress" | "buttonRelease" | "scanTone" | "scanComplete") => void;
   isReaderOpen: boolean;
   gravitasScores: GravitasScores | null;
   isReceivingSignal: boolean;
@@ -378,6 +379,7 @@ export default function CabinetDeck({
   onEject,
   onRead,
   onRun,
+  playSound,
   isReaderOpen,
   gravitasScores,
   isReceivingSignal,
@@ -528,6 +530,14 @@ startTicker(msg, 14000, () => {
   // SCAN animation sequence
   const handleScan = useCallback(() => {
     if (!loadedEntry || deckPhase !== "loaded") return;
+
+    // Button press + release (physical click)
+    playSound("buttonPress");
+    setTimeout(() => playSound("buttonRelease"), 80);
+
+    // Start scan tone (sustained for full scan duration)
+    setTimeout(() => playSound("scanTone"), 120);
+
     setDeckPhase("scanning");
     setScanStep(0);
     setTickerMode(false); // cancel any running ticker
@@ -548,6 +558,9 @@ startTicker(msg, 14000, () => {
         const node = loadedEntry.flywheel_node?.[0]?.toUpperCase() || "—";
         const diff = loadedEntry.difficulty || 0;
         const diffLabel = diff <= 2 ? "LOW" : diff <= 3 ? "MEDIUM" : "HIGH";
+
+        // Scan complete sound
+        playSound("scanComplete");
 
         // Set deck phase immediately so READ button is available right away
         setDeckPhase("scanned");
@@ -576,7 +589,7 @@ startTicker(msg, 14000, () => {
     };
 
     scanTimerRef.current = setTimeout(advanceStep, stepDuration);
-  }, [loadedEntry, deckPhase, startTicker, rankingRationale, gravitasSignalData]);
+  }, [loadedEntry, deckPhase, startTicker, rankingRationale, gravitasSignalData, playSound]);
 
   // Clean up timers on unmount
   useEffect(() => {
@@ -711,7 +724,7 @@ startTicker(msg, 14000, () => {
 
   // Indicator light states
   const lights = [
-    { isOn: canRead || isReaderOpen, isPulsing: isReaderOpen },
+    { isOn: canRead || isReaderOpen, isPulsing: isReaderOpen || deckPhase === "scanned" },
     { isOn: isScanning || deckPhase === "scanned", isPulsing: isScanning },
     { isOn: !!loadedEntry, isPulsing: false },
   ];

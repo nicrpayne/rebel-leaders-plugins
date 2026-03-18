@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { CodexEntry } from "@/lib/codex-schema";
 import { CODEX_ENTRIES } from "@/lib/codex-data";
@@ -149,12 +149,23 @@ export default function Codex() {
   }, []);
 
   // Sound Effects
-  const playSound = (type: "load" | "eject" | "click") => {
+  const scanStopRef = useRef<(() => void) | null>(null);
+  const playSound = (type: "load" | "eject" | "click" | "buttonPress" | "buttonRelease" | "scanTone" | "scanComplete") => {
     import("@/lib/CodexAudio").then(({ codexAudio }) => {
       switch (type) {
         case "load": codexAudio.playLoad(); break;
         case "eject": codexAudio.playEject(); break;
         case "click": codexAudio.playClick(); break;
+        case "buttonPress": codexAudio.playButtonPress(); break;
+        case "buttonRelease": codexAudio.playButtonRelease(); break;
+        case "scanTone":
+          if (scanStopRef.current) scanStopRef.current();
+          scanStopRef.current = codexAudio.playScanTone(2.6);
+          break;
+        case "scanComplete":
+          if (scanStopRef.current) { scanStopRef.current(); scanStopRef.current = null; }
+          codexAudio.playScanComplete();
+          break;
       }
     });
   };
@@ -218,6 +229,7 @@ export default function Codex() {
           onEject={handleEject}
           onRead={handleRead}
           onRun={handleRun}
+          playSound={playSound}
           isReaderOpen={isReaderOpen}
           gravitasScores={gravitasScores}
           isReceivingSignal={isReceivingSignal}
