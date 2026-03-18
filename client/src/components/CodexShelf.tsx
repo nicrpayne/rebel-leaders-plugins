@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { CodexEntry } from "@/lib/codex-schema";
 import { FlywheelNode } from "@/lib/codex-schema";
@@ -228,7 +228,7 @@ function CartridgeSpine({
       {/* ── LAYER 3: Visual — purely decorative, pointer-events-none, reacts via group-hover ── */}
       <div
         className={cn(
-          "absolute inset-0 pointer-events-none transition-all duration-300 ease-out",
+          "absolute inset-0 pointer-events-none transition-[transform,opacity,filter] duration-300 ease-out",
           isLoaded ? "opacity-0" : "group-hover/spine:brightness-125",
         )}
         style={{
@@ -277,7 +277,6 @@ function CartridgeSpine({
             {/* Text label on the parchment area — matches CabinetDeck label design */}
             {(() => {
               const len = entry.title.length;
-              // Dynamic font: short titles stay big, long titles shrink
               const titleSize = len <= 12 ? '9px' : len <= 18 ? '8px' : len <= 24 ? '7px' : '6px';
               const idSize = len <= 18 ? '5px' : '4.5px';
               return (
@@ -521,7 +520,7 @@ export default function CodexShelf({
   onCategoryChange,
   recentEntryIds = [],
 }: CodexShelfProps) {
-  const grouped = groupByFlywheel(entries);
+  const grouped = useMemo(() => groupByFlywheel(entries), [entries]);
   const scrollRefTop = useRef<HTMLDivElement>(null);
   const scrollRefBottom = useRef<HTMLDivElement>(null);
 
