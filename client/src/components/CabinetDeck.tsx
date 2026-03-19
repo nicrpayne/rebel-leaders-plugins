@@ -302,7 +302,7 @@ function IndicatorLight({ isOn, isPulsing }: { isOn: boolean; isPulsing: boolean
   return (
     <div
       className={cn(
-        "absolute rounded-sm pointer-events-none transition-all duration-500",
+        "absolute inset-0 rounded-sm pointer-events-none transition-all duration-500",
         isPulsing && "animate-pulse"
       )}
       style={{
