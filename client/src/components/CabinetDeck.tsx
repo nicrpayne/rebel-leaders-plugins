@@ -38,9 +38,9 @@ const BUTTON_HITZONES = {
 
 /* ── Indicator light positions (% of hero image) — on the recessed light fixtures above buttons ── */
 const INDICATOR_LIGHTS = [
-  { left: 73.2, top: 62.0, width: 2.4, height: 2.8 },  // READ fixture
-  { left: 79.4, top: 62.0, width: 2.4, height: 2.8 },  // SCAN fixture
-  { left: 85.4, top: 62.0, width: 2.4, height: 2.8 },  // EJECT fixture
+  { left: 73.2, top: 66.0, width: 2.4, height: 2.8 },  // READ fixture
+  { left: 79.4, top: 66.0, width: 2.4, height: 2.8 },  // SCAN fixture
+  { left: 85.4, top: 66.0, width: 2.4, height: 2.8 },  // EJECT fixture
 ];
 
 /* ── Cartridge slot position (% of hero image) ── */
