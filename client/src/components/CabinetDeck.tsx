@@ -36,11 +36,11 @@ const BUTTON_HITZONES = {
   eject: { left: 84.2, top: 64.0, width: 4.8, height: 17.0 },
 };
 
-/* ── Indicator light positions (% of hero image) — above each button ── */
+/* ── Indicator light positions (% of hero image) — on the recessed light fixtures above buttons ── */
 const INDICATOR_LIGHTS = [
-  { left: 73.4, top: 66.2, width: 2.8, height: 4.0 },  // above READ
-  { left: 79.7, top: 66.4, width: 2.6, height: 3.8 },  // above SCAN
-  { left: 85.7, top: 66.5, width: 2.4, height: 3.7 },  // above EJECT
+  { left: 73.2, top: 62.0, width: 2.4, height: 2.8 },  // READ fixture
+  { left: 79.4, top: 62.0, width: 2.4, height: 2.8 },  // SCAN fixture
+  { left: 85.4, top: 62.0, width: 2.4, height: 2.8 },  // EJECT fixture
 ];
 
 /* ── Cartridge slot position (% of hero image) ── */
@@ -302,7 +302,7 @@ function IndicatorLight({ isOn, isPulsing }: { isOn: boolean; isPulsing: boolean
   return (
     <div
       className={cn(
-        "absolute rounded-full pointer-events-none transition-all duration-500",
+        "absolute rounded-sm pointer-events-none transition-all duration-500",
         isPulsing && "animate-pulse"
       )}
       style={{
@@ -721,11 +721,16 @@ startTicker(msg, 14000, () => {
   const canScan = deckPhase === "loaded" && !!loadedEntry;
   const canEject = !!loadedEntry;
 
-  // Indicator light states
+  // Indicator light states — contextual pulsing
+  // idle (no cartridge): all 3 pulse gently
+  // loaded (cartridge in, not scanned): SCAN pulses
+  // scanning: SCAN pulses fast
+  // scanned (ready to read): READ pulses
+  const isIdle = deckPhase === "idle";
   const lights = [
-    { isOn: canRead || isReaderOpen, isPulsing: isReaderOpen || deckPhase === "scanned" },
-    { isOn: isScanning || deckPhase === "scanned", isPulsing: isScanning },
-    { isOn: !!loadedEntry, isPulsing: false },
+    { isOn: isIdle || canRead || isReaderOpen, isPulsing: isIdle || deckPhase === "scanned" },  // READ
+    { isOn: isIdle || isScanning || deckPhase === "loaded" || deckPhase === "scanned", isPulsing: isIdle || isScanning || deckPhase === "loaded" },  // SCAN
+    { isOn: isIdle || !!loadedEntry, isPulsing: isIdle },  // EJECT
   ];
 
   return (
