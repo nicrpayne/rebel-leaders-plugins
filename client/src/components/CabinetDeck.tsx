@@ -857,21 +857,6 @@ startTicker(msg, 14000, () => {
         )}
       </div>
 
-      {/* ── INDICATOR LIGHTS (above buttons) ── */}
-      {INDICATOR_LIGHTS.map((light, idx) => (
-        <div
-          key={`light-${idx}`}
-          className="absolute"
-          style={{
-            left: `${light.left}%`,
-            top: `${light.top}%`,
-            width: `${light.width}%`,
-            height: `${light.height}%`,
-          }}
-        >
-          <IndicatorLight isOn={lights[idx].isOn} isPulsing={lights[idx].isPulsing} />
-        </div>
-      ))}
 
       {/* ── BUTTON HIT ZONES (invisible, generous click areas) ── */}
       {/* No visual overlays — baked-in button images show through. User will supply corrected button images later. */}
