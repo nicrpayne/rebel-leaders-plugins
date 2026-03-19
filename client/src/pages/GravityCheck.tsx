@@ -32,17 +32,29 @@ const playTickSound = () => {
 
 const playClunkSound = () => {
   if (!audioCtx) return;
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.type = "square";
-  osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.1);
-  gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.1);
+  const now = audioCtx.currentTime;
+  // Warm coin chime — two quick ascending tones, Mario-inspired
+  const t1 = audioCtx.createOscillator();
+  const g1 = audioCtx.createGain();
+  t1.type = "sine";
+  t1.frequency.setValueAtTime(988, now); // B5
+  g1.gain.setValueAtTime(0.12, now);
+  g1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+  t1.connect(g1);
+  g1.connect(audioCtx.destination);
+  t1.start(now);
+  t1.stop(now + 0.12);
+
+  const t2 = audioCtx.createOscillator();
+  const g2 = audioCtx.createGain();
+  t2.type = "sine";
+  t2.frequency.setValueAtTime(1319, now + 0.07); // E6
+  g2.gain.setValueAtTime(0.10, now + 0.07);
+  g2.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+  t2.connect(g2);
+  g2.connect(audioCtx.destination);
+  t2.start(now + 0.07);
+  t2.stop(now + 0.22);
 };
 
 const playBootSound = () => {
