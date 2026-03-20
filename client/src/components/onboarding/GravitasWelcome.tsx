@@ -16,31 +16,6 @@
 
 import { useEffect, useRef, useCallback } from "react";
 
-/**
- * Plays the boot sound — same as selecting SCAN / DEEP SCAN on mode select.
- * Three ascending sine tones (400 → 600 → 900 Hz).
- */
-function playStartupSound() {
-  try {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const now = ctx.currentTime;
-
-    [400, 600, 900].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(freq, now + i * 0.12);
-      gain.gain.setValueAtTime(0.08, now + i * 0.12);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.15);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now + i * 0.12);
-      osc.stop(now + i * 0.12 + 0.15);
-    });
-  } catch {
-    // Audio not supported — fail silently
-  }
-}
 
 interface GravitasWelcomeProps {
   onBegin: () => void;
@@ -56,7 +31,6 @@ export function GravitasWelcome({ onBegin, onSkip }: GravitasWelcomeProps) {
   }, []);
 
   const handleBegin = useCallback(() => {
-    playStartupSound();
     onBegin();
   }, [onBegin]);
 
