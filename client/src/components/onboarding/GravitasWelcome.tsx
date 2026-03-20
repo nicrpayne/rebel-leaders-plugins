@@ -17,37 +17,26 @@
 import { useEffect, useRef, useCallback } from "react";
 
 /**
- * Plays the warm coin-chime sound — same as the INITIALIZE button
- * after completing questions. Two quick ascending sine tones (B5 → E6).
+ * Plays the boot sound — same as selecting SCAN / DEEP SCAN on mode select.
+ * Three ascending sine tones (400 → 600 → 900 Hz).
  */
 function playStartupSound() {
   try {
     const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
     const now = ctx.currentTime;
 
-    // Tone 1: B5 (988 Hz)
-    const t1 = ctx.createOscillator();
-    const g1 = ctx.createGain();
-    t1.type = "sine";
-    t1.frequency.setValueAtTime(988, now);
-    g1.gain.setValueAtTime(0.12, now);
-    g1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-    t1.connect(g1);
-    g1.connect(ctx.destination);
-    t1.start(now);
-    t1.stop(now + 0.12);
-
-    // Tone 2: E6 (1319 Hz) — a fourth up, slightly delayed
-    const t2 = ctx.createOscillator();
-    const g2 = ctx.createGain();
-    t2.type = "sine";
-    t2.frequency.setValueAtTime(1319, now + 0.07);
-    g2.gain.setValueAtTime(0.10, now + 0.07);
-    g2.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-    t2.connect(g2);
-    g2.connect(ctx.destination);
-    t2.start(now + 0.07);
-    t2.stop(now + 0.22);
+    [400, 600, 900].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, now + i * 0.12);
+      gain.gain.setValueAtTime(0.08, now + i * 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.15);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + i * 0.12);
+      osc.stop(now + i * 0.12 + 0.15);
+    });
   } catch {
     // Audio not supported — fail silently
   }

@@ -75,6 +75,53 @@ const playBootSound = () => {
   });
 };
 
+// Completion sound for INITIALIZE — a rewarding resolution chord.
+// Low foundation tone + warm fifth + gentle octave shimmer.
+const playInitializeSound = () => {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+
+  // Layer 1: warm foundation (C4 — 262 Hz)
+  const o1 = audioCtx.createOscillator();
+  const g1 = audioCtx.createGain();
+  o1.type = "sine";
+  o1.frequency.setValueAtTime(262, now);
+  g1.gain.setValueAtTime(0.14, now);
+  g1.gain.setValueAtTime(0.14, now + 0.15);
+  g1.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+  o1.connect(g1);
+  g1.connect(audioCtx.destination);
+  o1.start(now);
+  o1.stop(now + 0.55);
+
+  // Layer 2: fifth (G4 — 392 Hz), slightly delayed
+  const o2 = audioCtx.createOscillator();
+  const g2 = audioCtx.createGain();
+  o2.type = "sine";
+  o2.frequency.setValueAtTime(392, now + 0.06);
+  g2.gain.setValueAtTime(0.001, now);
+  g2.gain.linearRampToValueAtTime(0.11, now + 0.08);
+  g2.gain.setValueAtTime(0.11, now + 0.2);
+  g2.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+  o2.connect(g2);
+  g2.connect(audioCtx.destination);
+  o2.start(now + 0.06);
+  o2.stop(now + 0.6);
+
+  // Layer 3: octave shimmer (C5 — 523 Hz), gentle triangle
+  const o3 = audioCtx.createOscillator();
+  const g3 = audioCtx.createGain();
+  o3.type = "triangle";
+  o3.frequency.setValueAtTime(523, now + 0.12);
+  g3.gain.setValueAtTime(0.001, now);
+  g3.gain.linearRampToValueAtTime(0.07, now + 0.15);
+  g3.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+  o3.connect(g3);
+  g3.connect(audioCtx.destination);
+  o3.start(now + 0.12);
+  o3.stop(now + 0.7);
+};
+
 function ModeSelect({ onSelect }: { onSelect: (mode: ScanMode) => void }) {
   const [hoveredMode, setHoveredMode] = useState<ScanMode | null>(null);
 
@@ -202,7 +249,11 @@ export default function GravityCheck() {
 
   const handleNext = useCallback(() => {
     if (!currentQuestion) return;
-    playClunkSound();
+    if (isLastQuestion) {
+      playInitializeSound();
+    } else {
+      playClunkSound();
+    }
 
     const score = 1 + (knobValue / 100) * 4;
     const newAnswers = { ...answers, [currentQuestion.id]: score };
