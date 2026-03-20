@@ -179,8 +179,6 @@ function ModeSelect({ onSelect }: { onSelect: (mode: ScanMode) => void }) {
 export default function GravityCheck() {
   const [scanMode, setScanMode] = useState<ScanMode | null>(null);
   const { OnboardingUI } = useGravitasOnboarding({
-    // Auto-select SCAN mode when BEGIN SCAN is clicked so the tour fires immediately
-    // without requiring the user to choose a mode first
     onBeginScan: () => setScanMode("SCAN"),
   });
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -220,8 +218,6 @@ export default function GravityCheck() {
     }
   }, [currentQuestion, knobValue, answers, isLastQuestion, setLocation]);
 
-  // Render onboarding overlay at the top level — before any early returns
-  // so it fires on first visit regardless of scan mode state
   const onboardingOverlay = <OnboardingUI />;
 
   if (!scanMode) {
@@ -248,7 +244,7 @@ export default function GravityCheck() {
       >
         <ModeSelect onSelect={(mode) => setScanMode(mode)} />
       </GravitasShell>
-      </>  
+      </>
     );
   }
 
