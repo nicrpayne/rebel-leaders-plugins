@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useGravitasOnboarding } from "@/components/onboarding";
 import { useLocation } from "wouter";
 import GravitasShell from "@/components/GravitasShell";
 import RotaryKnob from "@/components/ui/RotaryKnob";
@@ -177,6 +178,11 @@ function ModeSelect({ onSelect }: { onSelect: (mode: ScanMode) => void }) {
 
 export default function GravityCheck() {
   const [scanMode, setScanMode] = useState<ScanMode | null>(null);
+  const { OnboardingUI } = useGravitasOnboarding({
+    // Auto-select SCAN mode when BEGIN SCAN is clicked so the tour fires immediately
+    // without requiring the user to choose a mode first
+    onBeginScan: () => setScanMode("SCAN"),
+  });
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [knobValue, setKnobValue] = useState(50);
@@ -214,8 +220,14 @@ export default function GravityCheck() {
     }
   }, [currentQuestion, knobValue, answers, isLastQuestion, setLocation]);
 
+  // Render onboarding overlay at the top level — before any early returns
+  // so it fires on first visit regardless of scan mode state
+  const onboardingOverlay = <OnboardingUI />;
+
   if (!scanMode) {
     return (
+      <>
+      {onboardingOverlay}
       <GravitasShell
         status="AWAITING DEPTH SELECTION"
         statusColor="text-[#3a3a44]"
@@ -236,6 +248,7 @@ export default function GravityCheck() {
       >
         <ModeSelect onSelect={(mode) => setScanMode(mode)} />
       </GravitasShell>
+      </>  
     );
   }
 
@@ -250,6 +263,7 @@ export default function GravityCheck() {
         WORKBENCH
       </a>
     <button
+      data-tour="gravitas-next"
       onClick={handleNext}
       className={cn(
         "group flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-b from-[#1a1a20] to-[#141418] border rounded-[2px] shadow-[0_2px_4px_rgba(0,0,0,0.4)] transition-all duration-300",
@@ -345,6 +359,7 @@ export default function GravityCheck() {
                 {currentQuestion && (
                   <>
                     <div
+                      data-tour="gravitas-display"
                       className="relative z-20 text-green-400 text-[10px] leading-[2] tracking-[0.2em] text-center uppercase"
                       style={{
                         textShadow:
@@ -383,7 +398,7 @@ export default function GravityCheck() {
         </div>
 
         <div className="flex justify-center items-center h-full">
-          <div className="transform scale-[0.85] origin-center">
+          <div className="transform scale-[0.85] origin-center" data-tour="gravitas-knob">
             <RotaryKnob
               value={knobValue}
               min={0}
@@ -412,7 +427,7 @@ export default function GravityCheck() {
         }
       `}</style>
     </GravitasShell>
-
+    {onboardingOverlay}
     </>
   );
 }
