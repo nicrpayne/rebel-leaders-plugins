@@ -180,6 +180,7 @@ export default function GravityCheck() {
   const [scanMode, setScanMode] = useState<ScanMode | null>(null);
   const { OnboardingUI } = useGravitasOnboarding({
     onBeginScan: () => setScanMode("SCAN"),
+    onTourComplete: () => setScanMode(null),
   });
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
